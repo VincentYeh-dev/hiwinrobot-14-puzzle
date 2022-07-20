@@ -14,11 +14,11 @@ namespace ExclusiveProgram.puzzle.visual.framework
     public struct LocationResult
     {
         public Point Coordinate;
-        public double Angle;
+        //public double Angle;
         public Size Size;
         public Image<Bgr,byte> ROI;
         public Image<Gray,byte> BinaryROI;
-        public int id;
+        public int ID;
     }
 
     public interface IPuzzleLocator

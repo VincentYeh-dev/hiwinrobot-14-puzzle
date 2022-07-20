@@ -18,7 +18,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         public Puzzle_sturct merge(LocationResult locationResult, Image<Bgr, byte> correctedImage, RecognizeResult recognizeResult)
         {
             Puzzle_sturct register = new Puzzle_sturct();
-            register.id= locationResult.id;
+            register.id= locationResult.ID;
             register.coordinate = locationResult.Coordinate;
             register.position = recognizeResult.position;
             register.Angel = recognizeResult.Angle;

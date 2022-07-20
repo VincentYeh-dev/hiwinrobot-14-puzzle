@@ -56,7 +56,7 @@ namespace ExclusiveProgram
             try
             {
 
-                var locator = new PuzzleLocator(minSize, maxSize,null,grayConversionImpl,thresoldImpl,binaryPreprocessImpl);
+                var locator = new PuzzleLocator(minSize, maxSize,null,grayConversionImpl,thresoldImpl,binaryPreprocessImpl,0.01);
                 var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
 
 
@@ -226,7 +226,7 @@ namespace ExclusiveProgram
                     {
                         var control = new UserControl1();
                         control.setImage(result.ROI.ToBitmap());
-                        control.setLabel(String.Format("[{0},{1}] ({2},{3})",result.Coordinate.X,result.Coordinate.Y,result.Size.Width,result.Size.Height),"Angle:"+Math.Round(result.Angle,2));
+                        control.setLabel(String.Format("({0},{1})",result.Coordinate.X,result.Coordinate.Y),String.Format("[{0},{1}]",result.Size.Width,result.Size.Height));
                         ui.corrector_ROI_puzzleView.Controls.Add(control);
                     }
                 }
