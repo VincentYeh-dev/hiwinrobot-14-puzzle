@@ -13,8 +13,8 @@ namespace ExclusiveProgram.puzzle.logic.framework
     }
     public interface IPuzzleStrategy
     {
-        void Feed(List<Puzzle_sturct> puzzles);
+        void Feed(List<Puzzle2D> puzzles);
         void Reset();
-        Action KnowWhatToDo(out Puzzle_sturct? target, out string[] missing_position);
+        Action KnowWhatToDo(out Puzzle2D? target, out string[] missing_position);
     }
 }

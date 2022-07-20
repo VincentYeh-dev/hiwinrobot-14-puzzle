@@ -9,11 +9,11 @@ namespace ExclusiveProgram.puzzle.logic.concrete
     {
 
         private HashSet<string> recombinedPuzzles = new HashSet<string>();
-        private List<Puzzle_sturct> puzzles = new List<Puzzle_sturct>();
+        private List<Puzzle2D> puzzles = new List<Puzzle2D>();
         private Dictionary<string,List<int>> puzzles_directory=new Dictionary<string, List<int>>();
         private string[] missing_positions;
 
-        public void Feed(List<Puzzle_sturct> puzzles)
+        public void Feed(List<Puzzle2D> puzzles)
         {
             Reset();
             HashSet<string> recorded_positions = new HashSet<string>();
@@ -21,7 +21,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             {
                 this.puzzles.Add(puzzles[i]);
 
-                var position = puzzles[i].position;
+                var position = puzzles[i].Position;
 
 
                 bool exist = puzzles_directory.TryGetValue(position,out List<int> list);
@@ -41,22 +41,22 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
         }
 
-        public void Append(Puzzle_sturct puzzle)
+        public void Append(Puzzle2D puzzle)
         {
-            List<Puzzle_sturct> new_puzzles = new List<Puzzle_sturct>();
+            List<Puzzle2D> new_puzzles = new List<Puzzle2D>();
             new_puzzles.AddRange(this.puzzles);
             new_puzzles.Add(puzzle);
             Feed(new_puzzles);
         }
-        public void AddOnlyMissingPosition(List<Puzzle_sturct> new_puzzles)
+        public void AddOnlyMissingPosition(List<Puzzle2D> new_puzzles)
         {
-            List<Puzzle_sturct> output_puzles= new List<Puzzle_sturct>();
+            List<Puzzle2D> output_puzles= new List<Puzzle2D>();
             output_puzles.AddRange(this.puzzles);
-            foreach (Puzzle_sturct puzzle in new_puzzles)
+            foreach (Puzzle2D puzzle in new_puzzles)
             {
                 foreach(var position in missing_positions)
                 {
-                    if (puzzle.position.Equals(position))
+                    if (puzzle.Position.Equals(position))
                     {
                         output_puzles.Add(puzzle);
                     }
@@ -74,7 +74,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             missing_positions=new string[0];
         }
 
-        public framework.Action KnowWhatToDo(out Puzzle_sturct? target,out string[] missing_positions)
+        public framework.Action KnowWhatToDo(out Puzzle2D? target,out string[] missing_positions)
         {
             if(puzzles.Count==0)
             {
