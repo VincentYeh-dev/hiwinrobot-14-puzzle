@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExclusiveProgram.puzzle.visual.concrete.locator
+namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
     public class AdaptiveThresholdImpl : IPuzzleThresholdImpl
     {

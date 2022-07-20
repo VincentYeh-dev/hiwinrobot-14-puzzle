@@ -18,7 +18,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     }
     public interface IPuzzleFactory
     {
-        List<Puzzle_sturct> Execute(Image<Bgr, byte> input);
+        List<Puzzle2D> Execute(Image<Bgr, byte> input);
         void setListener(PuzzleFactoryListener listener);
     }
 }

@@ -10,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExclusiveProgram.puzzle.visual.concrete.locator
+namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class NormalPreprocessImpl : IPuzzlePreProcessImpl
+    public class NormalPreprocessImpl : IPuzzlePreprocessImpl
     {
         public void Preprocess(Image<Bgr, byte> input, Image<Bgr, byte> output)
         {

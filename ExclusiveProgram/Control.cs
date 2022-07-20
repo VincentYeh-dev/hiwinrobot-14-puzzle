@@ -9,8 +9,9 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using ExclusiveProgram.puzzle;
 using ExclusiveProgram.puzzle.visual.concrete;
-using ExclusiveProgram.puzzle.visual.concrete.locator;
+using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.ui.component;
 
@@ -21,7 +22,7 @@ namespace ExclusiveProgram
     public partial class Control : MainForm.ExclusiveControl
     {
         //private VideoCapture capture;
-        private delegate void DelShowResult(Puzzle_sturct puzzles);
+        private delegate void DelShowResult(Puzzle2D puzzles);
 
 
         public Control()
@@ -47,26 +48,25 @@ namespace ExclusiveProgram
             var threshold = (int)numericUpDown_blockSize.Value;
             var green_weight = Double.Parse(textBox_param.Text);
 
-            var preprocessImpl = new NormalPreprocessImpl();
             var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
-            var thresoldImpl= new NormalThresoldImpl(threshold);
+            var thresoldImpl = new NormalThresoldImpl(threshold);
             var binaryPreprocessImpl = new NormalBinaryPreprocessImpl();
 
             IPuzzleFactory factory = null;
             try
             {
 
-                var locator = new PuzzleLocator(minSize, maxSize,null,grayConversionImpl,thresoldImpl,binaryPreprocessImpl);
+                var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
                 var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
 
 
                 Color backgroundColor = getColorFromTextBox();
 
                 var modelImage = CvInvoke.Imread("samples\\modelImage3.jpg").ToImage<Bgr, byte>();
-                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(),preprocessImpl,grayConversionImpl,thresoldImpl,new CorrectorBinaryPreprocessImpl());
+                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), null, grayConversionImpl, thresoldImpl, new RecognizerBinaryPreprocessImpl());
                 recognizer.setListener(new MyRecognizeListener(this));
 
-                factory = new DefaultPuzzleFactory(locator,recognizer, new PuzzleResultMerger(),5);
+                factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
                 factory.setListener(new MyFactoryListener(this));
             }
             catch (Exception ex)
@@ -74,18 +74,18 @@ namespace ExclusiveProgram
                 MessageBox.Show(ex.Message, "辨識錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-                var image = CvInvoke.Imread(file_path.Text).ToImage<Bgr, byte>();
-                capture_preview.Image = image.ToBitmap();
-                List<Puzzle_sturct> results = factory.Execute(image);
+            var image = CvInvoke.Imread(file_path.Text).ToImage<Bgr, byte>();
+            capture_preview.Image = image.ToBitmap();
+            List<Puzzle2D> results = factory.Execute(image);
 
-                foreach (Puzzle_sturct result in results)
-                {
-                    ShowResult(result);
-                }
+            foreach (Puzzle2D result in results)
+            {
+                ShowResult(result);
+            }
 
         }
 
-        private void ShowResult(Puzzle_sturct result)
+        private void ShowResult(Puzzle2D result)
         {
             if (this.InvokeRequired)
             {
@@ -96,7 +96,7 @@ namespace ExclusiveProgram
             {
                 var control = new UserControl1();
                 control.setImage(result.image.ToBitmap());
-                control.setLabel("Angle:" + Math.Round(result.Angel, 2), result.position);
+                control.setLabel("Angle:" + Math.Round(result.Angel, 2), result.Position);
                 recognize_match_puzzleView.Controls.Add(control);
             }
         }
@@ -169,20 +169,20 @@ namespace ExclusiveProgram
 
             private readonly Control ui;
 
-            public void OnMatched(int id,Image<Bgr, byte> modelImage, VectorOfKeyPoint modelKeyPoints, Image<Bgr, byte> observedImage, VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, Mat mask, long matchTime)
+            public void OnMatched(int id, Image<Bgr, byte> modelImage, VectorOfKeyPoint modelKeyPoints, Image<Bgr, byte> observedImage, VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, Mat mask, long matchTime)
             {
                 Mat resultImage = new Mat();
                 Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints,
                    matches, resultImage, new MCvScalar(0, 0, 255), new MCvScalar(255, 255, 255), mask);
 
-                resultImage.Save("results\\matching_" +id+ ".jpg");
+                resultImage.Save("results\\matching_" + id + ".jpg");
                 resultImage.Dispose();
             }
 
-            public void OnPerspective(int id,Image<Bgr, byte> warpedPerspectiveImage,String position)
+            public void OnPerspective(int id, Image<Bgr, byte> warpedPerspectiveImage, String position)
             {
                 CvInvoke.PutText(warpedPerspectiveImage, string.Format("position: {0}", position), new Point(1, 50), FontFace.HersheySimplex, 1, new MCvScalar(100, 100, 255), 2, LineType.FourConnected);
-                warpedPerspectiveImage.Save("results\\perspective_"+id+".jpg");
+                warpedPerspectiveImage.Save("results\\perspective_" + id + ".jpg");
             }
         }
 
@@ -226,7 +226,7 @@ namespace ExclusiveProgram
                     {
                         var control = new UserControl1();
                         control.setImage(result.ROI.ToBitmap());
-                        control.setLabel(String.Format("[{0},{1}] ({2},{3})",result.Coordinate.X,result.Coordinate.Y,result.Size.Width,result.Size.Height),"Angle:"+Math.Round(result.Angle,2));
+                        control.setLabel(String.Format("({0},{1})", result.Coordinate.X, result.Coordinate.Y), String.Format("[{0},{1}]", result.Size.Width, result.Size.Height));
                         ui.corrector_ROI_puzzleView.Controls.Add(control);
                     }
                 }

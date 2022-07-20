@@ -10,6 +10,6 @@ namespace ExclusiveProgram.puzzle.visual.framework
 {
     public interface IPuzzleResultMerger
     {
-        Puzzle_sturct merge(LocationResult locationResult,Image<Bgr,byte> correctedImage,RecognizeResult recognizeResult);
+        Puzzle2D merge(LocationResult locationResult,Image<Bgr,byte> correctedImage,RecognizeResult recognizeResult);
     }
 }

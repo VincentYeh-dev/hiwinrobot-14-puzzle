@@ -6,26 +6,9 @@ using System.Drawing;
 
 namespace ExclusiveProgram.puzzle.visual.framework
 {
-    public struct CorrectedPuzzleArgument
-    {
-        public Point Coordinate;
-        public double Angle;
-        public Size Size;
-        public Image<Bgr,byte> image;
-    }
-
     public struct RecognizeResult
     {
         public double Angle;
-        public string position;
-        public int id;
-    };
-
-    public struct Puzzle_sturct
-    {
-        public double Angel;
-        public Point coordinate;
-        public Image<Bgr,byte> image;
         public string position;
         public int id;
     };

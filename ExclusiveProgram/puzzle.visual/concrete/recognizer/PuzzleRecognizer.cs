@@ -21,7 +21,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         private Image<Bgr, byte> preprocessModelImage = null;
         private readonly PuzzleRecognizerImpl impl;
-        private readonly IPuzzlePreProcessImpl puzzlePreProcessImpl;
+        private readonly IPuzzlePreprocessImpl puzzlePreProcessImpl;
         private readonly IPuzzleGrayConversionImpl grayConversionImpl;
         private readonly IPuzzleThresholdImpl thresholdImpl;
         private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
@@ -30,7 +30,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private PuzzleRecognizerListener listener;
 
 
-        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPuzzlePreProcessImpl puzzlePreProcessImpl,IPuzzleGrayConversionImpl grayConversionImpl,IPuzzleThresholdImpl thresholdImpl,IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
+        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPuzzlePreprocessImpl puzzlePreProcessImpl,IPuzzleGrayConversionImpl grayConversionImpl,IPuzzleThresholdImpl thresholdImpl,IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.modelImage = modelImage;
             this.uniquenessThreshold = uniquenessThreshold;
@@ -46,6 +46,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             preprocessModelImage = new Image<Bgr, byte>(modelImage.Size);
             if(puzzlePreProcessImpl!=null)
                 puzzlePreProcessImpl.Preprocess(modelImage,preprocessModelImage);
+            else
+                preprocessModelImage = modelImage;
         }
 
         public bool ModelImagePreprocessIsDone()
@@ -56,7 +58,9 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         public RecognizeResult Recognize(int id,Image<Bgr, byte> image)
         {
             Image<Bgr, byte> observedImage = image.Clone();
-            //puzzlePreProcessImpl.Preprocess(observedImage,observedImage);
+
+            if (puzzlePreProcessImpl != null)
+                puzzlePreProcessImpl.Preprocess(observedImage,observedImage);
 
             long matchTime;
 
@@ -81,7 +85,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 var warpImage= new Mat(preprocessModelImage.Size, preprocessModelImage.Mat.Depth, 3);
                 CvInvoke.WarpPerspective(observedImage, warpImage, invert_homography, preprocessModelImage.Size);
 
-                Point point = FindPositionOnModelImage(id,warpImage.ToImage<Bgr,byte>());
+                Point point = FindCoordinateOnModelImage(id,warpImage.ToImage<Bgr,byte>());
 
                 var preview_image = warpImage.Clone();
 
@@ -142,12 +146,20 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return result;
         }
 
-        private Point FindPositionOnModelImage(int id,Image<Bgr,byte> warpImage)
+        private Point FindCoordinateOnModelImage(int id,Image<Bgr,byte> warpImage)
         {
-            var binaryImage = new Image<Gray, byte>(warpImage.Size);
-            grayConversionImpl.ConvertToGray(warpImage,binaryImage);
+            var stage1= new Image<Bgr,byte>(warpImage.Size);
+            if (puzzlePreProcessImpl != null)
+                puzzlePreProcessImpl.Preprocess(warpImage, stage1);
+            else
+                stage1 = warpImage;
+
+
+            var binaryImage = new Image<Gray, byte>(stage1.Size);
+            grayConversionImpl.ConvertToGray(stage1,binaryImage);
             thresholdImpl.Threshold(binaryImage, binaryImage);
-            binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
+            if(binaryPreprocessImpl != null)
+                binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
 
 
             //取得輪廓組套件

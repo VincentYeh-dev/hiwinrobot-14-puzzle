@@ -13,15 +13,15 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         private readonly Bgr backgroundColor;
         private PuzzleCorrectorListener listener;
-        private readonly IPuzzlePreProcessImpl preProcessImpl;
+        private readonly IPuzzlePreprocessImpl preprocessImpl;
         private readonly IPuzzleGrayConversionImpl grayConversionImpl;
         private readonly IPuzzleThresholdImpl thresholdImpl;
         private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
 
-        public PuzzleCorrector(Color backgroundColor, IPuzzlePreProcessImpl preProcessImpl, locator.NormalPreprocessImpl preprocessImpl, IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl,IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
+        public PuzzleCorrector(Color backgroundColor, IPuzzlePreprocessImpl preprocessImpl,IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl, IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.backgroundColor = new Bgr(backgroundColor);
-            this.preProcessImpl = preProcessImpl;
+            this.preprocessImpl = preprocessImpl;
             this.grayConversionImpl = grayConversionImpl;
             this.thresholdImpl = thresholdImpl;
             this.binaryPreprocessImpl = binaryPreprocessImpl;
@@ -52,7 +52,13 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             Image<Gray, byte> Out = new Image<Gray, byte>(new_img.Size);
 
-            grayConversionImpl.ConvertToGray(new_img, Out);
+            var stage1 = new Image<Bgr, byte>(new_img.Size);
+            if (preprocessImpl != null)
+                preprocessImpl.Preprocess(new_img, stage1);
+            if (preprocessImpl == null)
+                stage1 = new_img;
+
+            grayConversionImpl.ConvertToGray(stage1, Out);
             thresholdImpl.Threshold(Out, Out);
             binaryPreprocessImpl.BinaryPreprocess(Out, Out);
             
