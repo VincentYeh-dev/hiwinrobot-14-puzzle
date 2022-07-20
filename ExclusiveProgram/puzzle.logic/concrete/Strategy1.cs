@@ -15,6 +15,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
         public void Feed(List<Puzzle_sturct> puzzles)
         {
+            Reset();
             HashSet<string> recorded_positions = new HashSet<string>();
             for (int i = 0; i < puzzles.Count; i++)
             {
@@ -40,6 +41,31 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
         }
 
+        public void Append(Puzzle_sturct puzzle)
+        {
+            List<Puzzle_sturct> new_puzzles = new List<Puzzle_sturct>();
+            new_puzzles.AddRange(this.puzzles);
+            new_puzzles.Add(puzzle);
+            Feed(new_puzzles);
+        }
+        public void AddOnlyMissingPosition(List<Puzzle_sturct> new_puzzles)
+        {
+            List<Puzzle_sturct> output_puzles= new List<Puzzle_sturct>();
+            output_puzles.AddRange(this.puzzles);
+            foreach (Puzzle_sturct puzzle in new_puzzles)
+            {
+                foreach(var position in missing_positions)
+                {
+                    if (puzzle.position.Equals(position))
+                    {
+                        output_puzles.Add(puzzle);
+                    }
+                }
+            }
+            Feed(output_puzles);
+        }
+
+
         public void Reset()
         {
             recombinedPuzzles.Clear();
@@ -48,8 +74,23 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             missing_positions=new string[0];
         }
 
-        public framework.Action KnowWhatToDo(out Puzzle_sturct? target)
+        public framework.Action KnowWhatToDo(out Puzzle_sturct? target,out string[] missing_positions)
         {
+            if(puzzles.Count==0)
+            {
+                target = null;
+                missing_positions = null;
+                return framework.Action.rescan_all;
+            }
+
+            if (this.missing_positions!= null&&this.missing_positions.Length!=0)
+            {
+                target = null;
+                missing_positions=this.missing_positions;
+                return framework.Action.rescan_target;
+            }
+
+
             var position = NextTargetPosition();
             if (position!=null)
             {
@@ -57,11 +98,13 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 if (!success)
                     throw new Exception();
                 target = puzzles[target_indexes[0]];
+                missing_positions=null;
                 recombinedPuzzles.Add(position);
                 return framework.Action.recombine;
             }
 
             target = null;
+            missing_positions = null;
             return framework.Action.do_nothing;
         }
 

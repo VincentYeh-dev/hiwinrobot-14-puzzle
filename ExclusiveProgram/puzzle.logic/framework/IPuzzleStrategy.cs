@@ -9,12 +9,12 @@ namespace ExclusiveProgram.puzzle.logic.framework
 {
     public enum Action
     {
-        rescaon_all,rescan_target,recombine,do_nothing
+        rescan_all,rescan_target,recombine,do_nothing
     }
     public interface IPuzzleStrategy
     {
         void Feed(List<Puzzle_sturct> puzzles);
         void Reset();
-        Action KnowWhatToDo(out Puzzle_sturct? target);
+        Action KnowWhatToDo(out Puzzle_sturct? target, out string[] missing_position);
     }
 }
