@@ -10,7 +10,7 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using ExclusiveProgram.puzzle.visual.concrete;
-using ExclusiveProgram.puzzle.visual.concrete.locator;
+using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.ui.component;
 
@@ -63,7 +63,7 @@ namespace ExclusiveProgram
                 Color backgroundColor = getColorFromTextBox();
 
                 var modelImage = CvInvoke.Imread("samples\\modelImage3.jpg").ToImage<Bgr, byte>();
-                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(),preprocessImpl,grayConversionImpl,thresoldImpl,new CorrectorBinaryPreprocessImpl());
+                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(),preprocessImpl,grayConversionImpl,thresoldImpl,new RecognizerBinaryPreprocessImpl());
                 recognizer.setListener(new MyRecognizeListener(this));
 
                 factory = new DefaultPuzzleFactory(locator,recognizer, new PuzzleResultMerger(),5);

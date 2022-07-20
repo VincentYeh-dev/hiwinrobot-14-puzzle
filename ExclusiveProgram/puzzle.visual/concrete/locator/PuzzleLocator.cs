@@ -2,7 +2,6 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
-using ExclusiveProgram.puzzle.visual.concrete.locator;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.puzzle.visual.framework.utils;
 using System;
@@ -15,13 +14,13 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         private readonly Size minSize;
         private readonly Size maxSize;
-        private readonly IPuzzlePreProcessImpl preProcessImpl;
+        private readonly IPuzzlePreprocessImpl preProcessImpl;
         private readonly IPuzzleGrayConversionImpl grayConversionImpl;
         private readonly IPuzzleThresholdImpl thresholdImpl;
-        private readonly NormalBinaryPreprocessImpl binaryPreprocessImpl;
+        private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly double approx_paramater;
 
-        public PuzzleLocator(Size minSize, Size maxSize, IPuzzlePreProcessImpl preProcessImpl, IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl, locator.NormalBinaryPreprocessImpl binaryPreprocessImpl, double approx_paramater = 0.005f)
+        public PuzzleLocator(Size minSize, Size maxSize, IPuzzlePreprocessImpl preProcessImpl, IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl, IPuzzleBinaryPreprocessImpl binaryPreprocessImpl, double approx_paramater = 0.005f)
         {
             this.approx_paramater = approx_paramater;
             this.minSize = minSize;

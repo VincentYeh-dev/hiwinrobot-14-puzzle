@@ -21,7 +21,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         private Image<Bgr, byte> preprocessModelImage = null;
         private readonly PuzzleRecognizerImpl impl;
-        private readonly IPuzzlePreProcessImpl puzzlePreProcessImpl;
+        private readonly IPuzzlePreprocessImpl puzzlePreProcessImpl;
         private readonly IPuzzleGrayConversionImpl grayConversionImpl;
         private readonly IPuzzleThresholdImpl thresholdImpl;
         private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
@@ -30,7 +30,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private PuzzleRecognizerListener listener;
 
 
-        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPuzzlePreProcessImpl puzzlePreProcessImpl,IPuzzleGrayConversionImpl grayConversionImpl,IPuzzleThresholdImpl thresholdImpl,IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
+        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPuzzlePreprocessImpl puzzlePreProcessImpl,IPuzzleGrayConversionImpl grayConversionImpl,IPuzzleThresholdImpl thresholdImpl,IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.modelImage = modelImage;
             this.uniquenessThreshold = uniquenessThreshold;

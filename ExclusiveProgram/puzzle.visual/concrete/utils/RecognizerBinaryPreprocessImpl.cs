@@ -10,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExclusiveProgram.puzzle.visual.concrete.locator
+namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class CorrectorBinaryPreprocessImpl : IPuzzleBinaryPreprocessImpl
+    public class RecognizerBinaryPreprocessImpl : IPuzzleBinaryPreprocessImpl
     {
 
         public void BinaryPreprocess(Image<Gray, byte> input, Image<Gray, byte> output)

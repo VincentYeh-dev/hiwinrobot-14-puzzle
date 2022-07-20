@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.visual.framework.utils
 {
-    public interface IPuzzlePreProcessImpl 
+    public interface IPuzzlePreprocessImpl 
     {
         void Preprocess(Image<Bgr, byte> input, Image<Bgr, byte> output);
     }

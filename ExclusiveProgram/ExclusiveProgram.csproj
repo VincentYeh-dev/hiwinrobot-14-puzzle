@@ -131,7 +131,7 @@
     <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalThresholdImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\CorrectorBinaryPreprocessImpl.cs" />
+    <Compile Include="puzzle.visual\concrete\utils\RecognizerBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\GreenBackgroundGrayConversionImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\AdaptiveThresholdImpl.cs" />
@@ -146,7 +146,7 @@
     <Compile Include="puzzle.visual\framework\locator\IPuzzleLocator.cs" />
     <Compile Include="puzzle.visual\framework\recognizer\IPuzzleRecognizer.cs" />
     <Compile Include="puzzle.visual\framework\merger\IPuzzleResultMerger.cs" />
-    <Compile Include="puzzle.visual\framework\utils\IPuzzlePreProcessImpl.cs" />
+    <Compile Include="puzzle.visual\framework\utils\IUtils.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="ui.component\UserControl1.cs">
       <SubType>UserControl</SubType>
