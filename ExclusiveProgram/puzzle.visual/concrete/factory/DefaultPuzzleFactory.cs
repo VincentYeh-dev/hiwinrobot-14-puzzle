@@ -1,8 +1,10 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using ExclusiveProgram.puzzle.visual.concrete.factory;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.threading;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +20,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private readonly TaskFactory factory;
         private readonly CancellationTokenSource cts;
 
-        public DefaultPuzzleFactory(IPuzzleLocator locator,IPuzzleRecognizer recognizer, IPuzzleResultMerger merger,int threadCount)
+        public DefaultPuzzleFactory(IPuzzleLocator locator, IPuzzleRecognizer recognizer, IPuzzleResultMerger merger, int threadCount)
         {
             this.recognizer = recognizer;
             this.locator = locator;
@@ -36,26 +38,40 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         {
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
+            List<LocationResult> dataList;
 
-            List<LocationResult> dataList = locator.Locate(input);
-            if (listener != null)
-                listener.onLocated(dataList);
+            try
+            {
+                dataList = locator.Locate(input);
+                if (listener != null)
+                    listener.onLocated(dataList);
+            }
+            catch (Exception e)
+            {
+                throw new PuzzleLocatingException("拼圖定位錯誤", e);
+            }
 
 
             List<Puzzle_sturct> results = new List<Puzzle_sturct>();
-
 
             List<Task> tasks = new List<Task>();
             foreach (LocationResult location in dataList)
             {
                 Task task = factory.StartNew(() =>
                 {
-                    var recognized_result = recognizer.Recognize(location.ID,location.ROI);
-                    if (listener != null)
-                        listener.onRecognized(recognized_result);
+                    try
+                    {
+                        var recognized_result = recognizer.Recognize(location.ID, location.ROI);
+                        if (listener != null)
+                            listener.onRecognized(recognized_result);
+                        results.Add(merger.merge(location, location.ROI, recognized_result));
+                    }
+                    catch (Exception e)
+                    {
+                        throw new PuzzleRecognizingException("辨識錯誤", e);
+                    }
 
-                    results.Add(merger.merge(location,location.ROI, recognized_result));
-                },cts.Token);
+                }, cts.Token);
                 task.Wait();
                 tasks.Add(task);
             }

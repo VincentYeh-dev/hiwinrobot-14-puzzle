@@ -129,6 +129,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />
+    <Compile Include="puzzle.visual\concrete\factory\PuzzleGeneratingException.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalThresholdImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\RecognizerBinaryPreprocessImpl.cs" />
