@@ -126,6 +126,10 @@
     <Compile Include="Control.Designer.cs">
       <DependentUpon>Control.cs</DependentUpon>
     </Compile>
+    <Compile Include="coordinate\Circle_rotate_coordinate_converter.cs" />
+    <Compile Include="coordinate\CSVFileHandler.cs" />
+    <Compile Include="coordinate\framework\ICoordinateConverter.cs" />
+    <Compile Include="coordinate\Image_position_coordinate_converter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />

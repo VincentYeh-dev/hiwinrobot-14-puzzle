@@ -88,6 +88,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 LocationResult puzzleData = new LocationResult();
 
                 Point Position = getCentralPosition(puzzleData.Angle, contour);
+                CvInvoke.Circle(preview_image, Position,1, new MCvScalar(0, 0, 255),2);
                 if (CheckDuplicatePuzzlePosition(puzzleDataList, Position) && CheckSize(rect, Position))
                 {
                     puzzleData.id = valid_id++;
