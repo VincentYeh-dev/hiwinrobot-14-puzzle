@@ -45,6 +45,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             recombinedPuzzles.Clear();
             puzzles.Clear();
             puzzles_directory.Clear();
+            missing_positions=new string[0];
         }
 
         public framework.Action KnowWhatToDo(out Puzzle_sturct? target)
