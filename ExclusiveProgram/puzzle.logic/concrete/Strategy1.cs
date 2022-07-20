@@ -2,10 +2,6 @@
 using ExclusiveProgram.puzzle.visual.framework;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.logic.concrete
 {
@@ -14,16 +10,33 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
         private HashSet<string> recombinedPuzzles = new HashSet<string>();
         private List<Puzzle_sturct> puzzles = new List<Puzzle_sturct>();
-        private Dictionary<string,int> puzzles_directory=new Dictionary<string, int>();
-
+        private Dictionary<string,List<int>> puzzles_directory=new Dictionary<string, List<int>>();
+        private string[] missing_positions;
 
         public void Feed(List<Puzzle_sturct> puzzles)
         {
+            HashSet<string> recorded_positions = new HashSet<string>();
             for (int i = 0; i < puzzles.Count; i++)
             {
                 this.puzzles.Add(puzzles[i]);
-                puzzles_directory.Add(puzzles[i].position, i);
+
+                var position = puzzles[i].position;
+
+
+                bool exist = puzzles_directory.TryGetValue(position,out List<int> list);
+                if (exist)
+                    list.Add(i);
+                else
+                {
+                    var new_list=new List<int>();
+                    new_list.Add(i);
+                    puzzles_directory.Add(position, new_list);
+                }
+
+                recorded_positions.Add(position);
             }
+
+            missing_positions = GetMissingPosition(recorded_positions);
 
         }
 
@@ -37,53 +50,24 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         public framework.Action KnowWhatToDo(out Puzzle_sturct? target)
         {
             var position = NextTargetPosition();
-            if (position.Equals("NN"))
+            if (position!=null)
             {
-                target = null;
-                return framework.Action.do_nothing;
-            }
-            else
-            {
-                bool success=puzzles_directory.TryGetValue(position,out int target_index);
+                bool success=puzzles_directory.TryGetValue(position,out List<int> target_indexes);
                 if (!success)
                     throw new Exception();
-                target = puzzles[target_index];
+                target = puzzles[target_indexes[0]];
                 recombinedPuzzles.Add(position);
                 return framework.Action.recombine;
             }
 
-
-
+            target = null;
+            return framework.Action.do_nothing;
         }
 
-
-        private int[] GetDuplicatePosition(List<Puzzle_sturct> puzzles)
-        {
-            List<int> duplocateList = new List<int>();
-            HashSet<string> records = new HashSet<string>();
-
-            for (int i = 0; i < puzzles.Count; i++)
-            {
-                var position = puzzles[i].position;
-
-                if (records.Contains(position))
-                    duplocateList.Add(i);
-
-                records.Add(position);
-            }
-
-            return duplocateList.ToArray();
-        }
-
-        private string[] GetMissingPosition(List<Puzzle_sturct> puzzles)
+        private string[] GetMissingPosition(HashSet<string> records)
         {
             List<string> missingList = new List<string>();
-            HashSet<string> records = new HashSet<string>();
 
-            for (int i = 0; i < puzzles.Count; i++)
-            {
-                records.Add(puzzles[i].position);
-            }
             for (int row = 0; row <= 4; row++)
                 for (int col = 0; col <= 6; col++)
                 {
@@ -127,7 +111,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                         return row+""+col;
                 }
 
-            return "NN";
+            return null;
         }
     }
 }
