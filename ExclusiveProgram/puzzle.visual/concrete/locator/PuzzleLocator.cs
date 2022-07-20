@@ -41,7 +41,10 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             var binaryImage = new Image<Gray, byte>(preprocessImage.Size);
             grayConversionImpl.ConvertToGray(preprocessImage, binaryImage);
             thresholdImpl.Threshold(binaryImage, binaryImage);
-            binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
+
+            if(binaryPreprocessImpl!=null)
+                binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
+
             binaryImage.Save("results\\binary.jpg");
 
             var contours = FindContours(binaryImage);
