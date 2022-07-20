@@ -34,7 +34,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             cts = new CancellationTokenSource();
         }
 
-        public List<Puzzle_sturct> Execute(Image<Bgr, byte> input)
+        public List<Puzzle2D> Execute(Image<Bgr, byte> input)
         {
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
@@ -52,7 +52,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             }
 
 
-            List<Puzzle_sturct> results = new List<Puzzle_sturct>();
+            List<Puzzle2D> results = new List<Puzzle2D>();
 
             List<Task> tasks = new List<Task>();
             foreach (LocationResult location in dataList)

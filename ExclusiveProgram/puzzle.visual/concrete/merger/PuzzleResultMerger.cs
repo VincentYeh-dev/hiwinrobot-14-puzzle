@@ -15,12 +15,12 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         {
         }
 
-        public Puzzle_sturct merge(LocationResult locationResult, Image<Bgr, byte> correctedImage, RecognizeResult recognizeResult)
+        public Puzzle2D merge(LocationResult locationResult, Image<Bgr, byte> correctedImage, RecognizeResult recognizeResult)
         {
-            Puzzle_sturct register = new Puzzle_sturct();
-            register.id= locationResult.ID;
+            Puzzle2D register = new Puzzle2D();
+            register.ID= locationResult.ID;
             register.coordinate = locationResult.Coordinate;
-            register.position = recognizeResult.position;
+            register.Position = recognizeResult.position;
             register.Angel = recognizeResult.Angle;
             register.image = correctedImage;
 

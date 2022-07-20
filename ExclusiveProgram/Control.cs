@@ -9,6 +9,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using ExclusiveProgram.puzzle;
 using ExclusiveProgram.puzzle.visual.concrete;
 using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
@@ -21,7 +22,7 @@ namespace ExclusiveProgram
     public partial class Control : MainForm.ExclusiveControl
     {
         //private VideoCapture capture;
-        private delegate void DelShowResult(Puzzle_sturct puzzles);
+        private delegate void DelShowResult(Puzzle2D puzzles);
 
 
         public Control()
@@ -75,16 +76,16 @@ namespace ExclusiveProgram
             }
             var image = CvInvoke.Imread(file_path.Text).ToImage<Bgr, byte>();
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle_sturct> results = factory.Execute(image);
+            List<Puzzle2D> results = factory.Execute(image);
 
-            foreach (Puzzle_sturct result in results)
+            foreach (Puzzle2D result in results)
             {
                 ShowResult(result);
             }
 
         }
 
-        private void ShowResult(Puzzle_sturct result)
+        private void ShowResult(Puzzle2D result)
         {
             if (this.InvokeRequired)
             {
@@ -95,7 +96,7 @@ namespace ExclusiveProgram
             {
                 var control = new UserControl1();
                 control.setImage(result.image.ToBitmap());
-                control.setLabel("Angle:" + Math.Round(result.Angel, 2), result.position);
+                control.setLabel("Angle:" + Math.Round(result.Angel, 2), result.Position);
                 recognize_match_puzzleView.Controls.Add(control);
             }
         }
