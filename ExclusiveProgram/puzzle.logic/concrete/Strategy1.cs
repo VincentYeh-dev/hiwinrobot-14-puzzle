@@ -48,12 +48,22 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         }
         public void Next() { 
 
-            if (missing_positions!= null&&missing_positions.Length!=0)
+            foreach(string key in puzzles_directory.Keys)
             {
-                action = framework.StrategyAction.rescan_missing_puzzle;
-                return;
+                puzzles_directory.TryGetValue(key, out List<int> list);
+                if (list.Count > 1)
+                {
+                    action = StrategyAction.rescan_duplicate_puzzle;
+                    return;
+                }
             }
 
+            if (missing_positions!= null&&missing_positions.Length!=0)
+            {
+                action = StrategyAction.rescan_missing_puzzle;
+                return;
+            }
+            
 
             var position = NextTargetPosition();
             if (position!=null)
@@ -64,10 +74,10 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 recombinedPuzzles.Add(position);
 
                 target_puzzle = puzzles[target_indexes[0]];
-                action = framework.StrategyAction.recombine_puzzle;
+                action = StrategyAction.recombine_puzzle;
                 return;
             }
-            action = framework.StrategyAction.do_nothing;
+            action = StrategyAction.do_nothing;
         }
         public void Append(Puzzle2D puzzle)
         {
@@ -93,6 +103,27 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             Feed(output_puzles);
         }
 
+        public void AddOnlyDuplicatePosition(List<Puzzle2D> new_puzzles)
+        {
+            List<Puzzle2D> output_puzles= new List<Puzzle2D>();
+            for (int i=0;i<new_puzzles.Count;i++)
+            {
+                Puzzle2D puzzle= new_puzzles[i];
+
+                bool success=puzzles_directory.TryGetValue(puzzle.Position,out List<int> indexes);
+
+                if (success&&indexes.Count > 1)
+                {
+                    for (int j = 0; j < indexes.Count; j++)
+                    {
+                        puzzles.RemoveAt(indexes[j]);
+                    }
+                }
+                output_puzles.Add(puzzle);
+            }
+            output_puzles.AddRange(puzzles);
+            Feed(output_puzles);
+        }
 
         public void Reset()
         {

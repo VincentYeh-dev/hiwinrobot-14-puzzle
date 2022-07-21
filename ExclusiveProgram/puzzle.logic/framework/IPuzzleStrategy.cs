@@ -11,6 +11,8 @@ namespace ExclusiveProgram.puzzle.logic.framework
     {
         //從新尋找拼圖
         rescan_missing_puzzle,
+        //從新尋找未重複的拼圖
+        rescan_duplicate_puzzle,
         //將拼圖拼回拼圖板上
         recombine_puzzle,
         //不進行任何動作
