@@ -11,7 +11,10 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         private HashSet<string> recombinedPuzzles = new HashSet<string>();
         private List<Puzzle2D> puzzles = new List<Puzzle2D>();
         private Dictionary<string,List<int>> puzzles_directory=new Dictionary<string, List<int>>();
+
         private string[] missing_positions;
+        private framework.Action action;
+        private Puzzle2D? target_puzzle;
 
         public void Feed(List<Puzzle2D> puzzles)
         {
@@ -39,8 +42,42 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
             missing_positions = GetMissingPosition(recorded_positions);
 
+            Next();
         }
+        public void Next() { 
+            if(puzzles.Count==0)
+            {
+                target_puzzle = null;
+                missing_positions = null;
+                action = framework.Action.rescan_all;
+                return;
+            }
 
+            if (missing_positions!= null&&missing_positions.Length!=0)
+            {
+                target_puzzle = null;
+                action = framework.Action.rescan_target;
+                return;
+            }
+
+
+            var position = NextTargetPosition();
+            if (position!=null)
+            {
+                bool success=puzzles_directory.TryGetValue(position,out List<int> target_indexes);
+                if (!success)
+                    throw new Exception();
+                recombinedPuzzles.Add(position);
+
+                target_puzzle = puzzles[target_indexes[0]];
+                missing_positions=null;
+                action = framework.Action.recombine;
+                return;
+            }
+            action = framework.Action.do_nothing;
+            missing_positions=null;
+            target_puzzle = null;
+        }
         public void Append(Puzzle2D puzzle)
         {
             List<Puzzle2D> new_puzzles = new List<Puzzle2D>();
@@ -72,40 +109,8 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             puzzles.Clear();
             puzzles_directory.Clear();
             missing_positions=new string[0];
-        }
-
-        public framework.Action KnowWhatToDo(out Puzzle2D? target,out string[] missing_positions)
-        {
-            if(puzzles.Count==0)
-            {
-                target = null;
-                missing_positions = null;
-                return framework.Action.rescan_all;
-            }
-
-            if (this.missing_positions!= null&&this.missing_positions.Length!=0)
-            {
-                target = null;
-                missing_positions=this.missing_positions;
-                return framework.Action.rescan_target;
-            }
-
-
-            var position = NextTargetPosition();
-            if (position!=null)
-            {
-                bool success=puzzles_directory.TryGetValue(position,out List<int> target_indexes);
-                if (!success)
-                    throw new Exception();
-                target = puzzles[target_indexes[0]];
-                missing_positions=null;
-                recombinedPuzzles.Add(position);
-                return framework.Action.recombine;
-            }
-
-            target = null;
-            missing_positions = null;
-            return framework.Action.do_nothing;
+            action = framework.Action.do_nothing;
+            target_puzzle = null;
         }
 
         private string[] GetMissingPosition(HashSet<string> records)
@@ -156,6 +161,31 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 }
 
             return null;
+        }
+
+        public bool HasThingToDo()
+        {
+            return action != framework.Action.do_nothing;
+        }
+
+        public Puzzle2D GetTargetPuzzle()
+        {
+            if (!target_puzzle.HasValue||action!=framework.Action.recombine)
+                throw new Exception();
+
+            return target_puzzle.Value;
+        }
+
+        public String[] GetMissingPosition()
+        {
+            if (action!=framework.Action.rescan_target)
+                throw new Exception();
+
+            return missing_positions;
+        }
+        public framework.Action GetAction()
+        {
+            return action;
         }
     }
 }

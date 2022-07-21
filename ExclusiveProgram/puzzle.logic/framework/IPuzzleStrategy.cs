@@ -15,6 +15,10 @@ namespace ExclusiveProgram.puzzle.logic.framework
     {
         void Feed(List<Puzzle2D> puzzles);
         void Reset();
-        Action KnowWhatToDo(out Puzzle2D? target, out string[] missing_position);
+        bool HasThingToDo();
+        Puzzle2D GetTargetPuzzle();
+        string[] GetMissingPosition();
+        void Next();
+        Action GetAction();
     }
 }
