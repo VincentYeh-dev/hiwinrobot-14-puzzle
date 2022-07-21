@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.logic.framework
 {
-    public enum Action
+    public enum StrategyAction
     {
-        rescan_all,rescan_target,recombine,do_nothing
+        //從新尋找拼圖
+        rescan_missing_puzzle,
+        //將拼圖拼回拼圖板上
+        recombine_puzzle,
+        //不進行任何動作
+        do_nothing
     }
     public interface IPuzzleStrategy
     {
@@ -19,6 +24,6 @@ namespace ExclusiveProgram.puzzle.logic.framework
         Puzzle2D GetTargetPuzzle();
         string[] GetMissingPosition();
         void Next();
-        Action GetAction();
+        StrategyAction GetStrategyAction();
     }
 }

@@ -13,11 +13,13 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         private Dictionary<string,List<int>> puzzles_directory=new Dictionary<string, List<int>>();
 
         private string[] missing_positions;
-        private framework.Action action;
+        private framework.StrategyAction action;
         private Puzzle2D? target_puzzle;
 
         public void Feed(List<Puzzle2D> puzzles)
         {
+            if (puzzles == null)
+                throw new ArgumentNullException("puzzles == null");
             Reset();
             HashSet<string> recorded_positions = new HashSet<string>();
             for (int i = 0; i < puzzles.Count; i++)
@@ -45,18 +47,10 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             Next();
         }
         public void Next() { 
-            if(puzzles.Count==0)
-            {
-                target_puzzle = null;
-                missing_positions = null;
-                action = framework.Action.rescan_all;
-                return;
-            }
 
             if (missing_positions!= null&&missing_positions.Length!=0)
             {
-                target_puzzle = null;
-                action = framework.Action.rescan_target;
+                action = framework.StrategyAction.rescan_missing_puzzle;
                 return;
             }
 
@@ -70,13 +64,10 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 recombinedPuzzles.Add(position);
 
                 target_puzzle = puzzles[target_indexes[0]];
-                missing_positions=null;
-                action = framework.Action.recombine;
+                action = framework.StrategyAction.recombine_puzzle;
                 return;
             }
-            action = framework.Action.do_nothing;
-            missing_positions=null;
-            target_puzzle = null;
+            action = framework.StrategyAction.do_nothing;
         }
         public void Append(Puzzle2D puzzle)
         {
@@ -109,7 +100,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             puzzles.Clear();
             puzzles_directory.Clear();
             missing_positions=new string[0];
-            action = framework.Action.do_nothing;
+            action = framework.StrategyAction.do_nothing;
             target_puzzle = null;
         }
 
@@ -165,25 +156,25 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
         public bool HasThingToDo()
         {
-            return action != framework.Action.do_nothing;
+            return action != framework.StrategyAction.do_nothing;
         }
 
         public Puzzle2D GetTargetPuzzle()
         {
-            if (!target_puzzle.HasValue||action!=framework.Action.recombine)
-                throw new Exception();
+            if (action!=framework.StrategyAction.recombine_puzzle)
+                throw new InvalidOperationException("action!=framework.Action.recombine");
 
             return target_puzzle.Value;
         }
 
         public String[] GetMissingPosition()
         {
-            if (action!=framework.Action.rescan_target)
-                throw new Exception();
+            if (action!=framework.StrategyAction.rescan_missing_puzzle)
+                throw new InvalidOperationException("action!=rescan_target");
 
             return missing_positions;
         }
-        public framework.Action GetAction()
+        public framework.StrategyAction GetStrategyAction()
         {
             return action;
         }
