@@ -67,8 +67,6 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 }
             }
 
-            
-
             var position = NextTargetPosition();
             if (position!=null)
             {
@@ -83,33 +81,20 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             }
             action = StrategyAction.do_nothing;
         }
-        public void AddOnlyMissingPosition(List<Puzzle2D> new_puzzles)
-        {
-            List<Puzzle2D> output_puzles= new List<Puzzle2D>();
-            output_puzles.AddRange(this.puzzles);
-            foreach (Puzzle2D puzzle in new_puzzles)
-            {
-                foreach(var position in missing_positions)
-                {
-                    if (puzzle.Position.Equals(position))
-                    {
-                        output_puzles.Add(puzzle);
-                    }
-                }
-            }
-            Feed(output_puzles);
-        }
 
-        public void ReplaceOnlyDuplicatePosition(List<Puzzle2D> new_puzzles)
+        public void Fix(List<Puzzle2D> new_puzzles)
         {
             List<Puzzle2D> output_puzles= new List<Puzzle2D>();
             for (int i=0;i<new_puzzles.Count;i++)
             {
                 Puzzle2D puzzle= new_puzzles[i];
 
-                bool success=position_index_map.TryGetValue(puzzle.Position,out List<int> indexes);
-
-                if (success&&indexes.Count > 1)
+                bool found=position_index_map.TryGetValue(puzzle.Position,out List<int> indexes);
+                if (!found)
+                {
+                    output_puzles.Add(puzzle);
+                }
+                else if (indexes.Count > 1)
                 {
                     Puzzle2D[] duplicate_puzzles=new Puzzle2D[indexes.Count];
                     for (int j = 0; j < indexes.Count; j++)

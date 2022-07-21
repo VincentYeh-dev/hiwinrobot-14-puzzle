@@ -64,13 +64,12 @@ namespace PuzzleUnitTest.puzzle.logic
             var strategy = new Strategy1();
             var puzzles = GeneratePuzzles();
             puzzles.RemoveAt(0);
-
             strategy.Feed(puzzles);
             Assert.AreEqual(StrategyAction.rescan_missing_puzzle,strategy.GetStrategyAction());
         }
 
         [TestMethod]
-        public void MissingAddTest()
+        public void MissingFixTest()
         {
             var strategy = new Strategy1();
             var puzzles = GeneratePuzzles();
@@ -82,12 +81,12 @@ namespace PuzzleUnitTest.puzzle.logic
             var list=new List<Puzzle2D>();
             list.Add(missing_puzzle);
             list.Add(GeneratePuzzle(0,0));
-            strategy.AddOnlyMissingPosition(list);
+            strategy.Fix(list);
             Assert.AreEqual(StrategyAction.recombine_puzzle,strategy.GetStrategyAction()); 
         }
 
         [TestMethod]
-        public void DuplicateAddTest()
+        public void DuplicateFixTest()
         {
             var strategy = new Strategy1();
             var puzzles = GeneratePuzzles();
@@ -98,19 +97,17 @@ namespace PuzzleUnitTest.puzzle.logic
             Assert.AreEqual(StrategyAction.rescan_duplicate_puzzle,strategy.GetStrategyAction());
 
             var new_rescan_puzzles = GeneratePuzzles().GetRange(0,5);
-            strategy.ReplaceOnlyDuplicatePosition(new_rescan_puzzles);
+            strategy.Fix(new_rescan_puzzles);
             Assert.AreEqual(StrategyAction.recombine_puzzle,strategy.GetStrategyAction());
-            
 
         }
-
         [TestMethod]
-        public void DuplicateMissingTest()
+        public void DuplicateMissingFixMethodTest()
         {
             var strategy = new Strategy1();
             var puzzles = GeneratePuzzles();
             var duplicate_puzzle = puzzles[0];
-            var missing_puzzle = puzzles[1];
+            var missing_puzzle = puzzles[2];
             puzzles.Add(duplicate_puzzle);
             puzzles.Remove(missing_puzzle);
             strategy.Feed(puzzles);
@@ -120,12 +117,11 @@ namespace PuzzleUnitTest.puzzle.logic
             list.Add(duplicate_puzzle);
 
             Assert.AreEqual(StrategyAction.rescan_missing_puzzle, strategy.GetStrategyAction());
-            strategy.AddOnlyMissingPosition(list);
-            Assert.AreEqual(StrategyAction.rescan_duplicate_puzzle, strategy.GetStrategyAction());
-            strategy.ReplaceOnlyDuplicatePosition(list);
+            strategy.Fix(list);
             Assert.AreEqual(StrategyAction.recombine_puzzle, strategy.GetStrategyAction());
 
         }
+
 
         
         private static List<Puzzle2D> GeneratePuzzles()

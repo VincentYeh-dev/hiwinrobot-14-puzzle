@@ -27,7 +27,7 @@ namespace ExclusiveProgram.puzzle.logic.framework
         Puzzle2D GetTargetPuzzle();
         string[] GetMissingPosition();
         StrategyAction GetStrategyAction();
-        void ReplaceOnlyDuplicatePosition(List<Puzzle2D> new_puzzles);
-        void AddOnlyMissingPosition(List<Puzzle2D> new_puzzles);
+
+        void Fix(List<Puzzle2D> new_puzzles);
     }
 }
