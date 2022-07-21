@@ -10,10 +10,10 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
         private HashSet<string> recombinedPuzzles = new HashSet<string>();
         private List<Puzzle2D> puzzles = new List<Puzzle2D>();
-        private Dictionary<string,List<int>> puzzles_directory=new Dictionary<string, List<int>>();
+        private Dictionary<string,List<int>> position_index_map=new Dictionary<string, List<int>>();
 
-        private string[] missing_positions;
-        private framework.StrategyAction action;
+        private string[] missing_positions=new string[0];
+        private StrategyAction action;
         private Puzzle2D? target_puzzle;
 
         public void Feed(List<Puzzle2D> puzzles)
@@ -29,14 +29,14 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 var position = puzzles[i].Position;
 
 
-                bool exist = puzzles_directory.TryGetValue(position,out List<int> list);
+                bool exist = position_index_map.TryGetValue(position,out List<int> list);
                 if (exist)
                     list.Add(i);
                 else
                 {
                     var new_list=new List<int>();
                     new_list.Add(i);
-                    puzzles_directory.Add(position, new_list);
+                    position_index_map.Add(position, new_list);
                 }
 
                 recorded_positions.Add(position);
@@ -46,11 +46,20 @@ namespace ExclusiveProgram.puzzle.logic.concrete
 
             Next();
         }
-        public void Next() { 
+        public void Next()
+        {
+            if (missing_positions == null)
+                throw new NullReferenceException("missing_positions == null");
 
-            foreach(string key in puzzles_directory.Keys)
+            if (missing_positions.Length != 0)
             {
-                puzzles_directory.TryGetValue(key, out List<int> list);
+                action = StrategyAction.rescan_missing_puzzle;
+                return;
+            }
+
+            foreach (string key in position_index_map.Keys)
+            {
+                position_index_map.TryGetValue(key, out List<int> list);
                 if (list.Count > 1)
                 {
                     action = StrategyAction.rescan_duplicate_puzzle;
@@ -58,17 +67,12 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 }
             }
 
-            if (missing_positions!= null&&missing_positions.Length!=0)
-            {
-                action = StrategyAction.rescan_missing_puzzle;
-                return;
-            }
             
 
             var position = NextTargetPosition();
             if (position!=null)
             {
-                bool success=puzzles_directory.TryGetValue(position,out List<int> target_indexes);
+                bool success=position_index_map.TryGetValue(position,out List<int> target_indexes);
                 if (!success)
                     throw new Exception();
                 recombinedPuzzles.Add(position);
@@ -78,13 +82,6 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 return;
             }
             action = StrategyAction.do_nothing;
-        }
-        public void Append(Puzzle2D puzzle)
-        {
-            List<Puzzle2D> new_puzzles = new List<Puzzle2D>();
-            new_puzzles.AddRange(this.puzzles);
-            new_puzzles.Add(puzzle);
-            Feed(new_puzzles);
         }
         public void AddOnlyMissingPosition(List<Puzzle2D> new_puzzles)
         {
@@ -103,23 +100,29 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             Feed(output_puzles);
         }
 
-        public void AddOnlyDuplicatePosition(List<Puzzle2D> new_puzzles)
+        public void ReplaceOnlyDuplicatePosition(List<Puzzle2D> new_puzzles)
         {
             List<Puzzle2D> output_puzles= new List<Puzzle2D>();
             for (int i=0;i<new_puzzles.Count;i++)
             {
                 Puzzle2D puzzle= new_puzzles[i];
 
-                bool success=puzzles_directory.TryGetValue(puzzle.Position,out List<int> indexes);
+                bool success=position_index_map.TryGetValue(puzzle.Position,out List<int> indexes);
 
                 if (success&&indexes.Count > 1)
                 {
+                    Puzzle2D[] duplicate_puzzles=new Puzzle2D[indexes.Count];
                     for (int j = 0; j < indexes.Count; j++)
                     {
-                        puzzles.RemoveAt(indexes[j]);
+                        duplicate_puzzles[j] = puzzles[indexes[j]];
                     }
+                    foreach(var duplicate_puzzle in duplicate_puzzles)
+                    {
+                        puzzles.Remove(duplicate_puzzle);
+                    }
+
+                    output_puzles.Add(puzzle);
                 }
-                output_puzles.Add(puzzle);
             }
             output_puzles.AddRange(puzzles);
             Feed(output_puzles);
@@ -129,7 +132,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         {
             recombinedPuzzles.Clear();
             puzzles.Clear();
-            puzzles_directory.Clear();
+            position_index_map.Clear();
             missing_positions=new string[0];
             action = framework.StrategyAction.do_nothing;
             target_puzzle = null;

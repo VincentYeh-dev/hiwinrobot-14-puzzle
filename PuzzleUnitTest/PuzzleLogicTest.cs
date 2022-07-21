@@ -19,25 +19,10 @@ namespace PuzzleUnitTest.puzzle.logic
 
             while (strategy.HasThingToDo())
             {
-                var action=strategy.GetStrategyAction();
-                if (action == StrategyAction.rescan_missing_puzzle)
-                {
-                    Console.Write("Rescan: ");
-                    foreach (var position in strategy.GetMissingPosition())
-                    {
-                        Console.Write(position + " ");
-                    }
-                    Console.Write("\n");
-                }
-                else if (action == StrategyAction.recombine_puzzle)
-                {
-                    Console.Write("Recombine ");
-                    Console.Write(strategy.GetTargetPuzzle().Position);
-                    Console.Write("\n");
-                }
+                Assert.AreEqual(StrategyAction.recombine_puzzle, strategy.GetStrategyAction());
                 strategy.Next();
             }
-            Console.Write(strategy.HasThingToDo());
+            Assert.AreEqual(StrategyAction.do_nothing, strategy.GetStrategyAction());
         }
 
         [TestMethod]
@@ -71,6 +56,24 @@ namespace PuzzleUnitTest.puzzle.logic
 
             strategy.Feed(puzzles);
             Assert.AreEqual(StrategyAction.rescan_duplicate_puzzle,strategy.GetStrategyAction());
+        }
+
+        [TestMethod]
+        public void DuplicateAddTest()
+        {
+            var strategy = new Strategy1();
+            var puzzles = GeneratePuzzles();
+            var duplicate_puzzle = GeneratePuzzle(0, 0);
+            puzzles.Add(duplicate_puzzle);
+
+            strategy.Feed(puzzles);
+            Assert.AreEqual(StrategyAction.rescan_duplicate_puzzle,strategy.GetStrategyAction());
+
+            var new_rescan_puzzles = GeneratePuzzles().GetRange(0,5);
+            strategy.ReplaceOnlyDuplicatePosition(new_rescan_puzzles);
+            Assert.AreEqual(StrategyAction.recombine_puzzle,strategy.GetStrategyAction());
+            
+
         }
         
         private static List<Puzzle2D> GeneratePuzzles()

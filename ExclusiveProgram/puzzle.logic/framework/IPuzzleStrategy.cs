@@ -21,11 +21,13 @@ namespace ExclusiveProgram.puzzle.logic.framework
     public interface IPuzzleStrategy
     {
         void Feed(List<Puzzle2D> puzzles);
+        void Next();
         void Reset();
         bool HasThingToDo();
         Puzzle2D GetTargetPuzzle();
         string[] GetMissingPosition();
-        void Next();
         StrategyAction GetStrategyAction();
+        void ReplaceOnlyDuplicatePosition(List<Puzzle2D> new_puzzles);
+        void AddOnlyMissingPosition(List<Puzzle2D> new_puzzles);
     }
 }
