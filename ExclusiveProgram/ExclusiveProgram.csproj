@@ -149,6 +149,8 @@
     <Compile Include="puzzle.visual\framework\merger\IPuzzleResultMerger.cs" />
     <Compile Include="puzzle.visual\framework\utils\IUtils.cs" />
     <Compile Include="puzzle\Puzzle2D.cs" />
+    <Compile Include="puzzle\Puzzle3D.cs" />
+    <Compile Include="puzzle\RealWorldCoordinate.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="ui.component\UserControl1.cs">
       <SubType>UserControl</SubType>
