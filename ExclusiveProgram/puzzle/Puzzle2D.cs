@@ -12,15 +12,4 @@ namespace ExclusiveProgram.puzzle
         public Image<Bgr,byte> image;
         public string Position;
     };
-    public struct Puzzle3D
-    {
-        public int ID;
-        public RealWorldCoordinate coordinate;
-        public string Position;
-    };
-    public struct RealWorldCoordinate
-    {
-
-    }
-
 }
