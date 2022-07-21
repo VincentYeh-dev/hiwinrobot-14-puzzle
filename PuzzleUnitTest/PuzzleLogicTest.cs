@@ -59,6 +59,34 @@ namespace PuzzleUnitTest.puzzle.logic
         }
 
         [TestMethod]
+        public void MissingTest()
+        {
+            var strategy = new Strategy1();
+            var puzzles = GeneratePuzzles();
+            puzzles.RemoveAt(0);
+
+            strategy.Feed(puzzles);
+            Assert.AreEqual(StrategyAction.rescan_missing_puzzle,strategy.GetStrategyAction());
+        }
+
+        [TestMethod]
+        public void MissingAddTest()
+        {
+            var strategy = new Strategy1();
+            var puzzles = GeneratePuzzles();
+            var missing_puzzle=puzzles[1];
+            puzzles.Remove(missing_puzzle);
+
+            strategy.Feed(puzzles);
+            Assert.AreEqual(StrategyAction.rescan_missing_puzzle,strategy.GetStrategyAction());
+            var list=new List<Puzzle2D>();
+            list.Add(missing_puzzle);
+            list.Add(GeneratePuzzle(0,0));
+            strategy.AddOnlyMissingPosition(list);
+            Assert.AreEqual(StrategyAction.recombine_puzzle,strategy.GetStrategyAction()); 
+        }
+
+        [TestMethod]
         public void DuplicateAddTest()
         {
             var strategy = new Strategy1();
@@ -75,6 +103,30 @@ namespace PuzzleUnitTest.puzzle.logic
             
 
         }
+
+        [TestMethod]
+        public void DuplicateMissingTest()
+        {
+            var strategy = new Strategy1();
+            var puzzles = GeneratePuzzles();
+            var duplicate_puzzle = puzzles[0];
+            var missing_puzzle = puzzles[1];
+            puzzles.Add(duplicate_puzzle);
+            puzzles.Remove(missing_puzzle);
+            strategy.Feed(puzzles);
+
+            var list = new List<Puzzle2D>();
+            list.Add(missing_puzzle);
+            list.Add(duplicate_puzzle);
+
+            Assert.AreEqual(StrategyAction.rescan_missing_puzzle, strategy.GetStrategyAction());
+            strategy.AddOnlyMissingPosition(list);
+            Assert.AreEqual(StrategyAction.rescan_duplicate_puzzle, strategy.GetStrategyAction());
+            strategy.ReplaceOnlyDuplicatePosition(list);
+            Assert.AreEqual(StrategyAction.recombine_puzzle, strategy.GetStrategyAction());
+
+        }
+
         
         private static List<Puzzle2D> GeneratePuzzles()
         {
