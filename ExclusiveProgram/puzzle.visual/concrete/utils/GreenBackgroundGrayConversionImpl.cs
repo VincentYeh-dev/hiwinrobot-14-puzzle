@@ -36,7 +36,9 @@ namespace ExclusiveProgram.puzzle.visual.concrete.utils
                     var G = input.Data[i,j,1];
                     var B = input.Data[i,j,0];
                     var scale = (red_weight * R + green_weight * G + blue_weight * B);
-
+                    if(scale>255)
+                        output.Data[i,j,0] = 255;
+                    else
                     output.Data[i,j,0] = (byte)scale;
                 }
             }
