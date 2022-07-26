@@ -34,7 +34,6 @@ namespace ExclusiveProgram
         {
             InitializeComponent();
             Config = new Config();
-            camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()),camera_preview);
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -123,14 +122,6 @@ namespace ExclusiveProgram
             }
         }
 
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (camera.Connected)
-                camera.Disconnect();
-            camera.Connect();
-            camera.ShowSettingForm();
-        }
 
         private void backgroundColor_textbox_TextChanged(object sender, EventArgs e)
         {
@@ -265,8 +256,40 @@ namespace ExclusiveProgram
             }
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
 
+            if (camera != null&&camera.Connected)
+            {
 
+                camera.GetImage().Save("Capture.jpg");
+                file_path.Text = "Capture.jpg";
+            }
+            else
+                MessageBox.Show("尚未連接攝影機");
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (camera!=null&&camera.Connected)
+                camera.ShowSettingForm();
+            else
+                MessageBox.Show("尚未連接攝影機");
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()),camera_preview);
+            camera.Connect();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (camera == null)
+                return;
+            camera.Disconnect();
+            camera = null;
+        }
     }
 
 }
