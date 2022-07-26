@@ -14,6 +14,9 @@ using ExclusiveProgram.puzzle.visual.concrete;
 using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.ui.component;
+using RASDK.Basic;
+using RASDK.Basic.Message;
+using RASDK.Vision.IDS;
 
 namespace ExclusiveProgram
 {
@@ -21,6 +24,8 @@ namespace ExclusiveProgram
 
     public partial class Control : MainForm.ExclusiveControl
     {
+        private IDSCamera camera;
+
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle2D puzzles);
 
@@ -29,6 +34,7 @@ namespace ExclusiveProgram
         {
             InitializeComponent();
             Config = new Config();
+            camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()),camera_preview);
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -120,7 +126,10 @@ namespace ExclusiveProgram
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            if (camera.Connected)
+                camera.Disconnect();
+            camera.Connect();
+            camera.ShowSettingForm();
         }
 
         private void backgroundColor_textbox_TextChanged(object sender, EventArgs e)

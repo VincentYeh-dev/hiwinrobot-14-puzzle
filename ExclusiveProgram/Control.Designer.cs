@@ -32,6 +32,7 @@
             this.numericUpDown_blockSize = new System.Windows.Forms.NumericUpDown();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.camera_preview = new System.Windows.Forms.PictureBox();
             this.textBox_param = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.numericUpDown_uniqueness_threshold = new System.Windows.Forms.NumericUpDown();
@@ -67,6 +68,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_blockSize)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.camera_preview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_uniqueness_threshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundColor_preview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_width_numeric)).BeginInit();
@@ -86,7 +88,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(4, 325);
-            this.button1.Margin = new System.Windows.Forms.Padding(1);
+            this.button1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(115, 30);
             this.button1.TabIndex = 0;
@@ -127,6 +129,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.camera_preview);
             this.tabPage1.Controls.Add(this.textBox_param);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.numericUpDown_uniqueness_threshold);
@@ -151,11 +154,21 @@
             this.tabPage1.Controls.Add(this.numericUpDown_blockSize);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage1.Size = new System.Drawing.Size(1053, 359);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "參數設定";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // camera_preview
+            // 
+            this.camera_preview.Location = new System.Drawing.Point(513, 5);
+            this.camera_preview.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.camera_preview.Name = "camera_preview";
+            this.camera_preview.Size = new System.Drawing.Size(538, 355);
+            this.camera_preview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.camera_preview.TabIndex = 30;
+            this.camera_preview.TabStop = false;
             // 
             // textBox_param
             // 
@@ -391,7 +404,7 @@
             this.tabPage2.Controls.Add(this.flowLayoutPanel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage2.Size = new System.Drawing.Size(1053, 359);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "擷取預覽";
@@ -429,7 +442,7 @@
             this.tabPage3.Controls.Add(this.corrector_ROI_puzzleView);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage3.Size = new System.Drawing.Size(1053, 359);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "拼圖定位";
@@ -448,7 +461,7 @@
             this.tabPage4.Controls.Add(this.corrector_binarization_puzzleView);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage4.Size = new System.Drawing.Size(1053, 359);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "拼圖校正-二值化";
@@ -467,7 +480,7 @@
             this.tabPage5.Controls.Add(this.corrector_result_puzzleView);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage5.Size = new System.Drawing.Size(1053, 359);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "拼圖校正-結果";
@@ -486,7 +499,7 @@
             this.tabPage6.Controls.Add(this.recognize_match_puzzleView);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage6.Size = new System.Drawing.Size(1053, 359);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "tabPage6";
@@ -505,13 +518,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabControl1);
-            this.Margin = new System.Windows.Forms.Padding(1);
+            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Name = "Control";
             this.Size = new System.Drawing.Size(1101, 481);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_blockSize)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.camera_preview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_uniqueness_threshold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundColor_preview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_width_numeric)).EndInit();
@@ -568,5 +582,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox_param;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.PictureBox camera_preview;
     }
 }
