@@ -77,18 +77,18 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 LocationResult location_result = new LocationResult();
                 if (CheckDuplicatePuzzlePosition(location_results, coordinate) && CheckSize(minRectangle, coordinate))
                 {
-
                     //畫在圖片上
                     CvInvoke.Polylines(preview_image, approxContour, true, new MCvScalar(0, 0, 255), 2);
                     CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
                     CvInvoke.Polylines(preview_image, corner_points, true, new MCvScalar(0, 255, 255), 2);
                     CvInvoke.Circle(preview_image, coordinate, 1, new MCvScalar(0, 0, 255), 2);
+                    preview_image.Save("results\\contours.jpg");
                     location_result.ID = valid_id++;
                     //location_result.Angle = angle;
                     location_result.Coordinate = coordinate;
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);
                     location_result.ROI = getROI(location_result.Coordinate, location_result.Size, rawImage);
-                    location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
+                    //location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
 
                     location_results.Add(location_result);
                 }
@@ -116,10 +116,17 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private Image<Bgr, byte> getROI(Point Coordinate, Size Size, Image<Bgr, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
+            //設定ROI
+            input.ROI = rect;
+            //裁切ROI區域
+            var new_image = input.Copy();
+            //取消ROI
+            input.ROI=Rectangle.Empty;
 
             //將ROI選取區域使用Mat型式讀取
-            return new Mat(input.Mat, rect).ToImage<Bgr, byte>();
+            return new_image;
         }
+
         private Image<Gray, byte> getBinaryROI(Point Coordinate, Size Size, Image<Gray, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
@@ -129,7 +136,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         }
 
         private bool CheckSize(Rectangle rect, Point Position)
-        {
+        {   
             if (rect.Size.Width < minSize.Width || rect.Size.Height < minSize.Height)
                 return false;
 

@@ -136,6 +136,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />
     <Compile Include="puzzle.visual\concrete\factory\PuzzleGeneratingException.cs" />
+    <Compile Include="puzzle.visual\concrete\utils\CLANEPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\CLANEGrayConversionImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\DilateErodeBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalThresholdImpl.cs" />

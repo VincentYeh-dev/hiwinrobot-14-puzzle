@@ -54,6 +54,7 @@ namespace ExclusiveProgram
             var threshold = (int)numericUpDown_blockSize.Value;
             var green_weight = Double.Parse(textBox_param.Text);
 
+            var preprocessImpl = new CLANEPreprocessImpl(5,new Size(8,8));
             var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
             var thresoldImpl = new NormalThresoldImpl(threshold);
             var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
@@ -61,8 +62,7 @@ namespace ExclusiveProgram
             IPuzzleFactory factory = null;
             try
             {
-
-                var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
+                var locator = new PuzzleLocator(minSize, maxSize, preprocessImpl, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
                 var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
 
 
