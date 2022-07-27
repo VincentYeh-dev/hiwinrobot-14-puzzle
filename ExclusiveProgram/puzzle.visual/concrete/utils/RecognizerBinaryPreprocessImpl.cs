@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class RecognizerBinaryPreprocessImpl : IPuzzleBinaryPreprocessImpl
+    public class RecognizerBinaryPreprocessImpl : IBinaryPreprocessImpl
     {
 
         public void BinaryPreprocess(Image<Gray, byte> input, Image<Gray, byte> output)

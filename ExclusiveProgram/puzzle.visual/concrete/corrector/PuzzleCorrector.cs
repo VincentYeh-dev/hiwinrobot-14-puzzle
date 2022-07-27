@@ -13,12 +13,12 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         private readonly Bgr backgroundColor;
         private PuzzleCorrectorListener listener;
-        private readonly IPuzzlePreprocessImpl preprocessImpl;
-        private readonly IPuzzleGrayConversionImpl grayConversionImpl;
-        private readonly IPuzzleThresholdImpl thresholdImpl;
-        private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
+        private readonly IPreprocessImpl preprocessImpl;
+        private readonly IGrayConversionImpl grayConversionImpl;
+        private readonly IThresholdImpl thresholdImpl;
+        private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
 
-        public PuzzleCorrector(Color backgroundColor, IPuzzlePreprocessImpl preprocessImpl,IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl, IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
+        public PuzzleCorrector(Color backgroundColor, IPreprocessImpl preprocessImpl,IGrayConversionImpl grayConversionImpl, IThresholdImpl thresholdImpl, IBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.backgroundColor = new Bgr(backgroundColor);
             this.preprocessImpl = preprocessImpl;

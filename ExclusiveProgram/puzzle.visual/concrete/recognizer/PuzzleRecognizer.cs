@@ -21,16 +21,16 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         private Image<Bgr, byte> preprocessModelImage = null;
         private readonly PuzzleRecognizerImpl impl;
-        private readonly IPuzzlePreprocessImpl puzzlePreProcessImpl;
-        private readonly IPuzzleGrayConversionImpl grayConversionImpl;
-        private readonly IPuzzleThresholdImpl thresholdImpl;
-        private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
+        private readonly IPreprocessImpl puzzlePreProcessImpl;
+        private readonly IGrayConversionImpl grayConversionImpl;
+        private readonly IThresholdImpl thresholdImpl;
+        private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly Image<Bgr, byte> modelImage;
         private readonly double uniquenessThreshold;
         private PuzzleRecognizerListener listener;
 
 
-        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPuzzlePreprocessImpl puzzlePreProcessImpl,IPuzzleGrayConversionImpl grayConversionImpl,IPuzzleThresholdImpl thresholdImpl,IPuzzleBinaryPreprocessImpl binaryPreprocessImpl)
+        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPreprocessImpl puzzlePreProcessImpl,IGrayConversionImpl grayConversionImpl,IThresholdImpl thresholdImpl,IBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.modelImage = modelImage;
             this.uniquenessThreshold = uniquenessThreshold;

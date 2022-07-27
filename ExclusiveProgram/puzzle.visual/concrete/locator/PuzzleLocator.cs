@@ -14,13 +14,13 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         private readonly Size minSize;
         private readonly Size maxSize;
-        private readonly IPuzzlePreprocessImpl preProcessImpl;
-        private readonly IPuzzleGrayConversionImpl grayConversionImpl;
-        private readonly IPuzzleThresholdImpl thresholdImpl;
-        private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
+        private readonly IPreprocessImpl preProcessImpl;
+        private readonly IGrayConversionImpl grayConversionImpl;
+        private readonly IThresholdImpl thresholdImpl;
+        private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly double approx_paramater;
 
-        public PuzzleLocator(Size minSize, Size maxSize, IPuzzlePreprocessImpl preProcessImpl, IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl, IPuzzleBinaryPreprocessImpl binaryPreprocessImpl, double approx_paramater = 0.005f)
+        public PuzzleLocator(Size minSize, Size maxSize, IPreprocessImpl preProcessImpl, IGrayConversionImpl grayConversionImpl, IThresholdImpl thresholdImpl, IBinaryPreprocessImpl binaryPreprocessImpl, double approx_paramater = 0.005f)
         {
             this.approx_paramater = approx_paramater;
             this.minSize = minSize;
