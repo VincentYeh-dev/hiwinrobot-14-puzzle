@@ -41,8 +41,9 @@ namespace ExclusiveProgram
             corrector_result_puzzleView.Controls.Clear();
             corrector_ROI_puzzleView.Controls.Clear();
             recognize_match_puzzleView.Controls.Clear();
-            Thread thread = new Thread(DoPuzzleVisual);
-            thread.Start();
+            //Thread thread = new Thread(DoPuzzleVisual);
+            //thread.Start();
+            DoPuzzleVisual();
         }
 
         private void DoPuzzleVisual()
@@ -55,7 +56,7 @@ namespace ExclusiveProgram
 
             var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
             var thresoldImpl = new NormalThresoldImpl(threshold);
-            var binaryPreprocessImpl = new NormalBinaryPreprocessImpl();
+            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
 
             IPuzzleFactory factory = null;
             try

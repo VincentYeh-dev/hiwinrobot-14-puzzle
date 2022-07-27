@@ -40,6 +40,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             var binaryImage = new Image<Gray, byte>(preprocessImage.Size);
             grayConversionImpl.ConvertToGray(preprocessImage, binaryImage);
+            binaryImage.Save("results\\gray.jpg");
             thresholdImpl.Threshold(binaryImage, binaryImage);
 
             if(binaryPreprocessImpl!=null)
@@ -62,13 +63,9 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 //多邊形逼近之套件
                 VectorOfPoint approxContour = GetApproxContour(contours[i]);
 
-                CvInvoke.Polylines(preview_image, approxContour, true, new MCvScalar(0, 0, 255), 2);
 
                 //框選輪廓最小矩形
                 Rectangle minRectangle = CvInvoke.BoundingRectangle(approxContour);
-
-                //畫在圖片上
-                CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
 
                 //獲得最小旋轉矩形，取得角度用
                 RotatedRect minAreaRotatedRectangle = CvInvoke.MinAreaRect(approxContour);
@@ -80,6 +77,10 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 LocationResult location_result = new LocationResult();
                 if (CheckDuplicatePuzzlePosition(location_results, coordinate) && CheckSize(minRectangle, coordinate))
                 {
+
+                    //畫在圖片上
+                    CvInvoke.Polylines(preview_image, approxContour, true, new MCvScalar(0, 0, 255), 2);
+                    CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
                     CvInvoke.Polylines(preview_image, corner_points, true, new MCvScalar(0, 255, 255), 2);
                     CvInvoke.Circle(preview_image, coordinate, 1, new MCvScalar(0, 0, 255), 2);
                     location_result.ID = valid_id++;
