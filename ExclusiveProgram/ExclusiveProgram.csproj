@@ -140,7 +140,6 @@
     <Compile Include="puzzle.visual\concrete\utils\CLANEGrayConversionImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\DilateErodeBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalThresholdImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\RecognizerBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\GreenBackgroundGrayConversionImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\AdaptiveThresholdImpl.cs" />

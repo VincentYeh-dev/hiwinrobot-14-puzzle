@@ -13,6 +13,7 @@ using ExclusiveProgram.puzzle;
 using ExclusiveProgram.puzzle.visual.concrete;
 using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
+using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.ui.component;
 using RASDK.Basic;
 using RASDK.Basic.Message;
@@ -54,7 +55,9 @@ namespace ExclusiveProgram
             var threshold = (int)numericUpDown_blockSize.Value;
             var green_weight = Double.Parse(textBox_param.Text);
 
-            var preprocessImpl = new CLANEPreprocessImpl(5,new Size(8,8));
+            //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
+            IPreprocessImpl preprocessImpl=null;
+            
             var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
             var thresoldImpl = new NormalThresoldImpl(threshold);
             var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
@@ -62,14 +65,14 @@ namespace ExclusiveProgram
             IPuzzleFactory factory = null;
             try
             {
-                var locator = new PuzzleLocator(minSize, maxSize, preprocessImpl, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
+                var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
                 var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
 
 
                 Color backgroundColor = getColorFromTextBox();
 
                 var modelImage = CvInvoke.Imread("samples\\modelImage3.jpg").ToImage<Bgr, byte>();
-                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), null, grayConversionImpl, thresoldImpl, new RecognizerBinaryPreprocessImpl());
+                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
                 recognizer.setListener(new MyRecognizeListener(this));
 
                 factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
