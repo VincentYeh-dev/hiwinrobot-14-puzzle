@@ -21,7 +21,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         private Image<Bgr, byte> preprocessModelImage = null;
         private readonly PuzzleRecognizerImpl impl;
-        private readonly IPreprocessImpl puzzlePreProcessImpl;
+        private readonly IPreprocessImpl preprocessImpl;
         private readonly IGrayConversionImpl grayConversionImpl;
         private readonly IThresholdImpl thresholdImpl;
         private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
@@ -30,12 +30,12 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private PuzzleRecognizerListener listener;
 
 
-        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPreprocessImpl puzzlePreProcessImpl,IGrayConversionImpl grayConversionImpl,IThresholdImpl thresholdImpl,IBinaryPreprocessImpl binaryPreprocessImpl)
+        public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl,IPreprocessImpl preprocessImpl,IGrayConversionImpl grayConversionImpl,IThresholdImpl thresholdImpl,IBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.modelImage = modelImage;
             this.uniquenessThreshold = uniquenessThreshold;
             this.impl = impl;
-            this.puzzlePreProcessImpl = puzzlePreProcessImpl;
+            this.preprocessImpl = preprocessImpl;
             this.grayConversionImpl = grayConversionImpl;
             this.thresholdImpl = thresholdImpl;
             this.binaryPreprocessImpl = binaryPreprocessImpl;
@@ -44,8 +44,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         public void PreprocessModelImage()
         {
             preprocessModelImage = new Image<Bgr, byte>(modelImage.Size);
-            if(puzzlePreProcessImpl!=null)
-                puzzlePreProcessImpl.Preprocess(modelImage,preprocessModelImage);
+            if(preprocessImpl!=null)
+                preprocessImpl.Preprocess(modelImage,preprocessModelImage);
             else
                 preprocessModelImage = modelImage;
         }
@@ -59,8 +59,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         {
             Image<Bgr, byte> observedImage = image.Clone();
 
-            if (puzzlePreProcessImpl != null)
-                puzzlePreProcessImpl.Preprocess(observedImage,observedImage);
+            if (preprocessImpl != null)
+                preprocessImpl.Preprocess(observedImage,observedImage);
 
             long matchTime;
 
@@ -149,8 +149,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private Point FindCoordinateOnModelImage(int id,Image<Bgr,byte> warpImage)
         {
             var stage1= new Image<Bgr,byte>(warpImage.Size);
-            if (puzzlePreProcessImpl != null)
-                puzzlePreProcessImpl.Preprocess(warpImage, stage1);
+            if (preprocessImpl != null)
+                preprocessImpl.Preprocess(warpImage, stage1);
             else
                 stage1 = warpImage;
 
