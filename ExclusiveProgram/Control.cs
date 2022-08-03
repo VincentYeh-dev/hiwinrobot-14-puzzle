@@ -28,7 +28,7 @@ namespace ExclusiveProgram
         private IDSCamera camera;
 
         //private VideoCapture capture;
-        private delegate void DelShowResult(Puzzle2D puzzles);
+        private delegate void DelShowResult(Puzzle3D puzzles);
 
 
         public Control()
@@ -85,16 +85,16 @@ namespace ExclusiveProgram
             }
             var image = CvInvoke.Imread(file_path.Text).ToImage<Bgr, byte>();
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle2D> results = factory.Execute(image);
+            List<Puzzle3D> results = factory.Execute(image);
 
-            foreach (Puzzle2D result in results)
+            foreach (Puzzle3D result in results)
             {
                 ShowResult(result);
             }
 
         }
 
-        private void ShowResult(Puzzle2D result)
+        private void ShowResult(Puzzle3D result)
         {
             if (this.InvokeRequired)
             {
@@ -104,7 +104,7 @@ namespace ExclusiveProgram
             else
             {
                 var control = new UserControl1();
-                control.setImage(result.image.ToBitmap());
+                control.setImage(result.puzzle2D.ROI.ToBitmap());
                 control.setLabel("Angle:" + Math.Round(result.Angel, 2), result.Position);
                 recognize_match_puzzleView.Controls.Add(control);
             }
