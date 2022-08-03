@@ -11,5 +11,6 @@ namespace ExclusiveProgram.puzzle
         public int ID;
         public RealWorldCoordinate coordinate;
         public string Position;
+        public Puzzle2D puzzle2D;
     };
 }
