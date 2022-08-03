@@ -13,6 +13,7 @@ using ExclusiveProgram.puzzle;
 using ExclusiveProgram.puzzle.visual.concrete;
 using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
+using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.ui.component;
 using RASDK.Basic;
 using RASDK.Basic.Message;
@@ -41,8 +42,9 @@ namespace ExclusiveProgram
             corrector_result_puzzleView.Controls.Clear();
             corrector_ROI_puzzleView.Controls.Clear();
             recognize_match_puzzleView.Controls.Clear();
-            Thread thread = new Thread(DoPuzzleVisual);
-            thread.Start();
+            //Thread thread = new Thread(DoPuzzleVisual);
+            //thread.Start();
+            DoPuzzleVisual();
         }
 
         private void DoPuzzleVisual()
@@ -53,14 +55,16 @@ namespace ExclusiveProgram
             var threshold = (int)numericUpDown_blockSize.Value;
             var green_weight = Double.Parse(textBox_param.Text);
 
+            //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
+            IPreprocessImpl preprocessImpl=null;
+            
             var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
             var thresoldImpl = new NormalThresoldImpl(threshold);
-            var binaryPreprocessImpl = new NormalBinaryPreprocessImpl();
+            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
 
             IPuzzleFactory factory = null;
             try
             {
-
                 var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
                 var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
 
@@ -68,7 +72,7 @@ namespace ExclusiveProgram
                 Color backgroundColor = getColorFromTextBox();
 
                 var modelImage = CvInvoke.Imread("samples\\modelImage3.jpg").ToImage<Bgr, byte>();
-                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), null, grayConversionImpl, thresoldImpl, new RecognizerBinaryPreprocessImpl());
+                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
                 recognizer.setListener(new MyRecognizeListener(this));
 
                 factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);

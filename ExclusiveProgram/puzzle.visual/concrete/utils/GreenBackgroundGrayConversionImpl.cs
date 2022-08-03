@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class GreenBackgroundGrayConversionImpl : IPuzzleGrayConversionImpl
+    public class GreenBackgroundGrayConversionImpl : IGrayConversionImpl
     {
         private readonly double green_weight;
         private readonly double red_weight;

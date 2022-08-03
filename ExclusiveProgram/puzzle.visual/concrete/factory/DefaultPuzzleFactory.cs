@@ -40,17 +40,9 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
 
-            try
-            {
-                dataList = locator.Locate(input);
-                if (listener != null)
-                    listener.onLocated(dataList);
-            }
-            catch (Exception e)
-            {
-                throw new PuzzleLocatingException("拼圖定位錯誤", e);
-            }
-
+            dataList = locator.Locate(input);
+            if (listener != null)
+                listener.onLocated(dataList);
 
             List<Puzzle2D> results = new List<Puzzle2D>();
 

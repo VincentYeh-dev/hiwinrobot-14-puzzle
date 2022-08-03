@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using ExclusiveProgram.puzzle.visual.concrete.utils;
+using System;
 using System.Windows.Forms;
 
 namespace ExclusiveProgram
