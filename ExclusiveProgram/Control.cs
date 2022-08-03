@@ -17,7 +17,9 @@ using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.ui.component;
 using RASDK.Basic;
 using RASDK.Basic.Message;
+using RASDK.Vision;
 using RASDK.Vision.IDS;
+using RASDK.Vision.Positioning;
 
 namespace ExclusiveProgram
 {
@@ -54,36 +56,17 @@ namespace ExclusiveProgram
             var maxSize = new Size((int)max_width_numeric.Value, (int)max_height_numeric.Value);
             var threshold = (int)numericUpDown_blockSize.Value;
             var green_weight = Double.Parse(textBox_param.Text);
+            var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
+            var modelImage = new Image<Bgr,byte>("samples\\modelImage3.jpg");
+            var boardImage= new Image<Bgr,byte>("samples\\modelImage3.jpg");
 
-            //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
-            IPreprocessImpl preprocessImpl=null;
-            
-            var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
-            var thresoldImpl = new NormalThresoldImpl(threshold);
-            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
+            var positions=Arm.GetNowPosition();
+            var offset = new PointF((float)positions[0],(float)positions[1]);
 
-            IPuzzleFactory factory = null;
-            try
-            {
-                var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
-                var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
-
-
-                Color backgroundColor = getColorFromTextBox();
-
-                var modelImage = CvInvoke.Imread("samples\\modelImage3.jpg").ToImage<Bgr, byte>();
-                var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
-                recognizer.setListener(new MyRecognizeListener(this));
-
-                factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
-                factory.setListener(new MyFactoryListener(this));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "辨識錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            var image = CvInvoke.Imread(file_path.Text).ToImage<Bgr, byte>();
+            var factory = GenerateFactory(green_weight,threshold,uniquenessThreshold,minSize,maxSize,modelImage);
+            factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
+ 
+            var image= new Image<Bgr,byte>(file_path.Text);
             capture_preview.Image = image.ToBitmap();
             List<Puzzle3D> results = factory.Execute(image);
 
@@ -92,6 +75,34 @@ namespace ExclusiveProgram
                 ShowResult(result);
             }
 
+        }
+        private DefaultPuzzleFactory GenerateFactory(double green_weight,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage)
+        {
+            //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
+            IPreprocessImpl preprocessImpl=null;
+            var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
+            var thresoldImpl = new NormalThresoldImpl(threshold);
+            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
+            var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
+
+            var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
+            recognizer.setListener(new MyRecognizeListener(this));
+
+            var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
+            factory.setListener(new MyFactoryListener(this));
+            return factory;
+
+        }
+
+        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image,PointF WorldOffset)
+        {
+            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
+            images.Add(image);
+            var cc = new CameraCalibration(new Size(12,7),15);
+            cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
+            var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]));
+            positioning.WorldOffset = WorldOffset;
+            return positioning;
         }
 
         private void ShowResult(Puzzle3D result)
