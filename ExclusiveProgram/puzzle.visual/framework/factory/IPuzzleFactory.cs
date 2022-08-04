@@ -18,7 +18,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     }
     public interface IPuzzleFactory
     {
-        List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle? ROI = null);
+        List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI);
         void setListener(PuzzleFactoryListener listener);
     }
 }

@@ -33,16 +33,13 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI)
         {
-            rawImage.ROI = ROI;
-            var image = rawImage.Copy();
-            image.Save("results\\roi.jpg");
-            image.ROI = Rectangle.Empty;
-            return Locate(image);
-        }
 
-        public List<LocationResult> Locate(Image<Bgr, byte> rawImage)
-        {
-            var preprocessImage = rawImage.Clone();
+            rawImage.ROI = ROI;
+            var ROIImage = rawImage.Copy();
+            ROIImage.Save("results\\roi.jpg");
+            rawImage.ROI = Rectangle.Empty;
+
+            var preprocessImage = ROIImage.Clone();
             if (preProcessImpl != null)
                 preProcessImpl.Preprocess(preprocessImage, preprocessImage);
 
@@ -93,7 +90,10 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                     preview_image.Save("results\\contours.jpg");
                     location_result.ID = valid_id++;
                     //location_result.Angle = angle;
-                    location_result.Coordinate = coordinate;
+                    if (ROI == Rectangle.Empty)
+                        location_result.Coordinate = coordinate;
+                    else
+                        location_result.Coordinate = new Point(ROI.Left+coordinate.X,ROI.Top+coordinate.Y);
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);
                     location_result.ROI = getROI(location_result.Coordinate, location_result.Size, rawImage);
                     //location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
@@ -121,7 +121,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return Array.ConvertAll<PointF, Point>(boundingBox.GetVertices(), Point.Round);
         }
 
-        private Image<Bgr, byte> getROI(Point Coordinate, Size Size, Image<Bgr, byte> input)
+        private Image<Bgr, byte> getROI(PointF Coordinate, Size Size, Image<Bgr, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
             //設定ROI
@@ -186,7 +186,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             bool Answer = true;
             for (int i = 0; i < definedPuzzleDataList.Count; i++)
             {
-                int x_up = definedPuzzleDataList[i].Coordinate.X + 10,
+                float x_up = definedPuzzleDataList[i].Coordinate.X + 10,
                     x_down = definedPuzzleDataList[i].Coordinate.X - 10,
                     y_up = definedPuzzleDataList[i].Coordinate.Y + 10,
                     y_down = definedPuzzleDataList[i].Coordinate.Y - 10;

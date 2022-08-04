@@ -179,6 +179,10 @@ namespace ExclusiveProgram
         {
             List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
             images.Add(image);
+            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
             var cc = new CameraCalibration(new Size(12,9),15);
             cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
             var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]), 5, null, Approx );
@@ -212,7 +216,6 @@ namespace ExclusiveProgram
             {
                 var control = new UserControl1();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
-                //control.setLabel("Angle:" + Math.Round(result.Angel, 2),  result.RealWorldCoordinate);
                 control.setLabel($"Angle:{ Math.Round(result.Angel, 2)}",$"({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})");
                 recognize_match_puzzleView.Controls.Add(control);
             }
@@ -304,6 +307,21 @@ namespace ExclusiveProgram
         private void button9_Click(object sender, EventArgs e)
         {
             camera.LoadParameterFromEEPROM();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            //Arm.MoveAbsolute(195.351, 368.003, 230.336, 180, 0,90, new RASDK.Arm.AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
+            Arm.MoveAbsolute(new double[] { 195.351, 368.003, 230.336, 180, 0, 90 }, new RASDK.Arm.AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
+
+            if (camera != null&&camera.Connected)
+            {
+
+                camera.GetImage().Save("Capture_Source.bmp", ImageFormat.Bmp);
+                source_file_path.Text = "Capture_Source.bmp";
+            }
+            else
+                MessageBox.Show("尚未連接攝影機");
         }
     }
 

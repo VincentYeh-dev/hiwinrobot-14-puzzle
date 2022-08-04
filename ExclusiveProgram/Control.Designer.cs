@@ -124,6 +124,8 @@
             this.label20 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -219,6 +221,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button13);
+            this.tabPage1.Controls.Add(this.button12);
             this.tabPage1.Controls.Add(this.button9);
             this.tabPage1.Controls.Add(this.label17);
             this.tabPage1.Controls.Add(this.numeric_dilateErodeSize);
@@ -1166,6 +1170,25 @@
             this.label21.TabIndex = 53;
             this.label21.Text = "拼圖區1拍照座標";
             // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(378, 43);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(57, 23);
+            this.button12.TabIndex = 61;
+            this.button12.Text = "拍照區1";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(441, 43);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(57, 23);
+            this.button13.TabIndex = 62;
+            this.button13.Text = "拍照區2";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
             // Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1293,5 +1316,7 @@
         private System.Windows.Forms.TextBox textBox18;
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Button button12;
     }
 }
