@@ -122,16 +122,20 @@ namespace ExclusiveProgram
         private void DoPuzzleVisual()
         {
 
-            var minSize = new Size((int)min_width_numeric.Value, (int)min_height_numeric.Value);
-            var maxSize = new Size((int)max_width_numeric.Value, (int)max_height_numeric.Value);
-            var threshold = (int)numericUpDown_blockSize.Value;
-            var green_weight = Double.Parse(textBox_param.Text);
+            var minSize = new Size((int)min_size_numeric.Value, (int)min_size_numeric.Value);
+            var maxSize = new Size((int)max_size_numeric.Value, (int)max_size_numeric.Value);
+            var threshold = (int)numericUpDown_threshold.Value;
             var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
             var boardImage= new Image<Bgr,byte>(positioning_file_path.Text);
             var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
+            var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
+            var red_weight = Double.Parse(text_red_weight.Text);
+            var green_weight = Double.Parse(text_green_weight.Text);
+            var blue_weight = Double.Parse(text_blue_weight.Text);
+            var scalar = new MCvScalar(blue_weight,green_weight,red_weight);
 
-            var factory = GenerateFactory(green_weight,threshold,uniquenessThreshold,minSize,maxSize,modelImage,boardImage,offset);
+            var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,boardImage,offset,dilateErodeSize);
  
             var image= new Image<Bgr,byte>(source_file_path.Text);
             capture_preview.Image = image.ToBitmap();
@@ -143,13 +147,13 @@ namespace ExclusiveProgram
             }
 
         }
-        private DefaultPuzzleFactory GenerateFactory(double green_weight,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,Image<Bgr,byte> boardImage,PointF offset)
+        private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,Image<Bgr,byte> boardImage,PointF offset,int dilateErodeSize)
         {
             //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
             IPreprocessImpl preprocessImpl=null;
-            var grayConversionImpl = new GreenBackgroundGrayConversionImpl(green_weight);
+            var grayConversionImpl = new WeightGrayConversionImpl(scalar);
             var thresoldImpl = new NormalThresoldImpl(threshold);
-            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(3,3));
+            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(dilateErodeSize,dilateErodeSize));
             var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
 
             var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);

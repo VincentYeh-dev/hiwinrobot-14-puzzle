@@ -12,17 +12,25 @@ using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class GreenBackgroundGrayConversionImpl : IGrayConversionImpl
+    public class WeightGrayConversionImpl : IGrayConversionImpl
     {
         private readonly double green_weight;
         private readonly double red_weight;
         private readonly double blue_weight;
 
-        public GreenBackgroundGrayConversionImpl(double green_weight)
+
+        public WeightGrayConversionImpl(MCvScalar scalar)
         {
+            this.blue_weight = scalar.V0;
+            this.green_weight = scalar.V1;
+            this.red_weight = scalar.V2;
+        }
+
+        public WeightGrayConversionImpl(double blue_weight=0.114f,double green_weight=0.587f,double red_weight=0.299f)
+        {
+            this.blue_weight = blue_weight;
             this.green_weight = green_weight;
-            this.red_weight = 0.2989 + (green_weight / 2);
-            this.blue_weight = 0.144+ (green_weight / 2);
+            this.red_weight = red_weight;
         }
 
         public void ConvertToGray(Image<Bgr, byte> input, Image<Gray, byte> output)
