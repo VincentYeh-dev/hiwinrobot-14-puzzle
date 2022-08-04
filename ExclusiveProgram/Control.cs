@@ -128,7 +128,8 @@ namespace ExclusiveProgram
             var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
             var boardImage= new Image<Bgr,byte>(positioning_file_path.Text);
-            var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
+            //var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
+            var offset = new PointF(0,0);
             var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
             var red_weight = Double.Parse(text_red_weight.Text);
             var green_weight = Double.Parse(text_green_weight.Text);
@@ -161,7 +162,8 @@ namespace ExclusiveProgram
 
             var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
             factory.setListener(new MyFactoryListener(this));
-            factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
+            //factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
+            factory.setVisionPositioning(null);
             return factory;
         }
 
@@ -286,6 +288,11 @@ namespace ExclusiveProgram
             positioning_y.Text = y.ToString();
             positioning_z.Text = z.ToString();
 
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            camera.LoadParameterFromEEPROM();
         }
     }
 

@@ -38,8 +38,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         public List<Puzzle3D> Execute(Image<Bgr, byte> input)
         {
-            if (positioning == null)
-                throw new ArgumentNullException("positioning == null");
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
@@ -59,7 +57,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                         var recognized_result = recognizer.Recognize(location.ID, location.ROI);
                         if (listener != null)
                             listener.onRecognized(recognized_result);
-                        var realWorldCoordinate=positioning.ImageToWorld(location.Coordinate);
+                        var realWorldCoordinate=positioning!=null?positioning.ImageToWorld(location.Coordinate):new System.Drawing.PointF();
                         results.Add(merger.merge(location, location.ROI, recognized_result,realWorldCoordinate));
                     }
                     catch (Exception e)
