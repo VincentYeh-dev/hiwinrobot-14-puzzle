@@ -138,10 +138,11 @@
     <Compile Include="puzzle.logic\framework\IPuzzleStrategy.cs" />
     <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />
     <Compile Include="puzzle.visual\concrete\factory\PuzzleGeneratingException.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\NormalBinaryPreprocessImpl.cs" />
+    <Compile Include="puzzle.visual\concrete\utils\CLANEPreprocessImpl.cs" />
+    <Compile Include="puzzle.visual\concrete\utils\CLANEGrayConversionImpl.cs" />
+    <Compile Include="puzzle.visual\concrete\utils\DilateErodeBinaryPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalThresholdImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\RecognizerBinaryPreprocessImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\GreenBackgroundGrayConversionImpl.cs" />
+    <Compile Include="puzzle.visual\concrete\utils\WeightGrayConversionImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\NormalPreprocessImpl.cs" />
     <Compile Include="puzzle.visual\concrete\utils\AdaptiveThresholdImpl.cs" />
     <Compile Include="puzzle.visual\concrete\recognizer\SiftFlannPuzzleRecognizerImpl.cs" />
@@ -158,7 +159,6 @@
     <Compile Include="puzzle.visual\framework\utils\IUtils.cs" />
     <Compile Include="puzzle\Puzzle2D.cs" />
     <Compile Include="puzzle\Puzzle3D.cs" />
-    <Compile Include="puzzle\RealWorldCoordinate.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="ui.component\UserControl1.cs">
       <SubType>UserControl</SubType>

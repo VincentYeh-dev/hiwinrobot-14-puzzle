@@ -14,13 +14,13 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         private readonly Size minSize;
         private readonly Size maxSize;
-        private readonly IPuzzlePreprocessImpl preProcessImpl;
-        private readonly IPuzzleGrayConversionImpl grayConversionImpl;
-        private readonly IPuzzleThresholdImpl thresholdImpl;
-        private readonly IPuzzleBinaryPreprocessImpl binaryPreprocessImpl;
+        private readonly IPreprocessImpl preProcessImpl;
+        private readonly IGrayConversionImpl grayConversionImpl;
+        private readonly IThresholdImpl thresholdImpl;
+        private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly double approx_paramater;
 
-        public PuzzleLocator(Size minSize, Size maxSize, IPuzzlePreprocessImpl preProcessImpl, IPuzzleGrayConversionImpl grayConversionImpl, IPuzzleThresholdImpl thresholdImpl, IPuzzleBinaryPreprocessImpl binaryPreprocessImpl, double approx_paramater = 0.005f)
+        public PuzzleLocator(Size minSize, Size maxSize, IPreprocessImpl preProcessImpl, IGrayConversionImpl grayConversionImpl, IThresholdImpl thresholdImpl, IBinaryPreprocessImpl binaryPreprocessImpl, double approx_paramater = 0.005f)
         {
             this.approx_paramater = approx_paramater;
             this.minSize = minSize;
@@ -31,6 +31,14 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             this.binaryPreprocessImpl = binaryPreprocessImpl;
         }
 
+        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI)
+        {
+            rawImage.ROI = ROI;
+            var image = rawImage.Copy();
+            image.Save("results\\roi.jpg");
+            image.ROI = Rectangle.Empty;
+            return Locate(image);
+        }
 
         public List<LocationResult> Locate(Image<Bgr, byte> rawImage)
         {
@@ -40,6 +48,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             var binaryImage = new Image<Gray, byte>(preprocessImage.Size);
             grayConversionImpl.ConvertToGray(preprocessImage, binaryImage);
+            binaryImage.Save("results\\gray.jpg");
             thresholdImpl.Threshold(binaryImage, binaryImage);
 
             if(binaryPreprocessImpl!=null)
@@ -62,13 +71,9 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 //多邊形逼近之套件
                 VectorOfPoint approxContour = GetApproxContour(contours[i]);
 
-                CvInvoke.Polylines(preview_image, approxContour, true, new MCvScalar(0, 0, 255), 2);
 
                 //框選輪廓最小矩形
                 Rectangle minRectangle = CvInvoke.BoundingRectangle(approxContour);
-
-                //畫在圖片上
-                CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
 
                 //獲得最小旋轉矩形，取得角度用
                 RotatedRect minAreaRotatedRectangle = CvInvoke.MinAreaRect(approxContour);
@@ -80,14 +85,18 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 LocationResult location_result = new LocationResult();
                 if (CheckDuplicatePuzzlePosition(location_results, coordinate) && CheckSize(minRectangle, coordinate))
                 {
+                    //畫在圖片上
+                    CvInvoke.Polylines(preview_image, approxContour, true, new MCvScalar(0, 0, 255), 2);
+                    CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
                     CvInvoke.Polylines(preview_image, corner_points, true, new MCvScalar(0, 255, 255), 2);
                     CvInvoke.Circle(preview_image, coordinate, 1, new MCvScalar(0, 0, 255), 2);
+                    preview_image.Save("results\\contours.jpg");
                     location_result.ID = valid_id++;
                     //location_result.Angle = angle;
                     location_result.Coordinate = coordinate;
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);
                     location_result.ROI = getROI(location_result.Coordinate, location_result.Size, rawImage);
-                    location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
+                    //location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
 
                     location_results.Add(location_result);
                 }
@@ -115,10 +124,17 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private Image<Bgr, byte> getROI(Point Coordinate, Size Size, Image<Bgr, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
+            //設定ROI
+            input.ROI = rect;
+            //裁切ROI區域
+            var new_image = input.Copy();
+            //取消ROI
+            input.ROI=Rectangle.Empty;
 
             //將ROI選取區域使用Mat型式讀取
-            return new Mat(input.Mat, rect).ToImage<Bgr, byte>();
+            return new_image;
         }
+
         private Image<Gray, byte> getBinaryROI(Point Coordinate, Size Size, Image<Gray, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
@@ -128,7 +144,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         }
 
         private bool CheckSize(Rectangle rect, Point Position)
-        {
+        {   
             if (rect.Size.Width < minSize.Width || rect.Size.Height < minSize.Height)
                 return false;
 
@@ -209,5 +225,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             return Angel;
         }
+
     }
 }

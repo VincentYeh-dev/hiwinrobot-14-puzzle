@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class AdaptiveThresholdImpl : IPuzzleThresholdImpl
+    public class AdaptiveThresholdImpl : IThresholdImpl
     {
         private readonly double param1;
         private readonly int blockSize;

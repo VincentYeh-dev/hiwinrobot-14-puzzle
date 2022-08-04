@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using ExclusiveProgram.puzzle.visual.framework;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,13 +13,12 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     public interface PuzzleFactoryListener
     {
         void onLocated(List<LocationResult> results);
-        void onCorrected(Image<Bgr,byte> result);
         void onRecognized(RecognizeResult result);
         void onPreprocessDone(Image<Gray, byte> result);
     }
     public interface IPuzzleFactory
     {
-        List<Puzzle2D> Execute(Image<Bgr, byte> input);
+        List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle? ROI = null);
         void setListener(PuzzleFactoryListener listener);
     }
 }

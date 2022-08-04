@@ -4,8 +4,10 @@ using ExclusiveProgram.puzzle.visual.concrete.factory;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.threading;
+using RASDK.Vision.Positioning;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +18,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private IPuzzleRecognizer recognizer;
         private IPuzzleLocator locator;
         private readonly IPuzzleResultMerger merger;
+        private IVisionPositioning positioning;
         private PuzzleFactoryListener listener;
         private readonly TaskFactory factory;
         private readonly CancellationTokenSource cts;
@@ -34,26 +37,20 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             cts = new CancellationTokenSource();
         }
 
-        public List<Puzzle2D> Execute(Image<Bgr, byte> input)
-        {
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle? ROI=null)
+        { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
-
-            try
-            {
+            if(ROI== null)
                 dataList = locator.Locate(input);
-                if (listener != null)
-                    listener.onLocated(dataList);
-            }
-            catch (Exception e)
-            {
-                throw new PuzzleLocatingException("拼圖定位錯誤", e);
-            }
+            else
+                dataList = locator.Locate(input,ROI.Value);
 
+            if (listener != null)
+                listener.onLocated(dataList);
 
-            List<Puzzle2D> results = new List<Puzzle2D>();
-
+            List<Puzzle3D> results = new List<Puzzle3D>();
             List<Task> tasks = new List<Task>();
             foreach (LocationResult location in dataList)
             {
@@ -64,7 +61,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                         var recognized_result = recognizer.Recognize(location.ID, location.ROI);
                         if (listener != null)
                             listener.onRecognized(recognized_result);
-                        results.Add(merger.merge(location, location.ROI, recognized_result));
+                        var realWorldCoordinate=positioning!=null?positioning.ImageToWorld(location.Coordinate):new System.Drawing.PointF();
+                        results.Add(merger.merge(location, location.ROI, recognized_result,realWorldCoordinate));
                     }
                     catch (Exception e)
                     {
@@ -79,6 +77,11 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             //Task.WaitAll(tasks.ToArray());
             cts.Dispose();
             return results;
+        }
+
+        public void setVisionPositioning(IVisionPositioning positioning)
+        {
+            this.positioning = positioning;
         }
 
         public void setListener(PuzzleFactoryListener listener)

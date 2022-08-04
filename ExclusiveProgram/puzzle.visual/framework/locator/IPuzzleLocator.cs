@@ -24,5 +24,6 @@ namespace ExclusiveProgram.puzzle.visual.framework
     public interface IPuzzleLocator
     {
         List<LocationResult> Locate(Image<Bgr, byte> rawImage);
+        List<LocationResult> Locate(Image<Bgr, byte> rawImage,Rectangle ROI);
     }
 }

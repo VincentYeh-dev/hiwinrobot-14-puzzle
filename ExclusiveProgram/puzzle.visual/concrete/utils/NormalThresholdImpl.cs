@@ -5,7 +5,7 @@ using ExclusiveProgram.puzzle.visual.framework.utils;
 
 namespace ExclusiveProgram.puzzle.visual.concrete.utils
 {
-    public class NormalThresoldImpl: IPuzzleThresholdImpl
+    public class NormalThresoldImpl: IThresholdImpl
     {
         private readonly int threshold;
 
