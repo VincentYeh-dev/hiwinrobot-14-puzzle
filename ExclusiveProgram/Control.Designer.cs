@@ -37,6 +37,9 @@
             this.capture_preview = new System.Windows.Forms.PictureBox();
             this.capture_binarization_preview = new System.Windows.Forms.PictureBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.check_positioning_enable = new System.Windows.Forms.CheckBox();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.numeric_dilateErodeSize = new System.Windows.Forms.NumericUpDown();
@@ -47,8 +50,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.positioning_y = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.positioning_z = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.positioning_x = new System.Windows.Forms.TextBox();
             this.button11 = new System.Windows.Forms.Button();
@@ -124,8 +125,6 @@
             this.label20 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -221,6 +220,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.check_positioning_enable);
             this.tabPage1.Controls.Add(this.button13);
             this.tabPage1.Controls.Add(this.button12);
             this.tabPage1.Controls.Add(this.button9);
@@ -233,8 +233,6 @@
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label15);
             this.tabPage1.Controls.Add(this.positioning_y);
-            this.tabPage1.Controls.Add(this.label14);
-            this.tabPage1.Controls.Add(this.positioning_z);
             this.tabPage1.Controls.Add(this.label13);
             this.tabPage1.Controls.Add(this.positioning_x);
             this.tabPage1.Controls.Add(this.button11);
@@ -274,6 +272,36 @@
             this.tabPage1.Text = "參數設定";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // check_positioning_enable
+            // 
+            this.check_positioning_enable.AutoSize = true;
+            this.check_positioning_enable.Location = new System.Drawing.Point(38, 107);
+            this.check_positioning_enable.Name = "check_positioning_enable";
+            this.check_positioning_enable.Size = new System.Drawing.Size(48, 16);
+            this.check_positioning_enable.TabIndex = 63;
+            this.check_positioning_enable.Text = "定位";
+            this.check_positioning_enable.UseVisualStyleBackColor = true;
+            this.check_positioning_enable.CheckedChanged += new System.EventHandler(this.positioning_enable_CheckedChanged);
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(441, 43);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(57, 23);
+            this.button13.TabIndex = 62;
+            this.button13.Text = "拍照區2";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(378, 43);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(57, 23);
+            this.button12.TabIndex = 61;
+            this.button12.Text = "拍照區1";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
             // button9
             // 
             this.button9.Location = new System.Drawing.Point(378, 15);
@@ -288,7 +316,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label17.Location = new System.Drawing.Point(232, 171);
+            this.label17.Location = new System.Drawing.Point(226, 197);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(111, 16);
             this.label17.TabIndex = 59;
@@ -296,7 +324,7 @@
             // 
             // numeric_dilateErodeSize
             // 
-            this.numeric_dilateErodeSize.Location = new System.Drawing.Point(351, 171);
+            this.numeric_dilateErodeSize.Location = new System.Drawing.Point(345, 197);
             this.numeric_dilateErodeSize.Maximum = new decimal(new int[] {
             3000,
             0,
@@ -315,7 +343,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label16.Location = new System.Drawing.Point(262, 257);
+            this.label16.Location = new System.Drawing.Point(256, 283);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(17, 16);
             this.label16.TabIndex = 57;
@@ -323,7 +351,7 @@
             // 
             // text_blue_weight
             // 
-            this.text_blue_weight.Location = new System.Drawing.Point(284, 257);
+            this.text_blue_weight.Location = new System.Drawing.Point(278, 283);
             this.text_blue_weight.Name = "text_blue_weight";
             this.text_blue_weight.Size = new System.Drawing.Size(39, 22);
             this.text_blue_weight.TabIndex = 56;
@@ -333,7 +361,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label5.Location = new System.Drawing.Point(193, 257);
+            this.label5.Location = new System.Drawing.Point(187, 283);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(18, 16);
             this.label5.TabIndex = 55;
@@ -341,7 +369,7 @@
             // 
             // text_green_weight
             // 
-            this.text_green_weight.Location = new System.Drawing.Point(215, 257);
+            this.text_green_weight.Location = new System.Drawing.Point(209, 283);
             this.text_green_weight.Name = "text_green_weight";
             this.text_green_weight.Size = new System.Drawing.Size(39, 22);
             this.text_green_weight.TabIndex = 54;
@@ -351,7 +379,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label4.Location = new System.Drawing.Point(130, 257);
+            this.label4.Location = new System.Drawing.Point(124, 283);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(17, 16);
             this.label4.TabIndex = 53;
@@ -361,7 +389,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label15.Location = new System.Drawing.Point(172, 133);
+            this.label15.Location = new System.Drawing.Point(192, 154);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(18, 16);
             this.label15.TabIndex = 52;
@@ -369,35 +397,17 @@
             // 
             // positioning_y
             // 
-            this.positioning_y.Location = new System.Drawing.Point(195, 132);
+            this.positioning_y.Location = new System.Drawing.Point(215, 153);
             this.positioning_y.Name = "positioning_y";
-            this.positioning_y.Size = new System.Drawing.Size(33, 22);
+            this.positioning_y.Size = new System.Drawing.Size(53, 22);
             this.positioning_y.TabIndex = 51;
             this.positioning_y.Text = "-555.572";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label14.Location = new System.Drawing.Point(233, 133);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(16, 16);
-            this.label14.TabIndex = 50;
-            this.label14.Text = "Z";
-            // 
-            // positioning_z
-            // 
-            this.positioning_z.Location = new System.Drawing.Point(255, 132);
-            this.positioning_z.Name = "positioning_z";
-            this.positioning_z.Size = new System.Drawing.Size(33, 22);
-            this.positioning_z.TabIndex = 49;
-            this.positioning_z.Text = "--";
             // 
             // label13
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label13.Location = new System.Drawing.Point(109, 133);
+            this.label13.Location = new System.Drawing.Point(109, 154);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(18, 16);
             this.label13.TabIndex = 48;
@@ -405,15 +415,15 @@
             // 
             // positioning_x
             // 
-            this.positioning_x.Location = new System.Drawing.Point(131, 132);
+            this.positioning_x.Location = new System.Drawing.Point(131, 153);
             this.positioning_x.Name = "positioning_x";
-            this.positioning_x.Size = new System.Drawing.Size(33, 22);
+            this.positioning_x.Size = new System.Drawing.Size(54, 22);
             this.positioning_x.TabIndex = 47;
             this.positioning_x.Text = "156.027";
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(297, 129);
+            this.button11.Location = new System.Drawing.Point(297, 152);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(75, 23);
             this.button11.TabIndex = 46;
@@ -425,7 +435,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label12.Location = new System.Drawing.Point(35, 132);
+            this.label12.Location = new System.Drawing.Point(35, 153);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(71, 16);
             this.label12.TabIndex = 45;
@@ -433,7 +443,7 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(297, 99);
+            this.button10.Location = new System.Drawing.Point(297, 123);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(75, 23);
             this.button10.TabIndex = 44;
@@ -443,7 +453,7 @@
             // 
             // positioning_file_path
             // 
-            this.positioning_file_path.Location = new System.Drawing.Point(107, 103);
+            this.positioning_file_path.Location = new System.Drawing.Point(107, 127);
             this.positioning_file_path.Name = "positioning_file_path";
             this.positioning_file_path.Size = new System.Drawing.Size(105, 22);
             this.positioning_file_path.TabIndex = 42;
@@ -451,7 +461,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(215, 99);
+            this.button8.Location = new System.Drawing.Point(215, 123);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(75, 23);
             this.button8.TabIndex = 41;
@@ -463,7 +473,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label11.Location = new System.Drawing.Point(35, 104);
+            this.label11.Location = new System.Drawing.Point(35, 128);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(71, 16);
             this.label11.TabIndex = 40;
@@ -539,7 +549,7 @@
             // 
             // camera_preview
             // 
-            this.camera_preview.Location = new System.Drawing.Point(513, 5);
+            this.camera_preview.Location = new System.Drawing.Point(510, 5);
             this.camera_preview.Margin = new System.Windows.Forms.Padding(2);
             this.camera_preview.Name = "camera_preview";
             this.camera_preview.Size = new System.Drawing.Size(538, 355);
@@ -549,7 +559,7 @@
             // 
             // text_red_weight
             // 
-            this.text_red_weight.Location = new System.Drawing.Point(152, 257);
+            this.text_red_weight.Location = new System.Drawing.Point(146, 283);
             this.text_red_weight.Name = "text_red_weight";
             this.text_red_weight.Size = new System.Drawing.Size(39, 22);
             this.text_red_weight.TabIndex = 29;
@@ -567,7 +577,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label8.Location = new System.Drawing.Point(41, 257);
+            this.label8.Location = new System.Drawing.Point(35, 283);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(71, 16);
             this.label8.TabIndex = 28;
@@ -575,7 +585,7 @@
             // 
             // numericUpDown_uniqueness_threshold
             // 
-            this.numericUpDown_uniqueness_threshold.Location = new System.Drawing.Point(159, 226);
+            this.numericUpDown_uniqueness_threshold.Location = new System.Drawing.Point(153, 252);
             this.numericUpDown_uniqueness_threshold.Maximum = new decimal(new int[] {
             255,
             0,
@@ -594,7 +604,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label9.Location = new System.Drawing.Point(41, 226);
+            this.label9.Location = new System.Drawing.Point(35, 252);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(87, 16);
             this.label9.TabIndex = 24;
@@ -602,7 +612,7 @@
             // 
             // max_size_numeric
             // 
-            this.max_size_numeric.Location = new System.Drawing.Point(335, 199);
+            this.max_size_numeric.Location = new System.Drawing.Point(329, 225);
             this.max_size_numeric.Maximum = new decimal(new int[] {
             3000,
             0,
@@ -621,7 +631,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label6.Location = new System.Drawing.Point(233, 199);
+            this.label6.Location = new System.Drawing.Point(227, 225);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(103, 16);
             this.label6.TabIndex = 15;
@@ -629,7 +639,7 @@
             // 
             // min_size_numeric
             // 
-            this.min_size_numeric.Location = new System.Drawing.Point(159, 199);
+            this.min_size_numeric.Location = new System.Drawing.Point(153, 225);
             this.min_size_numeric.Maximum = new decimal(new int[] {
             3000,
             0,
@@ -648,7 +658,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label3.Location = new System.Drawing.Point(41, 198);
+            this.label3.Location = new System.Drawing.Point(35, 224);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(103, 16);
             this.label3.TabIndex = 11;
@@ -678,7 +688,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label1.Location = new System.Drawing.Point(41, 171);
+            this.label1.Location = new System.Drawing.Point(35, 197);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(103, 16);
             this.label1.TabIndex = 8;
@@ -707,7 +717,7 @@
             // 
             // numericUpDown_threshold
             // 
-            this.numericUpDown_threshold.Location = new System.Drawing.Point(159, 171);
+            this.numericUpDown_threshold.Location = new System.Drawing.Point(153, 197);
             this.numericUpDown_threshold.Maximum = new decimal(new int[] {
             255,
             0,
@@ -1170,25 +1180,6 @@
             this.label21.TabIndex = 53;
             this.label21.Text = "拼圖區1拍照座標";
             // 
-            // button12
-            // 
-            this.button12.Location = new System.Drawing.Point(378, 43);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(57, 23);
-            this.button12.TabIndex = 61;
-            this.button12.Text = "拍照區1";
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
-            // 
-            // button13
-            // 
-            this.button13.Location = new System.Drawing.Point(441, 43);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(57, 23);
-            this.button13.TabIndex = 62;
-            this.button13.Text = "拍照區2";
-            this.button13.UseVisualStyleBackColor = true;
-            // 
             // Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1259,8 +1250,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox positioning_y;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox positioning_z;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox positioning_x;
         private System.Windows.Forms.Button button11;
@@ -1273,12 +1262,6 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.NumericUpDown numeric_dilateErodeSize;
         private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox textBox4;
@@ -1318,5 +1301,12 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.CheckBox check_positioning_enable;
     }
 }

@@ -29,6 +29,7 @@ namespace ExclusiveProgram
     public partial class Control : MainForm.ExclusiveControl
     {
         private IDSCamera camera;
+        private bool positioning_enable=true;
 
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
@@ -38,6 +39,7 @@ namespace ExclusiveProgram
         {
             InitializeComponent();
             Config = new Config();
+            check_positioning_enable.Checked = positioning_enable;
         }
 
         private class MyRecognizeListener : PuzzleRecognizerListener
@@ -106,7 +108,7 @@ namespace ExclusiveProgram
                     {
                         var control = new UserControl1();
                         control.setImage(result.ROI.ToBitmap());
-                        control.setLabel(String.Format("({0},{1})", result.Coordinate.X, result.Coordinate.Y), String.Format("[{0},{1}]", result.Size.Width, result.Size.Height));
+                        control.setLabel(new string[] { $"({result.Coordinate.X},{result.Coordinate.Y})",$"[{result.Size.Width},{result.Size.Height}]",""});
                         ui.roi_puzzleView.Controls.Add(control);
                     }
                 }
@@ -163,8 +165,12 @@ namespace ExclusiveProgram
 
             var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
             factory.setListener(new MyFactoryListener(this));
-            factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
-            //factory.setVisionPositioning(null);
+            
+            if(positioning_enable)
+                factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
+            else
+                factory.setVisionPositioning(null);
+
             return factory;
         }
 
@@ -216,7 +222,7 @@ namespace ExclusiveProgram
             {
                 var control = new UserControl1();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
-                control.setLabel($"Angle:{ Math.Round(result.Angel, 2)}",$"({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})");
+                control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angel, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
                 recognize_match_puzzleView.Controls.Add(control);
             }
         }
@@ -296,11 +302,10 @@ namespace ExclusiveProgram
         {
             double[] position = Arm.GetNowPosition();
             var x=position[0];
-            var y = position[1];
+            var y = -position[1];
             var z = position[2];
             positioning_x.Text = x.ToString();
             positioning_y.Text = y.ToString();
-            positioning_z.Text = z.ToString();
 
         }
 
@@ -323,6 +328,18 @@ namespace ExclusiveProgram
             else
                 MessageBox.Show("尚未連接攝影機");
         }
+
+        private void positioning_enable_CheckedChanged(object sender, EventArgs e)
+        {
+            positioning_enable = check_positioning_enable.Checked;
+            positioning_x.Enabled = positioning_enable;
+            positioning_y.Enabled = positioning_enable;
+            button8.Enabled = positioning_enable;
+            button10.Enabled = positioning_enable;
+            button11.Enabled = positioning_enable;
+            positioning_file_path.Enabled = positioning_enable;
+        }
+
     }
 
 }

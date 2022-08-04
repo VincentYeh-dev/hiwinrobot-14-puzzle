@@ -21,10 +21,11 @@ namespace ExclusiveProgram.ui.component
         { 
             pictureBox1.Image = bitmap;
         }
-        public void setLabel(String label1,String label2)
-        { 
-            this.label1.Text=label1;
-            this.label2.Text=label2;   
+        public void setLabel(string[] labels)
+        {
+            this.label1.Text = labels[0];
+            this.label2.Text=labels[1];   
+            this.label3.Text=labels[2];   
         }
     }
 
