@@ -33,11 +33,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI)
         {
-
-            rawImage.ROI = ROI;
-            var ROIImage = rawImage.Copy();
+            var ROIImage = Mask(rawImage,ROI);
             ROIImage.Save("results\\roi.jpg");
-            rawImage.ROI = Rectangle.Empty;
 
             var preprocessImage = ROIImage.Clone();
             if (preProcessImpl != null)
@@ -59,7 +56,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             //取得輪廓組
 
-            var preview_image = rawImage.Clone();
+            var preview_image = ROIImage.Clone();
 
             int valid_id = 0;
             //尋遍輪廓組之單一輪廓
@@ -90,10 +87,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                     preview_image.Save("results\\contours.jpg");
                     location_result.ID = valid_id++;
                     //location_result.Angle = angle;
-                    if (ROI == Rectangle.Empty)
-                        location_result.Coordinate = coordinate;
-                    else
-                        location_result.Coordinate = new Point(ROI.Left+coordinate.X,ROI.Top+coordinate.Y);
+                    location_result.Coordinate = coordinate;
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);
                     location_result.ROI = getROI(location_result.Coordinate, location_result.Size, rawImage);
                     //location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
@@ -106,6 +100,27 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             preview_image.Dispose();
 
             return location_results;
+        }
+
+        private Image<Bgr,byte> Mask(Image<Bgr, byte> rawImage, Rectangle ROI)
+        {
+            Image<Bgr, byte> newImage = new Image<Bgr, byte>(rawImage.Size);
+            for(int y = 0; y < newImage.Rows; y++)
+            {
+                for(int x=0;x<newImage.Cols; x++)
+                {
+                    if (x < ROI.Left || y < ROI.Top)
+                        continue;
+
+                    if (x > ROI.Right|| y>ROI.Bottom)
+                        continue;
+
+                    newImage.Data[y,x,0]=rawImage.Data[y,x,0];
+                    newImage.Data[y,x,1]=rawImage.Data[y,x,1];
+                    newImage.Data[y,x,2]=rawImage.Data[y,x,2];
+                }
+            }
+            return newImage;
         }
 
         private VectorOfPoint GetApproxContour(VectorOfPoint contour)
