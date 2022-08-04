@@ -20,14 +20,14 @@ namespace ExclusiveProgram.puzzle.logic.framework
     }
     public interface IPuzzleStrategy
     {
-        void Feed(List<Puzzle2D> puzzles);
+        void Feed(List<Puzzle3D> puzzles);
         void Next();
         void Reset();
         bool HasThingToDo();
-        Puzzle2D GetTargetPuzzle();
+        Puzzle3D GetTargetPuzzle();
         string[] GetMissingPosition();
         StrategyAction GetStrategyAction();
 
-        void Fix(List<Puzzle2D> new_puzzles);
+        void Fix(List<Puzzle3D> new_puzzles);
     }
 }

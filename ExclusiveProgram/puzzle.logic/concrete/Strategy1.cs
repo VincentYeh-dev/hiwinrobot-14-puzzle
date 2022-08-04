@@ -9,14 +9,14 @@ namespace ExclusiveProgram.puzzle.logic.concrete
     {
 
         private HashSet<string> recombinedPuzzles = new HashSet<string>();
-        private List<Puzzle2D> puzzles = new List<Puzzle2D>();
+        private List<Puzzle3D> puzzles = new List<Puzzle3D>();
         private Dictionary<string,List<int>> position_index_map=new Dictionary<string, List<int>>();
 
         private string[] missing_positions=new string[0];
         private StrategyAction action;
-        private Puzzle2D? target_puzzle;
+        private Puzzle3D? target_puzzle;
 
-        public void Feed(List<Puzzle2D> puzzles)
+        public void Feed(List<Puzzle3D> puzzles)
         {
             if (puzzles == null)
                 throw new ArgumentNullException("puzzles == null");
@@ -82,12 +82,12 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             action = StrategyAction.do_nothing;
         }
 
-        public void Fix(List<Puzzle2D> new_puzzles)
+        public void Fix(List<Puzzle3D> new_puzzles)
         {
-            List<Puzzle2D> output_puzles= new List<Puzzle2D>();
+            List<Puzzle3D> output_puzles= new List<Puzzle3D>();
             for (int i=0;i<new_puzzles.Count;i++)
             {
-                Puzzle2D puzzle= new_puzzles[i];
+                Puzzle3D puzzle= new_puzzles[i];
 
                 bool found=position_index_map.TryGetValue(puzzle.Position,out List<int> indexes);
                 if (!found)
@@ -96,7 +96,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 }
                 else if (indexes.Count > 1)
                 {
-                    Puzzle2D[] duplicate_puzzles=new Puzzle2D[indexes.Count];
+                    Puzzle3D[] duplicate_puzzles=new Puzzle3D[indexes.Count];
                     for (int j = 0; j < indexes.Count; j++)
                     {
                         duplicate_puzzles[j] = puzzles[indexes[j]];
@@ -178,7 +178,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             return action != framework.StrategyAction.do_nothing;
         }
 
-        public Puzzle2D GetTargetPuzzle()
+        public Puzzle3D GetTargetPuzzle()
         {
             if (action!=framework.StrategyAction.recombine_puzzle)
                 throw new InvalidOperationException("action!=framework.Action.recombine");

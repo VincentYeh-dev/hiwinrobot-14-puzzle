@@ -42,7 +42,7 @@ namespace PuzzleUnitTest.puzzle.logic
         {
             var strategy = new Strategy1();
             var puzzles = GeneratePuzzles();
-            strategy.Feed(new List<Puzzle2D>());
+            strategy.Feed(new List<Puzzle3D>());
             Assert.AreEqual(StrategyAction.rescan_missing_puzzle,strategy.GetStrategyAction());
         }
 
@@ -78,7 +78,7 @@ namespace PuzzleUnitTest.puzzle.logic
 
             strategy.Feed(puzzles);
             Assert.AreEqual(StrategyAction.rescan_missing_puzzle,strategy.GetStrategyAction());
-            var list=new List<Puzzle2D>();
+            var list=new List<Puzzle3D>();
             list.Add(missing_puzzle);
             list.Add(GeneratePuzzle(0,0));
             strategy.Fix(list);
@@ -112,7 +112,7 @@ namespace PuzzleUnitTest.puzzle.logic
             puzzles.Remove(missing_puzzle);
             strategy.Feed(puzzles);
 
-            var list = new List<Puzzle2D>();
+            var list = new List<Puzzle3D>();
             list.Add(missing_puzzle);
             list.Add(duplicate_puzzle);
 
@@ -124,9 +124,9 @@ namespace PuzzleUnitTest.puzzle.logic
 
 
         
-        private static List<Puzzle2D> GeneratePuzzles()
+        private static List<Puzzle3D> GeneratePuzzles()
         {
-            List<Puzzle2D> puzzles = new List<Puzzle2D>();
+            List<Puzzle3D> puzzles = new List<Puzzle3D>();
             for(int i = 0; i < 5; i++)
             {
                 for(int j = 0; j < 7; j++)
@@ -136,9 +136,9 @@ namespace PuzzleUnitTest.puzzle.logic
             }
             return puzzles;
         }
-        private static Puzzle2D GeneratePuzzle(int row,int col)
+        private static Puzzle3D GeneratePuzzle(int row,int col)
         {
-            var puzzle=new Puzzle2D();
+            var puzzle=new Puzzle3D();
             puzzle.Position = String.Format("{0}{1}",row,col);
             return puzzle;
         }
