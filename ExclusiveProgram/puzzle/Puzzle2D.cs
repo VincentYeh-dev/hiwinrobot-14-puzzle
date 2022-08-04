@@ -6,7 +6,7 @@ namespace ExclusiveProgram.puzzle
 {
     public struct Puzzle2D
     {
-        public Point Coordinate;
+        public PointF Coordinate;
         public Image<Bgr,byte> ROI;
     };
 }
