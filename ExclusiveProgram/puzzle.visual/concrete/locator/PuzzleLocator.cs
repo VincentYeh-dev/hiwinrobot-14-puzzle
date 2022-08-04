@@ -31,6 +31,14 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             this.binaryPreprocessImpl = binaryPreprocessImpl;
         }
 
+        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI)
+        {
+            rawImage.ROI = ROI;
+            var image = rawImage.Copy();
+            image.Save("results\\roi.jpg");
+            image.ROI = Rectangle.Empty;
+            return Locate(image);
+        }
 
         public List<LocationResult> Locate(Image<Bgr, byte> rawImage)
         {
@@ -217,5 +225,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             return Angel;
         }
+
     }
 }

@@ -7,6 +7,7 @@ using ExclusiveProgram.threading;
 using RASDK.Vision.Positioning;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,13 +37,16 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             cts = new CancellationTokenSource();
         }
 
-        public List<Puzzle3D> Execute(Image<Bgr, byte> input)
-        {
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle? ROI=null)
+        { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
+            if(ROI== null)
+                dataList = locator.Locate(input);
+            else
+                dataList = locator.Locate(input,ROI.Value);
 
-            dataList = locator.Locate(input);
             if (listener != null)
                 listener.onLocated(dataList);
 

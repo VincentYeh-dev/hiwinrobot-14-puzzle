@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 using Emgu.CV;
@@ -140,7 +141,7 @@ namespace ExclusiveProgram
  
             var image= new Image<Bgr,byte>(source_file_path.Text);
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle3D> results = factory.Execute(image);
+            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
 
             foreach (Puzzle3D result in results)
             {
@@ -237,8 +238,8 @@ namespace ExclusiveProgram
             if (camera != null&&camera.Connected)
             {
 
-                camera.GetImage().Save("Capture_Source.jpg");
-                source_file_path.Text = "Capture_Source.jpg";
+                camera.GetImage().Save("Capture_Source.bmp", ImageFormat.Bmp);
+                source_file_path.Text = "Capture_Source.bmp";
             }
             else
                 MessageBox.Show("尚未連接攝影機");
@@ -271,8 +272,8 @@ namespace ExclusiveProgram
             if (camera != null&&camera.Connected)
             {
 
-                camera.GetImage().Save("Capture_Positioning.jpg");
-                positioning_file_path.Text = "Capture_Positioning.jpg";
+                camera.GetImage().Save("Capture_Positioning.bmp", ImageFormat.Bmp);
+                positioning_file_path.Text = "Capture_Positioning.bmp";
             }
             else
                 MessageBox.Show("尚未連接攝影機");
