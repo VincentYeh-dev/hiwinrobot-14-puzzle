@@ -129,8 +129,8 @@ namespace ExclusiveProgram
             var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
             var boardImage= new Image<Bgr,byte>(positioning_file_path.Text);
-            //var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
-            var offset = new PointF(0,0);
+            var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
+            //var offset = new PointF(0,0);
             var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
             var red_weight = Double.Parse(text_red_weight.Text);
             var green_weight = Double.Parse(text_green_weight.Text);
@@ -163,19 +163,27 @@ namespace ExclusiveProgram
 
             var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
             factory.setListener(new MyFactoryListener(this));
-            //factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
-            factory.setVisionPositioning(null);
+            factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
+            //factory.setVisionPositioning(null);
             return factory;
+        }
+
+        private void Approx(double ex, double ey, ref double vx, ref double vy)
+        {
+            double p = 0.05;
+            vx += p * ex;
+            vy += p * ey;
         }
 
         private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image,PointF WorldOffset)
         {
             List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
             images.Add(image);
-            var cc = new CameraCalibration(new Size(12,7),15);
+            var cc = new CameraCalibration(new Size(12,9),15);
             cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
-            var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]));
+            var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]), 5, null, Approx );
             positioning.WorldOffset = WorldOffset;
+            positioning.InterativeTimeout = 3;
             return positioning;
         }
         private string SelectFile(string InitialDirectory,string Filter)
@@ -204,7 +212,8 @@ namespace ExclusiveProgram
             {
                 var control = new UserControl1();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
-                control.setLabel("Angle:" + Math.Round(result.Angel, 2), result.Position);
+                //control.setLabel("Angle:" + Math.Round(result.Angel, 2),  result.RealWorldCoordinate);
+                control.setLabel($"Angle:{ Math.Round(result.Angel, 2)}",$"({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})");
                 recognize_match_puzzleView.Controls.Add(control);
             }
         }
@@ -220,15 +229,15 @@ namespace ExclusiveProgram
         
         private void button2_Click(object sender, EventArgs e)
         {
-            source_file_path.Text = SelectFile("", "Image files (*.jpg, *.png)|*.jpg;*.png");
+            source_file_path.Text = SelectFile("", "Image files|*.*");
         }
         private void button7_Click(object sender, EventArgs e)
         {
-            modelImage_file_path.Text = SelectFile("", "Image files (*.jpg, *.png)|*.jpg;*.png");
+            modelImage_file_path.Text = SelectFile("", "Image files|*.*");
         }
         private void button8_Click(object sender, EventArgs e)
         {
-            positioning_file_path.Text = SelectFile("", "Image files (*.jpg, *.png)|*.jpg;*.png");
+            positioning_file_path.Text = SelectFile("", "Image files|*.*");
         }
 
 
@@ -257,6 +266,7 @@ namespace ExclusiveProgram
         {
             camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()),camera_preview);
             camera.Connect();
+            camera.LoadParameterFromEEPROM();
         }
 
         private void button6_Click(object sender, EventArgs e)
