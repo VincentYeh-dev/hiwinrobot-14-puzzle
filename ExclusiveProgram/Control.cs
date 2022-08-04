@@ -42,32 +42,6 @@ namespace ExclusiveProgram
             check_positioning_enable.Checked = positioning_enable;
         }
 
-        private class MyRecognizeListener : PuzzleRecognizerListener
-        {
-            int index = 0;
-            public MyRecognizeListener(Control ui)
-            {
-                this.ui = ui;
-            }
-
-            private readonly Control ui;
-
-            public void OnMatched(int id, Image<Bgr, byte> modelImage, VectorOfKeyPoint modelKeyPoints, Image<Bgr, byte> observedImage, VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, Mat mask, long matchTime)
-            {
-                Mat resultImage = new Mat();
-                Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints,
-                   matches, resultImage, new MCvScalar(0, 0, 255), new MCvScalar(255, 255, 255), mask);
-
-                resultImage.Save("results\\matching_" + id + ".jpg");
-                resultImage.Dispose();
-            }
-
-            public void OnPerspective(int id, Image<Bgr, byte> warpedPerspectiveImage, String position)
-            {
-                CvInvoke.PutText(warpedPerspectiveImage, string.Format("position: {0}", position), new Point(1, 50), FontFace.HersheySimplex, 1, new MCvScalar(100, 100, 255), 2, LineType.FourConnected);
-                warpedPerspectiveImage.Save("results\\perspective_" + id + ".jpg");
-            }
-        }
 
         private class MyFactoryListener : PuzzleFactoryListener
         {
@@ -161,7 +135,7 @@ namespace ExclusiveProgram
             var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
 
             var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
-            recognizer.setListener(new MyRecognizeListener(this));
+            //recognizer.setListener(new MyRecognizeListener(this));
 
             var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
             factory.setListener(new MyFactoryListener(this));
