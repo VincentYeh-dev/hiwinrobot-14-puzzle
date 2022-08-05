@@ -31,7 +31,7 @@ namespace ExclusiveProgram
     {
         private IDSCamera camera;
         private bool positioning_enable=true;
-        private readonly CameraCalibration cameraCalibration;
+        private  CameraCalibration cameraCalibration;
 
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
@@ -42,14 +42,8 @@ namespace ExclusiveProgram
             InitializeComponent();
             Config = new Config();
             check_positioning_enable.Checked = positioning_enable;
-            cameraCalibration = new CameraCalibration(new Size(12,9),15);
-            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
-            cameraCalibration.Run(images, out _, out _, out _, out _);
         }
+
 
 
         private class MyFactoryListener : PuzzleFactoryListener
@@ -104,7 +98,21 @@ namespace ExclusiveProgram
             }
 
         }
+        
+        private CameraCalibration GetCameraCalibration(Image<Bgr,byte> image=null)
+        {
+            var cameraCalibration = new CameraCalibration(new Size(12,9),15);
+            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
 
+            if(image!=null)
+                images.Add(image);
+            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
+            cameraCalibration.CalCameraParameter(images);
+            return cameraCalibration;
+        }
         private void DoPuzzleVisual()
         {
 
@@ -133,29 +141,11 @@ namespace ExclusiveProgram
             }
 
         }
-        public void ConvertAndSaveHomographyMatrix(Image<Bgr,byte> image, PointF[] pointsOfWorld)
+        public void ConvertAndSaveHomographyMatrix(PointF[] pointsOfWorld,string file)
         {
-            var cc = new CameraCalibration(new Size(12,9),15);
-            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(image);
-            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
-            AdvancedHomography advancedHomography = new AdvancedHomography(cc,images,pointsOfWorld);
-            var homography_matrix=advancedHomography.Homography.HomographyMatrix;
-
-            var dataList = new List<List<string>>();
-            for(int y = 0; y < homography_matrix.Rows; y++)
-            {
-                var list = new List<string>();
-                for(int x = 0; x < homography_matrix.Cols; x++)
-                {
-                    list.Add(homography_matrix.Data[y,x].ToString());
-                    dataList.Add(list);
-                }
-            }
-            Csv.Write("homography_matrix.csv", dataList);
+            cameraCalibration = cameraCalibration ?? GetCameraCalibration(new Image<Bgr,byte>(file));
+            var advancedHomography = new AdvancedHomographyPositioner(pointsOfWorld, cameraCalibration);
+            advancedHomography.HomographyPositioner.SaveToCsv();
         }
 
         private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,Image<Bgr,byte> boardImage,PointF offset,int dilateErodeSize)
@@ -206,20 +196,7 @@ namespace ExclusiveProgram
         */
 
         private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image) {
-            Homography homography = new Homography(GetHomographyMatrixFromFile());
-            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(image);
-            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
-
-            //var cc = new CameraCalibration(new Size(12,9),15);
-            //cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
-            //var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]), 5, null, Approx );
-            //positioning.WorldOffset = WorldOffset;
-            //positioning.InterativeTimeout = 3;
-            return homography;
+            return HomographyPositioner.LoadFromCsv();
         }
         private Matrix<double> GetHomographyMatrixFromFile()
         {
@@ -388,8 +365,7 @@ namespace ExclusiveProgram
             points[2] = ConvertStringToPointF(text_bottom_left_x.Text,text_bottom_left_y.Text);
             points[3] = ConvertStringToPointF(text_bottom_right_x.Text,text_bottom_right_y.Text);
             //TL TR BL BR
-            var image =new Image<Bgr,byte>(text_board_file_path.Text);
-            ConvertAndSaveHomographyMatrix(image,points);
+            ConvertAndSaveHomographyMatrix(points,text_board_file_path.Text);
         }
 
         private PointF ConvertStringToPointF(string str_x,string str_y)
@@ -413,6 +389,11 @@ namespace ExclusiveProgram
             }
             else
                 MessageBox.Show("尚未連接攝影機");
+        }
+
+        private void button16_Click_1(object sender, EventArgs e)
+        {
+            text_board_file_path.Text=positioning_file_path.Text = SelectFile("", "Image files|*.*");
         }
     }
 
