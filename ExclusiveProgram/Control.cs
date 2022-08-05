@@ -169,16 +169,6 @@ namespace ExclusiveProgram
             return factory;
         }
 
-        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image,PointF WorldOffset)
-        {
-            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(image);
-            var cc = new CameraCalibration(new Size(12,7),15);
-            cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
-            var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]));
-            positioning.WorldOffset = WorldOffset;
-            return positioning;
-        }
         private string SelectFile(string InitialDirectory,string Filter)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
