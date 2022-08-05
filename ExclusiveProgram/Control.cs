@@ -30,6 +30,7 @@ namespace ExclusiveProgram
     {
         private IDSCamera camera;
         private bool positioning_enable=true;
+        private readonly CameraCalibration cameraCalibration;
 
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
@@ -40,6 +41,13 @@ namespace ExclusiveProgram
             InitializeComponent();
             Config = new Config();
             check_positioning_enable.Checked = positioning_enable;
+            cameraCalibration = new CameraCalibration(new Size(12,9),15);
+            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
+            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
+            cameraCalibration.Run(images, out _, out _, out _, out _);
         }
 
 
@@ -106,7 +114,6 @@ namespace ExclusiveProgram
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
             var boardImage= new Image<Bgr,byte>(positioning_file_path.Text);
             var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
-            //var offset = new PointF(0,0);
             var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
             var red_weight = Double.Parse(text_red_weight.Text);
             var green_weight = Double.Parse(text_green_weight.Text);
@@ -115,7 +122,7 @@ namespace ExclusiveProgram
 
             var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,boardImage,offset,dilateErodeSize);
  
-            var image= new Image<Bgr,byte>(source_file_path.Text);
+            var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
             capture_preview.Image = image.ToBitmap();
             List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
 
@@ -125,6 +132,31 @@ namespace ExclusiveProgram
             }
 
         }
+        public void ConvertAndSaveHomographyMatrix(Image<Bgr,byte> image, PointF[] pointsOfWorld)
+        {
+            var cc = new CameraCalibration(new Size(12,9),15);
+            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
+            images.Add(image);
+            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
+            AdvancedHomography advancedHomography = new AdvancedHomography(cc,images,pointsOfWorld);
+            var homography_matrix=advancedHomography.Homography.HomographyMatrix;
+
+            var dataList = new List<List<string>>();
+            for(int y = 0; y < homography_matrix.Rows; y++)
+            {
+                var list = new List<string>();
+                for(int x = 0; x < homography_matrix.Cols; x++)
+                {
+                    list.Add(homography_matrix.Data[y,x].ToString());
+                    dataList.Add(list);
+                }
+            }
+            Csv.Write("homography_matrix.csv", dataList);
+        }
+
         private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,Image<Bgr,byte> boardImage,PointF offset,int dilateErodeSize)
         {
             //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
@@ -141,7 +173,7 @@ namespace ExclusiveProgram
             factory.setListener(new MyFactoryListener(this));
             
             if(positioning_enable)
-                factory.setVisionPositioning(GetVisionPositioning(boardImage,offset));
+                factory.setVisionPositioning(GetVisionPositioning(boardImage));
             else
                 factory.setVisionPositioning(null);
 
@@ -155,8 +187,8 @@ namespace ExclusiveProgram
             vy += p * ey;
         }
 
-        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image,PointF WorldOffset)
-        {
+        /*
+        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image,PointF WorldOffset) {
             List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
             images.Add(image);
             images.Add(new Image<Bgr, byte>("cb_01.jpg"));
@@ -170,6 +202,39 @@ namespace ExclusiveProgram
             positioning.InterativeTimeout = 3;
             return positioning;
         }
+        */
+
+        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image) {
+            Homography homography = new Homography(GetHomographyMatrixFromFile());
+            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
+            images.Add(image);
+            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
+            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
+
+            //var cc = new CameraCalibration(new Size(12,9),15);
+            //cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
+            //var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]), 5, null, Approx );
+            //positioning.WorldOffset = WorldOffset;
+            //positioning.InterativeTimeout = 3;
+            return homography;
+        }
+        private Matrix<double> GetHomographyMatrixFromFile()
+        {
+            var matrix = new Matrix<double>(3,3);
+            var list=Csv.Read("homography_matrix.csv");
+            for(int i = 0; i < list.Count; i++)
+            {
+                var cols = list[i];
+                for (int j = 0; j < cols.Count; j++)
+                {
+                    matrix[i, j] = double.Parse(list[i][j]);
+                }
+            }
+            return matrix;
+        }
+
         private string SelectFile(string InitialDirectory,string Filter)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -314,6 +379,40 @@ namespace ExclusiveProgram
             positioning_file_path.Enabled = positioning_enable;
         }
 
+        private void button14_Click(object sender, EventArgs e)
+        {
+            var points = new PointF[4];
+            points[0] = ConvertStringToPointF(text_top_left_x.Text,text_top_left_y.Text);
+            points[1] = ConvertStringToPointF(text_top_right_x.Text,text_top_right_y.Text);
+            points[2] = ConvertStringToPointF(text_bottom_left_x.Text,text_bottom_left_y.Text);
+            points[3] = ConvertStringToPointF(text_bottom_right_x.Text,text_bottom_right_y.Text);
+            //TL TR BL BR
+            var image =new Image<Bgr,byte>(text_board_file_path.Text);
+            ConvertAndSaveHomographyMatrix(image,points);
+        }
+
+        private PointF ConvertStringToPointF(string str_x,string str_y)
+        {
+            return new PointF(float.Parse(str_x),float.Parse(str_y));
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            string file_path=SelectFile("C:\\","Image files|*.*");
+            text_board_file_path.Text=file_path;
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            if (camera != null&&camera.Connected)
+            {
+
+                camera.GetImage().Save("Capture_Board.bmp", ImageFormat.Bmp);
+                text_board_file_path.Text = "Capture_Board.bmp";
+            }
+            else
+                MessageBox.Show("尚未連接攝影機");
+        }
     }
 
 }
