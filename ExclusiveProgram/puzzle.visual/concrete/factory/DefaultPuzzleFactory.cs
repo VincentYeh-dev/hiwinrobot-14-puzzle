@@ -37,15 +37,12 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             cts = new CancellationTokenSource();
         }
 
-        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle? ROI=null)
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI)
         { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
-            if(ROI== null)
-                dataList = locator.Locate(input);
-            else
-                dataList = locator.Locate(input,ROI.Value);
+            dataList = locator.Locate(input,ROI);
 
             if (listener != null)
                 listener.onLocated(dataList);

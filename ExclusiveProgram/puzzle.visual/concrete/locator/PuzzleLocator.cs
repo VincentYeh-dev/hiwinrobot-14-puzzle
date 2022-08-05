@@ -33,16 +33,10 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI)
         {
-            rawImage.ROI = ROI;
-            var image = rawImage.Copy();
-            image.Save("results\\roi.jpg");
-            image.ROI = Rectangle.Empty;
-            return Locate(image);
-        }
+            var ROIImage = Mask(rawImage,ROI);
+            ROIImage.Save("results\\roi.jpg");
 
-        public List<LocationResult> Locate(Image<Bgr, byte> rawImage)
-        {
-            var preprocessImage = rawImage.Clone();
+            var preprocessImage = ROIImage.Clone();
             if (preProcessImpl != null)
                 preProcessImpl.Preprocess(preprocessImage, preprocessImage);
 
@@ -62,7 +56,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             //取得輪廓組
 
-            var preview_image = rawImage.Clone();
+            var preview_image = ROIImage.Clone();
 
             int valid_id = 0;
             //尋遍輪廓組之單一輪廓
@@ -108,6 +102,27 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return location_results;
         }
 
+        private Image<Bgr,byte> Mask(Image<Bgr, byte> rawImage, Rectangle ROI)
+        {
+            Image<Bgr, byte> newImage = new Image<Bgr, byte>(rawImage.Size);
+            for(int y = 0; y < newImage.Rows; y++)
+            {
+                for(int x=0;x<newImage.Cols; x++)
+                {
+                    if (x < ROI.Left || y < ROI.Top)
+                        continue;
+
+                    if (x > ROI.Right|| y>ROI.Bottom)
+                        continue;
+
+                    newImage.Data[y,x,0]=rawImage.Data[y,x,0];
+                    newImage.Data[y,x,1]=rawImage.Data[y,x,1];
+                    newImage.Data[y,x,2]=rawImage.Data[y,x,2];
+                }
+            }
+            return newImage;
+        }
+
         private VectorOfPoint GetApproxContour(VectorOfPoint contour)
         {
             VectorOfPoint approxContour = new VectorOfPoint();
@@ -121,7 +136,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return Array.ConvertAll<PointF, Point>(boundingBox.GetVertices(), Point.Round);
         }
 
-        private Image<Bgr, byte> getROI(Point Coordinate, Size Size, Image<Bgr, byte> input)
+        private Image<Bgr, byte> getROI(PointF Coordinate, Size Size, Image<Bgr, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
             //設定ROI
@@ -186,7 +201,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             bool Answer = true;
             for (int i = 0; i < definedPuzzleDataList.Count; i++)
             {
-                int x_up = definedPuzzleDataList[i].Coordinate.X + 10,
+                float x_up = definedPuzzleDataList[i].Coordinate.X + 10,
                     x_down = definedPuzzleDataList[i].Coordinate.X - 10,
                     y_up = definedPuzzleDataList[i].Coordinate.Y + 10,
                     y_down = definedPuzzleDataList[i].Coordinate.Y - 10;
