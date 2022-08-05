@@ -10,6 +10,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle;
 using ExclusiveProgram.puzzle.visual.concrete;
 using ExclusiveProgram.puzzle.visual.concrete.utils;
@@ -29,7 +30,7 @@ namespace ExclusiveProgram
     public partial class Control : MainForm.ExclusiveControl
     {
         private IDSCamera camera;
-
+        public SuckerDevice sucker;
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
 
@@ -294,6 +295,30 @@ namespace ExclusiveProgram
         private void button9_Click(object sender, EventArgs e)
         {
             camera.LoadParameterFromEEPROM();
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            sucker = new SuckerDevice();
+            sucker.Connect();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            sucker?.Disconnect();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            if (sucker != null&&sucker.Connected)
+                sucker.Enable();
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+
+            if (sucker != null&&sucker.Connected)
+                sucker.Disable();
         }
     }
 

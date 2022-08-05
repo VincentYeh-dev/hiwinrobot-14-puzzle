@@ -132,6 +132,7 @@
     <Compile Include="Control.Designer.cs">
       <DependentUpon>Control.cs</DependentUpon>
     </Compile>
+    <Compile Include="device\SuckerDevice.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />
