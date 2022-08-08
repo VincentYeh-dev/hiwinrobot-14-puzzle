@@ -122,7 +122,7 @@ namespace ExclusiveProgram
             var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
             var boardImage= new Image<Bgr,byte>(positioning_file_path.Text);
-            var offset = new PointF(float.Parse(positioning_x.Text),float.Parse(positioning_y.Text));
+            var offset = new PointF(float.Parse(offset_x.Text),float.Parse(offset_y.Text));
             var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
             var red_weight = Double.Parse(text_red_weight.Text);
             var green_weight = Double.Parse(text_green_weight.Text);
@@ -166,7 +166,7 @@ namespace ExclusiveProgram
             factory.setListener(new MyFactoryListener(this));
             
             if(positioning_enable)
-                factory.setVisionPositioning(HomographyPositioner.LoadFromCsv());
+                factory.setVisionPositioning(GetVisionPositioning());
             else
                 factory.setVisionPositioning(null);
 
@@ -180,22 +180,22 @@ namespace ExclusiveProgram
             vy += p * ey;
         }
 
-        /*
-        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image,PointF WorldOffset) {
+        private IVisionPositioning GetVisionPositioning() {
             List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(image);
+            images.Add(new Image<Bgr, byte>(positioning_file_path.Text));
             images.Add(new Image<Bgr, byte>("cb_01.jpg"));
             images.Add(new Image<Bgr, byte>("cb_02.jpg"));
             images.Add(new Image<Bgr, byte>("cb_03.jpg"));
             images.Add(new Image<Bgr, byte>("cb_04.jpg"));
             var cc = new CameraCalibration(new Size(12,9),15);
-            cc.Run(images,out var cameraMatrix, out var distortionCoeffs, out var rotationVectors, out var translationVectors);
-            var positioning= new CCIA(new CameraParameter(cameraMatrix, distortionCoeffs, rotationVectors[0], translationVectors[0]), 5, null, Approx );
-            positioning.WorldOffset = WorldOffset;
+            var cp =  cc.CalCameraParameter(images, out var cm, out var dc , out var rv, out var tv, out var error);
+            cp.SaveToCsv();
+            MessageHandler.Log($"error:{error}", LoggingLevel.Info);
+            var positioning= new CCIA(cp, 5, null, Approx );
+            positioning.WorldOffset = new PointF(float.Parse(offset_x.Text),float.Parse(offset_y.Text));
             positioning.InterativeTimeout = 3;
             return positioning;
         }
-        */
 
         private string SelectFile(string InitialDirectory,string Filter)
         {
@@ -305,9 +305,8 @@ namespace ExclusiveProgram
             double[] position = Arm.GetNowPosition();
             var x=position[0];
             var y = -position[1];
-            var z = position[2];
-            positioning_x.Text = x.ToString();
-            positioning_y.Text = y.ToString();
+            offset_x.Text = x.ToString();
+            offset_y.Text = y.ToString();
 
         }
 
@@ -334,8 +333,8 @@ namespace ExclusiveProgram
         private void positioning_enable_CheckedChanged(object sender, EventArgs e)
         {
             positioning_enable = check_positioning_enable.Checked;
-            positioning_x.Enabled = positioning_enable;
-            positioning_y.Enabled = positioning_enable;
+            offset_x.Enabled = positioning_enable;
+            offset_y.Enabled = positioning_enable;
             button8.Enabled = positioning_enable;
             button10.Enabled = positioning_enable;
             button11.Enabled = positioning_enable;

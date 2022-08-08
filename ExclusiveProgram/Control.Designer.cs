@@ -72,8 +72,8 @@
             this.label16 = new System.Windows.Forms.Label();
             this.text_blue_weight = new System.Windows.Forms.TextBox();
             this.text_green_weight = new System.Windows.Forms.TextBox();
-            this.positioning_y = new System.Windows.Forms.TextBox();
-            this.positioning_x = new System.Windows.Forms.TextBox();
+            this.offset_y = new System.Windows.Forms.TextBox();
+            this.offset_x = new System.Windows.Forms.TextBox();
             this.positioning_file_path = new System.Windows.Forms.TextBox();
             this.modelImage_file_path = new System.Windows.Forms.TextBox();
             this.text_red_weight = new System.Windows.Forms.TextBox();
@@ -511,8 +511,8 @@
             this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.text_blue_weight);
             this.tabPage1.Controls.Add(this.text_green_weight);
-            this.tabPage1.Controls.Add(this.positioning_y);
-            this.tabPage1.Controls.Add(this.positioning_x);
+            this.tabPage1.Controls.Add(this.offset_y);
+            this.tabPage1.Controls.Add(this.offset_x);
             this.tabPage1.Controls.Add(this.positioning_file_path);
             this.tabPage1.Controls.Add(this.modelImage_file_path);
             this.tabPage1.Controls.Add(this.text_red_weight);
@@ -657,23 +657,23 @@
             this.text_green_weight.TabIndex = 54;
             this.text_green_weight.Text = "0.587";
             // 
-            // positioning_y
+            // offset_y
             // 
-            this.positioning_y.Location = new System.Drawing.Point(322, 230);
-            this.positioning_y.Margin = new System.Windows.Forms.Padding(4);
-            this.positioning_y.Name = "positioning_y";
-            this.positioning_y.Size = new System.Drawing.Size(78, 29);
-            this.positioning_y.TabIndex = 51;
-            this.positioning_y.Text = "-555.572";
+            this.offset_y.Location = new System.Drawing.Point(322, 230);
+            this.offset_y.Margin = new System.Windows.Forms.Padding(4);
+            this.offset_y.Name = "offset_y";
+            this.offset_y.Size = new System.Drawing.Size(78, 29);
+            this.offset_y.TabIndex = 51;
+            this.offset_y.Text = "-541.247";
             // 
-            // positioning_x
+            // offset_x
             // 
-            this.positioning_x.Location = new System.Drawing.Point(196, 230);
-            this.positioning_x.Margin = new System.Windows.Forms.Padding(4);
-            this.positioning_x.Name = "positioning_x";
-            this.positioning_x.Size = new System.Drawing.Size(79, 29);
-            this.positioning_x.TabIndex = 47;
-            this.positioning_x.Text = "156.027";
+            this.offset_x.Location = new System.Drawing.Point(196, 230);
+            this.offset_x.Margin = new System.Windows.Forms.Padding(4);
+            this.offset_x.Name = "offset_x";
+            this.offset_x.Size = new System.Drawing.Size(79, 29);
+            this.offset_x.TabIndex = 47;
+            this.offset_x.Text = "106.278";
             // 
             // positioning_file_path
             // 
@@ -1051,7 +1051,7 @@
             this.numericUpDown_threshold.Size = new System.Drawing.Size(78, 29);
             this.numericUpDown_threshold.TabIndex = 5;
             this.numericUpDown_threshold.Value = new decimal(new int[] {
-            140,
+            150,
             0,
             0,
             0});
@@ -1145,8 +1145,8 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox text_blue_weight;
         private System.Windows.Forms.TextBox text_green_weight;
-        private System.Windows.Forms.TextBox positioning_y;
-        private System.Windows.Forms.TextBox positioning_x;
+        private System.Windows.Forms.TextBox offset_y;
+        private System.Windows.Forms.TextBox offset_x;
         private System.Windows.Forms.TextBox positioning_file_path;
         private System.Windows.Forms.TextBox modelImage_file_path;
         private System.Windows.Forms.TextBox text_red_weight;
