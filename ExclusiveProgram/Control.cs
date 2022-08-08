@@ -83,7 +83,7 @@ namespace ExclusiveProgram
                 {
                     foreach (var result in results)
                     {
-                        var control = new UserControl1();
+                        var control = new UserControl1(null);
                         control.setImage(result.ROI.ToBitmap());
                         control.setLabel(new string[] { $"({result.Coordinate.X},{result.Coordinate.Y})",$"[{result.Size.Width},{result.Size.Height}]",""});
                         ui.roi_puzzleView.Controls.Add(control);
@@ -131,7 +131,9 @@ namespace ExclusiveProgram
 
             var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,boardImage,offset,dilateErodeSize);
  
-            var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
+            cameraCalibration = cameraCalibration ?? GetCameraCalibration();
+            //var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
+            var image = new Image<Bgr,byte>(source_file_path.Text);
             capture_preview.Image = image.ToBitmap();
             List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
 
@@ -164,7 +166,7 @@ namespace ExclusiveProgram
             factory.setListener(new MyFactoryListener(this));
             
             if(positioning_enable)
-                factory.setVisionPositioning(GetVisionPositioning(boardImage));
+                factory.setVisionPositioning(HomographyPositioner.LoadFromCsv());
             else
                 factory.setVisionPositioning(null);
 
@@ -195,24 +197,6 @@ namespace ExclusiveProgram
         }
         */
 
-        private IVisionPositioning GetVisionPositioning(Image<Bgr,byte> image) {
-            return HomographyPositioner.LoadFromCsv();
-        }
-        private Matrix<double> GetHomographyMatrixFromFile()
-        {
-            var matrix = new Matrix<double>(3,3);
-            var list=Csv.Read("homography_matrix.csv");
-            for(int i = 0; i < list.Count; i++)
-            {
-                var cols = list[i];
-                for (int j = 0; j < cols.Count; j++)
-                {
-                    matrix[i, j] = double.Parse(list[i][j]);
-                }
-            }
-            return matrix;
-        }
-
         private string SelectFile(string InitialDirectory,string Filter)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -237,7 +221,8 @@ namespace ExclusiveProgram
             }
             else
             {
-                var control = new UserControl1();
+                var control = new UserControl1(Arm);
+                control.setPosition(new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 45, 180, 0, 90 });
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
                 control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angel, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
                 recognize_match_puzzleView.Controls.Add(control);

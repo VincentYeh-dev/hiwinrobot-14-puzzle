@@ -63,7 +63,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                     }
                     catch (Exception e)
                     {
-                        throw new PuzzleRecognizingException("辨識錯誤", e);
+                        //throw new PuzzleRecognizingException("辨識錯誤", e);
                     }
 
                 }, cts.Token);
