@@ -31,17 +31,26 @@ namespace ExclusiveProgram.ui.component
             this.camera = camera;
         }
 
-        private CCIA GetVisionPositioning() {
+        private CCIA GetCCIA(CameraParameter cp) {
             List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
             images.Add(new Image<Bgr, byte>(board_file_path.Text));
-            var cc = new CameraCalibration(new Size(12,9),15);
-            var cp =cc.CalCameraParameter(images, out _, out _, out _, out _, out _);
-
-            var positioning = new CCIA(cp, 5, null, Approx );
-            positioning.WorldOffset = new PointF(float.Parse(offset_x.Text),float.Parse(offset_y.Text));
+            var positioning = new CCIA(cp, 5, null, Approx);
+            positioning.WorldOffset = new PointF(float.Parse(offset_x1.Text),float.Parse(offset_y1.Text));
             positioning.InterativeTimeout = 3;
             return positioning;
         }
+
+        private AdvancedHomographyPositioner GetHomographyPositioner(CameraCalibration cameraCalibration)
+        {
+            var pointsOfWorld = new PointF[4];
+            pointsOfWorld[0] = new PointF(float.Parse(offset_x1.Text),float.Parse(offset_y1.Text));
+            pointsOfWorld[1] = new PointF(float.Parse(offset_x2.Text),float.Parse(offset_y2.Text));
+            pointsOfWorld[2] = new PointF(float.Parse(offset_x3.Text),float.Parse(offset_y3.Text));
+            pointsOfWorld[3] = new PointF(float.Parse(offset_x4.Text),float.Parse(offset_y4.Text));
+
+            return new AdvancedHomographyPositioner(pointsOfWorld,cameraCalibration);
+        }
+
         private string SelectFile(string InitialDirectory,string Filter)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -86,8 +95,28 @@ namespace ExclusiveProgram.ui.component
         private void button1_Click(object sender, EventArgs e)
         {
             var timeStamp = DateTime.Now.ToString("yyyy-MM-dd_hhmmss");
-            var positioning=GetVisionPositioning();
-            positioning.SaveToCsv($"positioning\\CCIA {timeStamp}.csv");
+            var method = comboBox_method.SelectedItem.ToString();
+
+            var cc = new CameraCalibration(new Size(12,9),15);
+            var images = new List<Image<Bgr, byte>>();
+            images.Add(new Image<Bgr,byte>(board_file_path.Text));
+
+            var cp = cc.CalCameraParameter(images);
+
+
+            if (method.Equals("CCIA"))
+            {
+                var positioning=GetCCIA(cp);
+                positioning.SaveToCsv($"positioning\\CCIA {timeStamp}.csv");
+            }
+            else if(method.Equals("Homography"))
+            {
+                var positioning=GetHomographyPositioner(cc);
+                cp.SaveToCsv($"positioning\\CameraParamater {timeStamp}.csv");
+                positioning.HomographyPositioner.SaveToCsv($"positioning\\Homography {timeStamp}.csv");
+            }
+
         }
+
     }
 }

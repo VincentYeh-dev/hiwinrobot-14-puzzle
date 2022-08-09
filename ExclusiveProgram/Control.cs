@@ -35,6 +35,8 @@ namespace ExclusiveProgram
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
         private PositioningUserControl PositioningUserControl;
+        private readonly string cp_filepath="positioning\\CameraParamater 2022-08-09_065358.csv";
+        private readonly string homograpy_filepath="positioning\\Homography 2022-08-09_065358.csv";
 
         public Control()
         {
@@ -117,7 +119,9 @@ namespace ExclusiveProgram
             var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,dilateErodeSize);
  
             //var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
-            var image = new Image<Bgr,byte>(source_file_path.Text);
+            var rawImage= new Image<Bgr,byte>(source_file_path.Text);
+            var image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(cp_filepath));
+
             capture_preview.Image = image.ToBitmap();
             List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
 
@@ -143,11 +147,23 @@ namespace ExclusiveProgram
             factory.setListener(new MyFactoryListener(this));
             
             if(positioning_enable)
-                factory.setVisionPositioning(CCIA.LoadFromCsv(textBox_CCIA_filepath.Text));
+                factory.setVisionPositioning(GetHomography());
             else
                 factory.setVisionPositioning(null);
 
             return factory;
+        }
+
+        private IVisionPositioning GetCCIA()
+        {
+            return CCIA.LoadFromCsv(textBox_CCIA_filepath.Text);
+        }
+
+        private IVisionPositioning GetHomography()
+        {
+            var positioner=HomographyPositioner.LoadFromCsv(homograpy_filepath);
+            return positioner;
+            
         }
 
 
