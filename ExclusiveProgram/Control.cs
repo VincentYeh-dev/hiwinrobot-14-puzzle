@@ -31,7 +31,6 @@ namespace ExclusiveProgram
     {
         private IDSCamera camera;
         private bool positioning_enable=true;
-        private  CameraCalibration cameraCalibration;
 
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
@@ -121,7 +120,7 @@ namespace ExclusiveProgram
             var threshold = (int)numericUpDown_threshold.Value;
             var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
-            var boardImage= new Image<Bgr,byte>(positioning_file_path.Text);
+            var boardImage= new Image<Bgr,byte>(board_file_path.Text);
             var offset = new PointF(float.Parse(offset_x.Text),float.Parse(offset_y.Text));
             var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
             var red_weight = Double.Parse(text_red_weight.Text);
@@ -131,7 +130,6 @@ namespace ExclusiveProgram
 
             var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,boardImage,offset,dilateErodeSize);
  
-            cameraCalibration = cameraCalibration ?? GetCameraCalibration();
             //var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
             var image = new Image<Bgr,byte>(source_file_path.Text);
             capture_preview.Image = image.ToBitmap();
@@ -143,13 +141,6 @@ namespace ExclusiveProgram
             }
 
         }
-        public void ConvertAndSaveHomographyMatrix(PointF[] pointsOfWorld,string file)
-        {
-            cameraCalibration = cameraCalibration ?? GetCameraCalibration(new Image<Bgr,byte>(file));
-            var advancedHomography = new AdvancedHomographyPositioner(pointsOfWorld, cameraCalibration);
-            advancedHomography.HomographyPositioner.SaveToCsv();
-        }
-
         private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,Image<Bgr,byte> boardImage,PointF offset,int dilateErodeSize)
         {
             //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
@@ -175,18 +166,18 @@ namespace ExclusiveProgram
 
         private void Approx(double ex, double ey, ref double vx, ref double vy)
         {
-            double p = 0.05;
+            double p = 0.03;
             vx += p * ex;
             vy += p * ey;
         }
 
         private IVisionPositioning GetVisionPositioning() {
             List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(new Image<Bgr, byte>(positioning_file_path.Text));
-            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
+            images.Add(new Image<Bgr, byte>(board_file_path.Text));
+            //images.Add(new Image<Bgr, byte>("cb_01.jpg"));
+            //images.Add(new Image<Bgr, byte>("cb_02.jpg"));
+            //images.Add(new Image<Bgr, byte>("cb_03.jpg"));
+            //images.Add(new Image<Bgr, byte>("cb_04.jpg"));
             var cc = new CameraCalibration(new Size(12,9),15);
             var cp =  cc.CalCameraParameter(images, out var cm, out var dc , out var rv, out var tv, out var error);
             cp.SaveToCsv();
@@ -248,7 +239,7 @@ namespace ExclusiveProgram
         }
         private void button8_Click(object sender, EventArgs e)
         {
-            positioning_file_path.Text = SelectFile("", "Image files|*.*");
+            board_file_path.Text = SelectFile("", "Image files|*.*");
         }
 
 
@@ -294,7 +285,7 @@ namespace ExclusiveProgram
             {
 
                 camera.GetImage().Save("Capture_Positioning.bmp", ImageFormat.Bmp);
-                positioning_file_path.Text = "Capture_Positioning.bmp";
+                board_file_path.Text = "Capture_Positioning.bmp";
             }
             else
                 MessageBox.Show("尚未連接攝影機");
@@ -338,18 +329,7 @@ namespace ExclusiveProgram
             button8.Enabled = positioning_enable;
             button10.Enabled = positioning_enable;
             button11.Enabled = positioning_enable;
-            positioning_file_path.Enabled = positioning_enable;
-        }
-
-        private void button14_Click(object sender, EventArgs e)
-        {
-            var points = new PointF[4];
-            points[0] = ConvertStringToPointF(text_top_left_x.Text,text_top_left_y.Text);
-            points[1] = ConvertStringToPointF(text_top_right_x.Text,text_top_right_y.Text);
-            points[2] = ConvertStringToPointF(text_bottom_left_x.Text,text_bottom_left_y.Text);
-            points[3] = ConvertStringToPointF(text_bottom_right_x.Text,text_bottom_right_y.Text);
-            //TL TR BL BR
-            ConvertAndSaveHomographyMatrix(points,text_board_file_path.Text);
+            board_file_path.Enabled = positioning_enable;
         }
 
         private PointF ConvertStringToPointF(string str_x,string str_y)
@@ -357,28 +337,6 @@ namespace ExclusiveProgram
             return new PointF(float.Parse(str_x),float.Parse(str_y));
         }
 
-        private void button16_Click(object sender, EventArgs e)
-        {
-            string file_path=SelectFile("C:\\","Image files|*.*");
-            text_board_file_path.Text=file_path;
-        }
-
-        private void button15_Click(object sender, EventArgs e)
-        {
-            if (camera != null&&camera.Connected)
-            {
-
-                camera.GetImage().Save("Capture_Board.bmp", ImageFormat.Bmp);
-                text_board_file_path.Text = "Capture_Board.bmp";
-            }
-            else
-                MessageBox.Show("尚未連接攝影機");
-        }
-
-        private void button16_Click_1(object sender, EventArgs e)
-        {
-            text_board_file_path.Text=positioning_file_path.Text = SelectFile("", "Image files|*.*");
-        }
     }
 
 }
