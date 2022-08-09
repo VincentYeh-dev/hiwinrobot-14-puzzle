@@ -58,20 +58,19 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                         var recognized_result = recognizer.Recognize(location.ID, location.ROI);
                         if (listener != null)
                             listener.onRecognized(recognized_result);
-                        var realWorldCoordinate=positioning!=null?positioning.ImageToWorld(location.Coordinate):new System.Drawing.PointF();
+                        var realWorldCoordinate=positioning!=null?positioning.ImageToWorld(location.Coordinate):new PointF();
                         results.Add(merger.merge(location, location.ROI, recognized_result,realWorldCoordinate));
                     }
                     catch (Exception e)
                     {
-                        //throw new PuzzleRecognizingException("辨識錯誤", e);
+                        Console.WriteLine(e);
                     }
 
                 }, cts.Token);
-                task.Wait();
                 tasks.Add(task);
             }
 
-            //Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(tasks.ToArray());
             cts.Dispose();
             return results;
         }

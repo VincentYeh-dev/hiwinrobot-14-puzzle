@@ -86,13 +86,13 @@
       <HintPath>..\packages\NFUIRSL.RASDK.0.3.5\lib\net472\RASDK.Gripper.dll</HintPath>
     </Reference>
     <Reference Include="RASDK.Vision, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\NFUIRSL.RASDK.Vision.0.2.0-alpha.4\lib\net472\RASDK.Vision.dll</HintPath>
+      <HintPath>..\packages\NFUIRSL.RASDK.Vision.0.2.0-alpha.6\lib\net472\RASDK.Vision.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.7.0.0-preview.6.22324.4\lib\net462\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
@@ -159,6 +159,12 @@
     <Compile Include="puzzle\Puzzle2D.cs" />
     <Compile Include="puzzle\Puzzle3D.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
+    <Compile Include="ui.component\Positioning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui.component\Positioning.Designer.cs">
+      <DependentUpon>Positioning.cs</DependentUpon>
+    </Compile>
     <Compile Include="ui.component\UserControl1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -178,6 +184,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ui.component\Positioning.resx">
+      <DependentUpon>Positioning.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ui.component\UserControl1.resx">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </EmbeddedResource>

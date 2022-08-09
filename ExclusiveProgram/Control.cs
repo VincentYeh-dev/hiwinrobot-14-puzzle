@@ -34,13 +34,15 @@ namespace ExclusiveProgram
 
         //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
-
+        private PositioningUserControl PositioningUserControl;
 
         public Control()
         {
             InitializeComponent();
             Config = new Config();
             check_positioning_enable.Checked = positioning_enable;
+            this.PositioningUserControl = new PositioningUserControl();
+            flowLayoutPanel_positioning_root.Controls.Add(PositioningUserControl);
         }
 
 
@@ -98,20 +100,6 @@ namespace ExclusiveProgram
 
         }
         
-        private CameraCalibration GetCameraCalibration(Image<Bgr,byte> image=null)
-        {
-            var cameraCalibration = new CameraCalibration(new Size(12,9),15);
-            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-
-            if(image!=null)
-                images.Add(image);
-            images.Add(new Image<Bgr, byte>("cb_01.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_02.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_03.jpg"));
-            images.Add(new Image<Bgr, byte>("cb_04.jpg"));
-            cameraCalibration.CalCameraParameter(images);
-            return cameraCalibration;
-        }
         private void DoPuzzleVisual()
         {
 
@@ -120,15 +108,13 @@ namespace ExclusiveProgram
             var threshold = (int)numericUpDown_threshold.Value;
             var uniquenessThreshold = ((double)numericUpDown_uniqueness_threshold.Value) * 0.01f;
             var modelImage = new Image<Bgr,byte>(modelImage_file_path.Text);
-            var boardImage= new Image<Bgr,byte>(board_file_path.Text);
-            var offset = new PointF(float.Parse(offset_x.Text),float.Parse(offset_y.Text));
             var dilateErodeSize = (int)numeric_dilateErodeSize.Value;
             var red_weight = Double.Parse(text_red_weight.Text);
             var green_weight = Double.Parse(text_green_weight.Text);
             var blue_weight = Double.Parse(text_blue_weight.Text);
             var scalar = new MCvScalar(blue_weight,green_weight,red_weight);
 
-            var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,boardImage,offset,dilateErodeSize);
+            var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,dilateErodeSize);
  
             //var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
             var image = new Image<Bgr,byte>(source_file_path.Text);
@@ -141,7 +127,7 @@ namespace ExclusiveProgram
             }
 
         }
-        private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,Image<Bgr,byte> boardImage,PointF offset,int dilateErodeSize)
+        private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,int dilateErodeSize)
         {
             //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
             IPreprocessImpl preprocessImpl=null;
@@ -157,36 +143,14 @@ namespace ExclusiveProgram
             factory.setListener(new MyFactoryListener(this));
             
             if(positioning_enable)
-                factory.setVisionPositioning(GetVisionPositioning());
+                factory.setVisionPositioning(CCIA.LoadFromCsv(textBox_CCIA_filepath.Text));
             else
                 factory.setVisionPositioning(null);
 
             return factory;
         }
 
-        private void Approx(double ex, double ey, ref double vx, ref double vy)
-        {
-            double p = 0.03;
-            vx += p * ex;
-            vy += p * ey;
-        }
 
-        private IVisionPositioning GetVisionPositioning() {
-            List<Image<Bgr,byte>> images = new List<Image<Bgr,byte>>();
-            images.Add(new Image<Bgr, byte>(board_file_path.Text));
-            //images.Add(new Image<Bgr, byte>("cb_01.jpg"));
-            //images.Add(new Image<Bgr, byte>("cb_02.jpg"));
-            //images.Add(new Image<Bgr, byte>("cb_03.jpg"));
-            //images.Add(new Image<Bgr, byte>("cb_04.jpg"));
-            var cc = new CameraCalibration(new Size(12,9),15);
-            var cp =  cc.CalCameraParameter(images, out var cm, out var dc , out var rv, out var tv, out var error);
-            cp.SaveToCsv();
-            MessageHandler.Log($"error:{error}", LoggingLevel.Info);
-            var positioning= new CCIA(cp, 5, null, Approx );
-            positioning.WorldOffset = new PointF(float.Parse(offset_x.Text),float.Parse(offset_y.Text));
-            positioning.InterativeTimeout = 3;
-            return positioning;
-        }
 
         private string SelectFile(string InitialDirectory,string Filter)
         {
@@ -213,7 +177,7 @@ namespace ExclusiveProgram
             else
             {
                 var control = new UserControl1(Arm);
-                control.setPosition(new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 45, 180, 0, 90 });
+                control.setPosition(new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 10.938, 180, 0, 90 });
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
                 control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angel, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
                 recognize_match_puzzleView.Controls.Add(control);
@@ -237,11 +201,6 @@ namespace ExclusiveProgram
         {
             modelImage_file_path.Text = SelectFile("", "Image files|*.*");
         }
-        private void button8_Click(object sender, EventArgs e)
-        {
-            board_file_path.Text = SelectFile("", "Image files|*.*");
-        }
-
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -266,9 +225,17 @@ namespace ExclusiveProgram
 
         private void button5_Click(object sender, EventArgs e)
         {
-            camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()),camera_preview);
-            camera.Connect();
-            camera.LoadParameterFromEEPROM();
+            try
+            {
+                camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()), camera_preview);
+                camera.Connect();
+                camera.LoadParameterFromEEPROM();
+                PositioningUserControl.setCamera(camera);
+                
+            }catch(Exception ex)
+            {
+                MessageBox.Show("攝影機連線錯誤");
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -277,28 +244,6 @@ namespace ExclusiveProgram
                 return;
             camera.Disconnect();
             camera = null;
-        }
-
-        private void button10_Click(object sender, EventArgs e)
-        {
-            if (camera != null&&camera.Connected)
-            {
-
-                camera.GetImage().Save("Capture_Positioning.bmp", ImageFormat.Bmp);
-                board_file_path.Text = "Capture_Positioning.bmp";
-            }
-            else
-                MessageBox.Show("尚未連接攝影機");
-        }
-
-        private void button11_Click(object sender, EventArgs e)
-        {
-            double[] position = Arm.GetNowPosition();
-            var x=position[0];
-            var y = -position[1];
-            offset_x.Text = x.ToString();
-            offset_y.Text = y.ToString();
-
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -324,12 +269,6 @@ namespace ExclusiveProgram
         private void positioning_enable_CheckedChanged(object sender, EventArgs e)
         {
             positioning_enable = check_positioning_enable.Checked;
-            offset_x.Enabled = positioning_enable;
-            offset_y.Enabled = positioning_enable;
-            button8.Enabled = positioning_enable;
-            button10.Enabled = positioning_enable;
-            button11.Enabled = positioning_enable;
-            board_file_path.Enabled = positioning_enable;
         }
 
         private PointF ConvertStringToPointF(string str_x,string str_y)
@@ -337,6 +276,10 @@ namespace ExclusiveProgram
             return new PointF(float.Parse(str_x),float.Parse(str_y));
         }
 
+        private void button8_Click(object sender, EventArgs e)
+        {
+            textBox_CCIA_filepath.Text = SelectFile("", "CSV files|*.csv");
+        }
     }
 
 }
