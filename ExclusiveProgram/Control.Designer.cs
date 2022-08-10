@@ -37,6 +37,9 @@
             this.capture_preview = new System.Windows.Forms.PictureBox();
             this.capture_binarization_preview = new System.Windows.Forms.PictureBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button8 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox_positioning_filepath = new System.Windows.Forms.TextBox();
             this.check_positioning_enable = new System.Windows.Forms.CheckBox();
             this.button13 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
@@ -72,10 +75,11 @@
             this.numericUpDown_threshold = new System.Windows.Forms.NumericUpDown();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.textBox_CCIA_filepath = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
             this.flowLayoutPanel_positioning_root = new System.Windows.Forms.FlowLayoutPanel();
+            this.comboBox_method = new System.Windows.Forms.ComboBox();
+            this.button9 = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBox_camera_parameter_filepath = new System.Windows.Forms.TextBox();
             this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -179,9 +183,13 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button9);
+            this.tabPage1.Controls.Add(this.label12);
+            this.tabPage1.Controls.Add(this.textBox_camera_parameter_filepath);
+            this.tabPage1.Controls.Add(this.comboBox_method);
             this.tabPage1.Controls.Add(this.button8);
             this.tabPage1.Controls.Add(this.label11);
-            this.tabPage1.Controls.Add(this.textBox_CCIA_filepath);
+            this.tabPage1.Controls.Add(this.textBox_positioning_filepath);
             this.tabPage1.Controls.Add(this.check_positioning_enable);
             this.tabPage1.Controls.Add(this.button13);
             this.tabPage1.Controls.Add(this.button12);
@@ -224,6 +232,36 @@
             this.tabPage1.Text = "參數設定";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(324, 186);
+            this.button8.Margin = new System.Windows.Forms.Padding(4);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(112, 34);
+            this.button8.TabIndex = 66;
+            this.button8.Text = "瀏覽";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label11.Location = new System.Drawing.Point(53, 196);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(82, 24);
+            this.label11.TabIndex = 65;
+            this.label11.Text = "定位檔";
+            // 
+            // textBox_positioning_filepath
+            // 
+            this.textBox_positioning_filepath.Location = new System.Drawing.Point(160, 191);
+            this.textBox_positioning_filepath.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox_positioning_filepath.Name = "textBox_positioning_filepath";
+            this.textBox_positioning_filepath.Size = new System.Drawing.Size(156, 29);
+            this.textBox_positioning_filepath.TabIndex = 64;
+            // 
             // check_positioning_enable
             // 
             this.check_positioning_enable.AutoSize = true;
@@ -234,7 +272,6 @@
             this.check_positioning_enable.TabIndex = 63;
             this.check_positioning_enable.Text = "定位";
             this.check_positioning_enable.UseVisualStyleBackColor = true;
-            this.check_positioning_enable.CheckedChanged += new System.EventHandler(this.positioning_enable_CheckedChanged);
             // 
             // button13
             // 
@@ -634,42 +671,51 @@
             this.tabPage5.Text = "定位";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // textBox_CCIA_filepath
-            // 
-            this.textBox_CCIA_filepath.Location = new System.Drawing.Point(160, 191);
-            this.textBox_CCIA_filepath.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox_CCIA_filepath.Name = "textBox_CCIA_filepath";
-            this.textBox_CCIA_filepath.Size = new System.Drawing.Size(156, 29);
-            this.textBox_CCIA_filepath.TabIndex = 64;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label11.Location = new System.Drawing.Point(53, 196);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(64, 24);
-            this.label11.TabIndex = 65;
-            this.label11.Text = "CCIA";
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(324, 186);
-            this.button8.Margin = new System.Windows.Forms.Padding(4);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(112, 34);
-            this.button8.TabIndex = 66;
-            this.button8.Text = "瀏覽";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
             // flowLayoutPanel_positioning_root
             // 
             this.flowLayoutPanel_positioning_root.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel_positioning_root.Name = "flowLayoutPanel_positioning_root";
             this.flowLayoutPanel_positioning_root.Size = new System.Drawing.Size(1578, 540);
             this.flowLayoutPanel_positioning_root.TabIndex = 0;
+            // 
+            // comboBox_method
+            // 
+            this.comboBox_method.FormattingEnabled = true;
+            this.comboBox_method.Location = new System.Drawing.Point(160, 158);
+            this.comboBox_method.Name = "comboBox_method";
+            this.comboBox_method.Size = new System.Drawing.Size(121, 26);
+            this.comboBox_method.TabIndex = 67;
+            this.comboBox_method.SelectedIndexChanged += new System.EventHandler(this.comboBox_method_SelectedIndexChanged);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(361, 228);
+            this.button9.Margin = new System.Windows.Forms.Padding(4);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(112, 34);
+            this.button9.TabIndex = 70;
+            this.button9.Text = "瀏覽";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click_1);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label12.Location = new System.Drawing.Point(53, 238);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(130, 24);
+            this.label12.TabIndex = 69;
+            this.label12.Text = "相機參數檔";
+            // 
+            // textBox_camera_parameter_filepath
+            // 
+            this.textBox_camera_parameter_filepath.Location = new System.Drawing.Point(197, 233);
+            this.textBox_camera_parameter_filepath.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox_camera_parameter_filepath.Name = "textBox_camera_parameter_filepath";
+            this.textBox_camera_parameter_filepath.Size = new System.Drawing.Size(156, 29);
+            this.textBox_camera_parameter_filepath.TabIndex = 68;
             // 
             // Control
             // 
@@ -746,8 +792,12 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox_CCIA_filepath;
+        private System.Windows.Forms.TextBox textBox_positioning_filepath;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel_positioning_root;
+        private System.Windows.Forms.ComboBox comboBox_method;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBox_camera_parameter_filepath;
     }
 }

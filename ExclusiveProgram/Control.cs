@@ -25,26 +25,25 @@ using RASDK.Vision.Positioning;
 
 namespace ExclusiveProgram
 {
-
+    enum PositioningMethod
+    {
+        CCIA,Homography
+    }
 
     public partial class Control : MainForm.ExclusiveControl
     {
         private IDSCamera camera;
-        private bool positioning_enable=true;
-
-        //private VideoCapture capture;
         private delegate void DelShowResult(Puzzle3D puzzles);
         private PositioningUserControl PositioningUserControl;
-        private readonly string cp_filepath="positioning\\CameraParamater 2022-08-09_065358.csv";
-        private readonly string homograpy_filepath="positioning\\Homography 2022-08-09_065358.csv";
 
         public Control()
         {
             InitializeComponent();
             Config = new Config();
-            check_positioning_enable.Checked = positioning_enable;
             this.PositioningUserControl = new PositioningUserControl();
             flowLayoutPanel_positioning_root.Controls.Add(PositioningUserControl);
+            comboBox_method.Items.Add(PositioningMethod.CCIA);
+            comboBox_method.Items.Add(PositioningMethod.Homography);
         }
 
 
@@ -118,9 +117,14 @@ namespace ExclusiveProgram
 
             var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,dilateErodeSize);
  
-            //var image = cameraCalibration.UndistortImage(new Image<Bgr,byte>(source_file_path.Text));
             var rawImage= new Image<Bgr,byte>(source_file_path.Text);
-            var image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(cp_filepath));
+            Image<Bgr,byte> image= null;
+            if (comboBox_method.SelectedItem == null)
+                image = rawImage;
+            else if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
+                image = rawImage;
+            else if (comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
+                image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(textBox_camera_parameter_filepath.Text));
 
             capture_preview.Image = image.ToBitmap();
             List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
@@ -145,28 +149,21 @@ namespace ExclusiveProgram
 
             var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
             factory.setListener(new MyFactoryListener(this));
-            
-            if(positioning_enable)
-                factory.setVisionPositioning(GetHomography());
-            else
-                factory.setVisionPositioning(null);
-
+            factory.setVisionPositioning(GetVisionPositioning());
             return factory;
         }
 
-        private IVisionPositioning GetCCIA()
+        private IVisionPositioning GetVisionPositioning()
         {
-            return CCIA.LoadFromCsv(textBox_CCIA_filepath.Text);
+            if (check_positioning_enable.Checked)
+                if (comboBox_method.SelectedItem==null)
+                    return null;
+                else if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
+                    return CCIA.LoadFromCsv(textBox_positioning_filepath.Text);
+                else if (comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
+                    return HomographyPositioner.LoadFromCsv(textBox_positioning_filepath.Text);
+            return null;
         }
-
-        private IVisionPositioning GetHomography()
-        {
-            var positioner=HomographyPositioner.LoadFromCsv(homograpy_filepath);
-            return positioner;
-            
-        }
-
-
 
         private string SelectFile(string InitialDirectory,string Filter)
         {
@@ -282,19 +279,20 @@ namespace ExclusiveProgram
                 MessageBox.Show("尚未連接攝影機");
         }
 
-        private void positioning_enable_CheckedChanged(object sender, EventArgs e)
-        {
-            positioning_enable = check_positioning_enable.Checked;
-        }
-
-        private PointF ConvertStringToPointF(string str_x,string str_y)
-        {
-            return new PointF(float.Parse(str_x),float.Parse(str_y));
-        }
-
         private void button8_Click(object sender, EventArgs e)
         {
-            textBox_CCIA_filepath.Text = SelectFile("", "CSV files|*.csv");
+            textBox_positioning_filepath.Text = SelectFile("", "CSV files|*.csv");
+        }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            textBox_camera_parameter_filepath.Text = SelectFile(".", "CSV files|*.csv");
+        }
+
+        private void comboBox_method_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            textBox_camera_parameter_filepath.Enabled = comboBox_method.SelectedItem.Equals(PositioningMethod.Homography);
+            button9.Enabled = comboBox_method.SelectedItem.Equals(PositioningMethod.Homography);
         }
     }
 
