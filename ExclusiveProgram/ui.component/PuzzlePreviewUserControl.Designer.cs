@@ -1,6 +1,6 @@
 ﻿namespace ExclusiveProgram.ui.component
 {
-    partial class UserControl1
+    partial class PuzzlePreviewUserControl
     {
         /// <summary> 
         /// 設計工具所需的變數。

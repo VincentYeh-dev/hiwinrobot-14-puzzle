@@ -159,17 +159,17 @@
     <Compile Include="puzzle\Puzzle2D.cs" />
     <Compile Include="puzzle\Puzzle3D.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
-    <Compile Include="ui.component\Positioning.cs">
+    <Compile Include="ui.component\PositioningUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ui.component\Positioning.Designer.cs">
-      <DependentUpon>Positioning.cs</DependentUpon>
+    <Compile Include="ui.component\PositioningUserControl.Designer.cs">
+      <DependentUpon>PositioningUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui.component\UserControl1.cs">
+    <Compile Include="ui.component\PuzzlePreviewUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ui.component\UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <Compile Include="ui.component\PuzzlePreviewUserControl.Designer.cs">
+      <DependentUpon>PuzzlePreviewUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="VisualSystem.cs" />
     <EmbeddedResource Include="Control.resx">
@@ -184,11 +184,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ui.component\Positioning.resx">
-      <DependentUpon>Positioning.cs</DependentUpon>
+    <EmbeddedResource Include="ui.component\PositioningUserControl.resx">
+      <DependentUpon>PositioningUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ui.component\UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <EmbeddedResource Include="ui.component\PuzzlePreviewUserControl.resx">
+      <DependentUpon>PuzzlePreviewUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

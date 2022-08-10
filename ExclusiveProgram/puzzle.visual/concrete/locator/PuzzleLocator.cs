@@ -90,7 +90,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                     location_result.Coordinate = coordinate;
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);
                     location_result.ROI = getROI(location_result.Coordinate, location_result.Size, rawImage);
-                    //location_result.BinaryROI = getBinaryROI(location_result.Coordinate, location_result.Size, binaryImage);
 
                     location_results.Add(location_result);
                 }
@@ -148,14 +147,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             //將ROI選取區域使用Mat型式讀取
             return new_image;
-        }
-
-        private Image<Gray, byte> getBinaryROI(Point Coordinate, Size Size, Image<Gray, byte> input)
-        {
-            Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
-
-            //將ROI選取區域使用Mat型式讀取
-            return new Mat(input.Mat, rect).ToImage<Gray, byte>();
         }
 
         private bool CheckSize(Rectangle rect, Point Position)

@@ -52,27 +52,12 @@ namespace ExclusiveProgram
         {
             private delegate void DelonLocated(List<LocationResult> results);
             private delegate void DelonPreprocessDone(Image<Gray, byte> result);
-            private int index;
             public MyFactoryListener(Control ui)
             {
                 this.ui = ui;
             }
 
             private readonly Control ui;
-
-            public void onPreprocessDone(Image<Gray, byte> result)
-            {
-                if (this.ui.InvokeRequired)
-                {
-                    DelonPreprocessDone del = new DelonPreprocessDone(onPreprocessDone);
-                    this.ui.Invoke(del, result);
-                }
-                else
-                {
-
-                    ui.capture_binarization_preview.Image = result.ToBitmap();
-                }
-            }
 
             public void onLocated(List<LocationResult> results)
             {
@@ -85,18 +70,16 @@ namespace ExclusiveProgram
                 {
                     foreach (var result in results)
                     {
-                        var control = new UserControl1(null);
+                        var control = new PuzzlePreviewUserControl();
                         control.setImage(result.ROI.ToBitmap());
                         control.setLabel(new string[] { $"({result.Coordinate.X},{result.Coordinate.Y})",$"[{result.Size.Width},{result.Size.Height}]",""});
                         ui.roi_puzzleView.Controls.Add(control);
                     }
                 }
             }
-
-
-
             public void onRecognized(RecognizeResult result)
             {
+
             }
 
         }
@@ -189,10 +172,19 @@ namespace ExclusiveProgram
             }
             else
             {
-                var control = new UserControl1(Arm);
-                control.setPosition(new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 10.938, 180, 0, 90 });
+                var control = new PuzzlePreviewUserControl();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
                 control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angel, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
+
+                control.SetImageClicked(() => { 
+                    var positions = new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 10.938, 180, 0, 90 };
+                    if (MessageBox.Show("Yes or no", "The Title", 
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, 
+                        MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        Arm.MoveAbsolute(positions, new RASDK.Arm.AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
+                    }
+                });
                 recognize_match_puzzleView.Controls.Add(control);
             }
         }

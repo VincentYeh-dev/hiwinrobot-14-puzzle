@@ -17,7 +17,6 @@ namespace ExclusiveProgram.puzzle.visual.framework
         //public double Angle;
         public Size Size;
         public Image<Bgr,byte> ROI;
-        public Image<Gray,byte> BinaryROI;
         public int ID;
     }
 
