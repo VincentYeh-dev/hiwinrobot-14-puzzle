@@ -100,6 +100,10 @@ namespace ExclusiveProgram.ui.component
             var cc = new CameraCalibration(new Size(12,9),15);
             var images = new List<Image<Bgr, byte>>();
             images.Add(new Image<Bgr,byte>(board_file_path.Text));
+            foreach(var image_path in listBox_images.Items)
+            {
+                images.Add(new Image<Bgr,byte>(image_path.ToString()));
+            }
 
             var cp = cc.CalCameraParameter(images);
 
@@ -118,5 +122,14 @@ namespace ExclusiveProgram.ui.component
 
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            textBox_adder.Text = SelectFile("", "Image files|*.*");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            listBox_images.Items.Add(textBox_adder.Text);
+        }
     }
 }

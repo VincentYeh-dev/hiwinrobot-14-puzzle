@@ -55,6 +55,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.comboBox_method = new System.Windows.Forms.ComboBox();
+            this.listBox_images = new System.Windows.Forms.ListBox();
+            this.textBox_adder = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // offset_y1
@@ -335,10 +339,54 @@
             this.comboBox_method.Size = new System.Drawing.Size(131, 26);
             this.comboBox_method.TabIndex = 81;
             // 
+            // listBox_images
+            // 
+            this.listBox_images.FormattingEnabled = true;
+            this.listBox_images.ItemHeight = 18;
+            this.listBox_images.Location = new System.Drawing.Point(513, 30);
+            this.listBox_images.Name = "listBox_images";
+            this.listBox_images.Size = new System.Drawing.Size(554, 202);
+            this.listBox_images.TabIndex = 82;
+            // 
+            // textBox_adder
+            // 
+            this.textBox_adder.Enabled = false;
+            this.textBox_adder.Location = new System.Drawing.Point(513, 245);
+            this.textBox_adder.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox_adder.Name = "textBox_adder";
+            this.textBox_adder.Size = new System.Drawing.Size(396, 29);
+            this.textBox_adder.TabIndex = 84;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(917, 243);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(65, 34);
+            this.button2.TabIndex = 83;
+            this.button2.Text = "瀏覽";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(990, 243);
+            this.button3.Margin = new System.Windows.Forms.Padding(4);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(77, 34);
+            this.button3.TabIndex = 85;
+            this.button3.Text = "加入";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // PositioningUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.textBox_adder);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.listBox_images);
             this.Controls.Add(this.comboBox_method);
             this.Controls.Add(this.offset_y4);
             this.Controls.Add(this.offset_x4);
@@ -367,7 +415,7 @@
             this.Controls.Add(this.button8);
             this.Controls.Add(this.label11);
             this.Name = "PositioningUserControl";
-            this.Size = new System.Drawing.Size(487, 356);
+            this.Size = new System.Drawing.Size(1209, 356);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -402,5 +450,9 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox comboBox_method;
+        private System.Windows.Forms.ListBox listBox_images;
+        private System.Windows.Forms.TextBox textBox_adder;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
