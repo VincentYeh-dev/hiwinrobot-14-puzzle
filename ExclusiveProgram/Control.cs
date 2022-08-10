@@ -12,6 +12,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle;
+using ExclusiveProgram.puzzle.visual;
 using ExclusiveProgram.puzzle.visual.concrete;
 using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
@@ -98,8 +99,9 @@ namespace ExclusiveProgram
             var blue_weight = Double.Parse(text_blue_weight.Text);
             var scalar = new MCvScalar(blue_weight,green_weight,red_weight);
 
-            var factory = GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,dilateErodeSize);
- 
+            var factory = VisualFacade.GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,dilateErodeSize,new MyFactoryListener(this));
+            factory.setVisionPositioning(GetVisionPositioning());
+
             var rawImage= new Image<Bgr,byte>(source_file_path.Text);
             Image<Bgr,byte> image= null;
             if (comboBox_method.SelectedItem == null)
@@ -118,23 +120,23 @@ namespace ExclusiveProgram
             }
 
         }
-        private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,int dilateErodeSize)
-        {
-            //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
-            IPreprocessImpl preprocessImpl=null;
-            var grayConversionImpl = new WeightGrayConversionImpl(scalar);
-            var thresoldImpl = new NormalThresoldImpl(threshold);
-            var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(dilateErodeSize,dilateErodeSize));
-            var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
+        //private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,int dilateErodeSize)
+        //{
+        //    //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
+        //    IPreprocessImpl preprocessImpl=null;
+        //    var grayConversionImpl = new WeightGrayConversionImpl(scalar);
+        //    var thresoldImpl = new NormalThresoldImpl(threshold);
+        //    var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(dilateErodeSize,dilateErodeSize));
+        //    var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
 
-            var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
-            //recognizer.setListener(new MyRecognizeListener(this));
+        //    var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
+        //    //recognizer.setListener(new MyRecognizeListener(this));
 
-            var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
-            factory.setListener(new MyFactoryListener(this));
-            factory.setVisionPositioning(GetVisionPositioning());
-            return factory;
-        }
+        //    var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
+        //    factory.setListener(new MyFactoryListener(this));
+        //    factory.setVisionPositioning(GetVisionPositioning());
+        //    return factory;
+        //}
 
         private IVisionPositioning GetVisionPositioning()
         {

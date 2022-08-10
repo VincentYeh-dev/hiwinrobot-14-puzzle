@@ -156,6 +156,7 @@
     <Compile Include="puzzle.visual\framework\recognizer\IPuzzleRecognizer.cs" />
     <Compile Include="puzzle.visual\framework\merger\IPuzzleResultMerger.cs" />
     <Compile Include="puzzle.visual\framework\utils\IUtils.cs" />
+    <Compile Include="puzzle.visual\VisualFacade.cs" />
     <Compile Include="puzzle\Puzzle2D.cs" />
     <Compile Include="puzzle\Puzzle3D.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />

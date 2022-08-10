@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using ExclusiveProgram.puzzle.visual.framework;
+using RASDK.Vision.Positioning;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,5 +20,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI);
         void setListener(PuzzleFactoryListener listener);
+        void setVisionPositioning(IVisionPositioning positioning);
     }
 }

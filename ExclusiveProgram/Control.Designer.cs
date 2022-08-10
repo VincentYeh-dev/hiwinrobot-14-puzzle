@@ -37,6 +37,10 @@
             this.capture_preview = new System.Windows.Forms.PictureBox();
             this.capture_binarization_preview = new System.Windows.Forms.PictureBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button9 = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBox_camera_parameter_filepath = new System.Windows.Forms.TextBox();
+            this.comboBox_method = new System.Windows.Forms.ComboBox();
             this.button8 = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox_positioning_filepath = new System.Windows.Forms.TextBox();
@@ -76,10 +80,9 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel_positioning_root = new System.Windows.Forms.FlowLayoutPanel();
-            this.comboBox_method = new System.Windows.Forms.ComboBox();
-            this.button9 = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.textBox_camera_parameter_filepath = new System.Windows.Forms.TextBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.button10 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -95,6 +98,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_threshold)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.tabPage6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage4
@@ -231,6 +235,45 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "參數設定";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(361, 228);
+            this.button9.Margin = new System.Windows.Forms.Padding(4);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(112, 34);
+            this.button9.TabIndex = 70;
+            this.button9.Text = "瀏覽";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click_1);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label12.Location = new System.Drawing.Point(53, 238);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(130, 24);
+            this.label12.TabIndex = 69;
+            this.label12.Text = "相機參數檔";
+            // 
+            // textBox_camera_parameter_filepath
+            // 
+            this.textBox_camera_parameter_filepath.Location = new System.Drawing.Point(197, 233);
+            this.textBox_camera_parameter_filepath.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox_camera_parameter_filepath.Name = "textBox_camera_parameter_filepath";
+            this.textBox_camera_parameter_filepath.Size = new System.Drawing.Size(156, 29);
+            this.textBox_camera_parameter_filepath.TabIndex = 68;
+            // 
+            // comboBox_method
+            // 
+            this.comboBox_method.FormattingEnabled = true;
+            this.comboBox_method.Location = new System.Drawing.Point(160, 158);
+            this.comboBox_method.Name = "comboBox_method";
+            this.comboBox_method.Size = new System.Drawing.Size(121, 26);
+            this.comboBox_method.TabIndex = 67;
+            this.comboBox_method.SelectedIndexChanged += new System.EventHandler(this.comboBox_method_SelectedIndexChanged);
             // 
             // button8
             // 
@@ -654,6 +697,7 @@
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
+            this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Location = new System.Drawing.Point(4, 4);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
@@ -678,44 +722,36 @@
             this.flowLayoutPanel_positioning_root.Size = new System.Drawing.Size(1578, 540);
             this.flowLayoutPanel_positioning_root.TabIndex = 0;
             // 
-            // comboBox_method
+            // tabPage6
             // 
-            this.comboBox_method.FormattingEnabled = true;
-            this.comboBox_method.Location = new System.Drawing.Point(160, 158);
-            this.comboBox_method.Name = "comboBox_method";
-            this.comboBox_method.Size = new System.Drawing.Size(121, 26);
-            this.comboBox_method.TabIndex = 67;
-            this.comboBox_method.SelectedIndexChanged += new System.EventHandler(this.comboBox_method_SelectedIndexChanged);
+            this.tabPage6.Controls.Add(this.button10);
+            this.tabPage6.Controls.Add(this.button11);
+            this.tabPage6.Location = new System.Drawing.Point(4, 28);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(1584, 546);
+            this.tabPage6.TabIndex = 7;
+            this.tabPage6.Text = "比賽";
+            this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // button9
+            // button10
             // 
-            this.button9.Location = new System.Drawing.Point(361, 228);
-            this.button9.Margin = new System.Windows.Forms.Padding(4);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(112, 34);
-            this.button9.TabIndex = 70;
-            this.button9.Text = "瀏覽";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click_1);
+            this.button10.Location = new System.Drawing.Point(136, 67);
+            this.button10.Margin = new System.Windows.Forms.Padding(4);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(86, 34);
+            this.button10.TabIndex = 64;
+            this.button10.Text = "拍照區2";
+            this.button10.UseVisualStyleBackColor = true;
             // 
-            // label12
+            // button11
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label12.Location = new System.Drawing.Point(53, 238);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(130, 24);
-            this.label12.TabIndex = 69;
-            this.label12.Text = "相機參數檔";
-            // 
-            // textBox_camera_parameter_filepath
-            // 
-            this.textBox_camera_parameter_filepath.Location = new System.Drawing.Point(197, 233);
-            this.textBox_camera_parameter_filepath.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox_camera_parameter_filepath.Name = "textBox_camera_parameter_filepath";
-            this.textBox_camera_parameter_filepath.Size = new System.Drawing.Size(156, 29);
-            this.textBox_camera_parameter_filepath.TabIndex = 68;
+            this.button11.Location = new System.Drawing.Point(28, 67);
+            this.button11.Margin = new System.Windows.Forms.Padding(4);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(86, 34);
+            this.button11.TabIndex = 63;
+            this.button11.Text = "拍照區1";
+            this.button11.UseVisualStyleBackColor = true;
             // 
             // Control
             // 
@@ -741,6 +777,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_threshold)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.tabPage6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -799,5 +836,8 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBox_camera_parameter_filepath;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
     }
 }
