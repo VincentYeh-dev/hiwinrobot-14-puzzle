@@ -21,7 +21,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private IVisionPositioning positioning;
         private PuzzleFactoryListener listener;
         private readonly TaskFactory factory;
-        private readonly CancellationTokenSource cts;
 
         public DefaultPuzzleFactory(IPuzzleLocator locator, IPuzzleRecognizer recognizer, IPuzzleResultMerger merger, int threadCount)
         {
@@ -34,7 +33,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             // Create a TaskFactory and pass it our custom scheduler.
             factory = new TaskFactory(lcts);
-            cts = new CancellationTokenSource();
         }
 
         public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI)
@@ -49,6 +47,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             List<Puzzle3D> results = new List<Puzzle3D>();
             List<Task> tasks = new List<Task>();
+            var cts = new CancellationTokenSource();
             foreach (LocationResult location in dataList)
             {
                 Task task = factory.StartNew(() =>

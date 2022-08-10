@@ -81,8 +81,8 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel_positioning_root = new System.Windows.Forms.FlowLayoutPanel();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.contestUserControl = new ExclusiveProgram.ui.component.ContestUserControl();
             this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -187,6 +187,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button10);
             this.tabPage1.Controls.Add(this.button9);
             this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.textBox_camera_parameter_filepath);
@@ -325,6 +326,7 @@
             this.button13.TabIndex = 62;
             this.button13.Text = "拍照區2";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button12
             // 
@@ -724,8 +726,7 @@
             // 
             // tabPage6
             // 
-            this.tabPage6.Controls.Add(this.button10);
-            this.tabPage6.Controls.Add(this.button11);
+            this.tabPage6.Controls.Add(this.contestUserControl);
             this.tabPage6.Location = new System.Drawing.Point(4, 28);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Size = new System.Drawing.Size(1584, 546);
@@ -733,25 +734,22 @@
             this.tabPage6.Text = "比賽";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
+            // contestUserControl
+            // 
+            this.contestUserControl.Location = new System.Drawing.Point(3, 0);
+            this.contestUserControl.Name = "contestUserControl";
+            this.contestUserControl.Size = new System.Drawing.Size(1581, 546);
+            this.contestUserControl.TabIndex = 0;
+            // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(136, 67);
-            this.button10.Margin = new System.Windows.Forms.Padding(4);
+            this.button10.Location = new System.Drawing.Point(190, 488);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(86, 34);
-            this.button10.TabIndex = 64;
-            this.button10.Text = "拍照區2";
+            this.button10.Size = new System.Drawing.Size(219, 43);
+            this.button10.TabIndex = 71;
+            this.button10.Text = "將設定匯入至比賽程式";
             this.button10.UseVisualStyleBackColor = true;
-            // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(28, 67);
-            this.button11.Margin = new System.Windows.Forms.Padding(4);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(86, 34);
-            this.button11.TabIndex = 63;
-            this.button11.Text = "拍照區1";
-            this.button11.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // Control
             // 
@@ -837,7 +835,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBox_camera_parameter_filepath;
         private System.Windows.Forms.TabPage tabPage6;
+        private ui.component.ContestUserControl contestUserControl;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
     }
 }

@@ -79,15 +79,14 @@ namespace ExclusiveProgram
                 }
             }
             public void onRecognized(RecognizeResult result)
-            {
+            {  
 
             }
 
         }
         
-        private void DoPuzzleVisual()
+        public IPuzzleFactory GetFactoryFromUIArguments()
         {
-
             var minSize = new Size((int)min_size_numeric.Value, (int)min_size_numeric.Value);
             var maxSize = new Size((int)max_size_numeric.Value, (int)max_size_numeric.Value);
             var threshold = (int)numericUpDown_threshold.Value;
@@ -100,6 +99,11 @@ namespace ExclusiveProgram
             var scalar = new MCvScalar(blue_weight,green_weight,red_weight);
 
             var factory = VisualFacade.GenerateFactory(scalar,threshold,uniquenessThreshold,minSize,maxSize,modelImage,dilateErodeSize,new MyFactoryListener(this));
+            return factory;
+        }
+        private void DoPuzzleVisual()
+        {
+            var factory=GetFactoryFromUIArguments();
             factory.setVisionPositioning(GetVisionPositioning());
 
             var rawImage= new Image<Bgr,byte>(source_file_path.Text);
@@ -176,7 +180,7 @@ namespace ExclusiveProgram
             {
                 var control = new PuzzlePreviewUserControl();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
-                control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angel, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
+                control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angle, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
 
                 control.SetImageClicked(() => { 
                     var positions = new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 10.938, 180, 0, 90 };
@@ -287,6 +291,26 @@ namespace ExclusiveProgram
         {
             textBox_camera_parameter_filepath.Enabled = comboBox_method.SelectedItem.Equals(PositioningMethod.Homography);
             button9.Enabled = comboBox_method.SelectedItem.Equals(PositioningMethod.Homography);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            contestUserControl.SetFactory(GetFactoryFromUIArguments());
+            contestUserControl.SetArm(Arm);
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            Arm.MoveAbsolute(new double[] { -195.351, 368.003, 230.336, 180, 0, 90 }, new RASDK.Arm.AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
+
+            if (camera != null&&camera.Connected)
+            {
+
+                camera.GetImage().Save("Capture_Source.bmp", ImageFormat.Bmp);
+                source_file_path.Text = "Capture_Source.bmp";
+            }
+            else
+                MessageBox.Show("尚未連接攝影機");
         }
     }
 

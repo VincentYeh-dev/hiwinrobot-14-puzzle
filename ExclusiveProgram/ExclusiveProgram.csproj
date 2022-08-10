@@ -160,6 +160,12 @@
     <Compile Include="puzzle\Puzzle2D.cs" />
     <Compile Include="puzzle\Puzzle3D.cs" />
     <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
+    <Compile Include="ui.component\ContestUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui.component\ContestUserControl.Designer.cs">
+      <DependentUpon>ContestUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ui.component\PositioningUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -185,6 +191,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ui.component\ContestUserControl.resx">
+      <DependentUpon>ContestUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ui.component\PositioningUserControl.resx">
       <DependentUpon>PositioningUserControl.cs</DependentUpon>
     </EmbeddedResource>

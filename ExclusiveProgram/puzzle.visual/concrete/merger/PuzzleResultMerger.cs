@@ -19,7 +19,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             Puzzle3D puzzle3D = new Puzzle3D(); 
             puzzle3D.ID= locationResult.ID;
-            puzzle3D.Angel = recognizeResult.Angle;
+            puzzle3D.Angle = recognizeResult.Angle;
             puzzle3D.RealWorldCoordinate =realworldCoordinate;
             puzzle3D.Position = recognizeResult.position;
             puzzle3D.puzzle2D = puzzle2D;
