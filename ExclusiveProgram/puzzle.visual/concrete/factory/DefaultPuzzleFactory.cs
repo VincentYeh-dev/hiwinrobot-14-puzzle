@@ -18,7 +18,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private IPuzzleRecognizer recognizer;
         private IPuzzleLocator locator;
         private readonly IPuzzleResultMerger merger;
-        private IVisionPositioning positioning;
         private PuzzleFactoryListener listener;
         private readonly TaskFactory factory;
 
@@ -35,12 +34,12 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             factory = new TaskFactory(lcts);
         }
 
-        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI)
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI,IVisionPositioning positioning,int IDOfStart)
         { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
-            dataList = locator.Locate(input,ROI);
+            dataList = locator.Locate(input,ROI,IDOfStart);
 
             if (listener != null)
                 listener.onLocated(dataList);
@@ -74,10 +73,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return results;
         }
 
-        public void setVisionPositioning(IVisionPositioning positioning)
-        {
-            this.positioning = positioning;
-        }
 
         public void setListener(PuzzleFactoryListener listener)
         {

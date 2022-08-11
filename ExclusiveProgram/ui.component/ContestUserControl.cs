@@ -151,18 +151,17 @@ namespace ExclusiveProgram.ui.component
         {
             puzzles.Clear();
             puzzles.AddRange(MoveToRegionAndGetPuzzles(1));
-            puzzles.AddRange(MoveToRegionAndGetPuzzles(2));
+            puzzles.AddRange(MoveToRegionAndGetPuzzles(2,puzzles.Count));
             UpdatePuzzleList();
         }
-        private List<Puzzle3D> MoveToRegionAndGetPuzzles(int index)
+        private List<Puzzle3D> MoveToRegionAndGetPuzzles(int index,int IDOfStart=0)
         {
             var puzzles=new List<Puzzle3D>();
             var region = GetRegion(index);
-            arm.MoveAbsolute(region.capture_position, new RASDK.Arm.AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
-            factory.setVisionPositioning(CCIA.LoadFromCsv(region.positioning_filepath));
+            arm.MoveAbsolute(region.capture_position, new AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
 
             var image = camera.GetImage().ToImage<Bgr, byte>();
-            puzzles.AddRange(factory.Execute(image,region.ROI));
+            puzzles.AddRange(factory.Execute(image,region.ROI,CCIA.LoadFromCsv(region.positioning_filepath),IDOfStart));
             return puzzles;
         }
 

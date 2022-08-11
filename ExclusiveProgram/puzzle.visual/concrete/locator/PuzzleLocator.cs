@@ -31,7 +31,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             this.binaryPreprocessImpl = binaryPreprocessImpl;
         }
 
-        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI)
+        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI,int IDOfStart)
         {
             var ROIImage = Mask(rawImage,ROI);
             ROIImage.Save("results\\roi.jpg");
@@ -85,7 +85,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                     CvInvoke.Polylines(preview_image, corner_points, true, new MCvScalar(0, 255, 255), 2);
                     CvInvoke.Circle(preview_image, coordinate, 1, new MCvScalar(0, 0, 255), 2);
                     preview_image.Save("results\\contours.jpg");
-                    location_result.ID = valid_id++;
+                    location_result.ID = IDOfStart + valid_id++;
                     //location_result.Angle = angle;
                     location_result.Coordinate = coordinate;
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);

@@ -104,7 +104,6 @@ namespace ExclusiveProgram
         private void DoPuzzleVisual()
         {
             var factory=GetFactoryFromUIArguments();
-            factory.setVisionPositioning(GetVisionPositioning());
 
             var rawImage= new Image<Bgr,byte>(source_file_path.Text);
             Image<Bgr,byte> image= null;
@@ -116,7 +115,7 @@ namespace ExclusiveProgram
                 image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(textBox_camera_parameter_filepath.Text));
 
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
+            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999),GetVisionPositioning(),10);
 
             foreach (Puzzle3D result in results)
             {
@@ -180,7 +179,7 @@ namespace ExclusiveProgram
             {
                 var control = new PuzzlePreviewUserControl();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
-                control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angle, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
+                control.setLabel(new string[] { $"#{result.ID} Angle:{ Math.Round(result.Angle, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
 
                 control.SetImageClicked(() => { 
                     var positions = new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 10.938, 180, 0, 90 };
