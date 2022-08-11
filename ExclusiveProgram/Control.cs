@@ -18,6 +18,7 @@ using ExclusiveProgram.puzzle.visual.concrete.utils;
 using ExclusiveProgram.puzzle.visual.framework;
 using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.ui.component;
+using RASDK.Arm;
 using RASDK.Basic;
 using RASDK.Basic.Message;
 using RASDK.Vision;
@@ -294,8 +295,8 @@ namespace ExclusiveProgram
 
         private void button10_Click(object sender, EventArgs e)
         {
-            contestUserControl.SetFactory(GetFactoryFromUIArguments());
-            contestUserControl.SetArm(Arm);
+            contestUserControl.Factory=GetFactoryFromUIArguments();
+            contestUserControl.Arm=Arm;
         }
 
         private void button13_Click(object sender, EventArgs e)
