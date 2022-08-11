@@ -22,7 +22,7 @@ namespace ExclusiveProgram.puzzle
     }
     public class PuzzleHandler
     {
-        private static double PICK_Z_POSITION = 3.572;
+        private static double PICK_Z_POSITION = 3;
         private static double TARGET_Z_POSITION = 40;
         private static int SUCKER_DISABLE_DELAY=400;
         private static int SUCKER_ENABLE_DELAY=400;
@@ -80,7 +80,7 @@ namespace ExclusiveProgram.puzzle
         public void PickPuzzle(Puzzle3D puzzle)
         {
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
-            RotateToAngle(puzzle.Angle);
+            RotateToAngle(puzzle.Angle+180);
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, PICK_Z_POSITION);
             sucker.Enable();
             Thread.Sleep(SUCKER_ENABLE_DELAY);
