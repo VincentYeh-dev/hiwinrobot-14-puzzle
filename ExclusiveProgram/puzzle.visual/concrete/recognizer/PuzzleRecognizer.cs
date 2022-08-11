@@ -27,7 +27,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly Image<Bgr, byte> modelImage;
         private readonly double uniquenessThreshold;
-        private PuzzleRecognizerListener listener;
 
 
         public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl,IPreprocessImpl preprocessImpl,IGrayConversionImpl grayConversionImpl,IThresholdImpl thresholdImpl,IBinaryPreprocessImpl binaryPreprocessImpl)
@@ -73,8 +72,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             {
                 MatchFeaturePointsAndFindMask(observedImage.Mat, preprocessModelImage.Mat, out modelKeyPoints, out observedKeyPoints, matches, out mask, out matchTime);
 
-                if (listener != null)
-                    listener.OnMatched(id,preprocessModelImage, modelKeyPoints, observedImage, observedKeyPoints, matches, mask, matchTime);
+                DrawMatchesAndSave(id,modelImage, modelKeyPoints, observedImage, observedKeyPoints,
+                   matches, new MCvScalar(0, 0, 255), new MCvScalar(255, 255, 255), mask);
 
                 Mat homography = FindHomography(modelKeyPoints, observedKeyPoints, matches, mask);
                 
@@ -109,9 +108,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 Point[] points = Array.ConvertAll<PointF, Point>(point_on_modelImage, Point.Round);
 
                 CvInvoke.Polylines(preview_image,points,true,new MCvScalar(0,0,255));
-
-
-
                 CvInvoke.Circle(preview_image,point,3, new MCvScalar(0, 0, 255), 2);
 
                 var width_per_puzzle  = (modelImage.Width / 7.0f);
@@ -140,10 +136,25 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
                 result.position = y + "" + x.ToString();
 
-                if (listener != null)
-                    listener.OnPerspective(id,preview_image.ToImage<Bgr,byte>(), result.position);
+                DrawPerspectiveAndSave(id,preview_image.ToImage<Bgr,byte>(), result.position);
             }
             return result;
+        }
+
+        private void DrawPerspectiveAndSave(int id, Image<Bgr, byte> image, string position)
+        {
+            CvInvoke.PutText(image, string.Format("position: {0}", position), new Point(1, 50), FontFace.HersheySimplex, 1, new MCvScalar(100, 100, 255), 2, LineType.FourConnected);
+            image.Save("results\\perspective_" + id + ".jpg");
+        }
+
+        private void DrawMatchesAndSave(int id,Image<Bgr, byte> modelImage, VectorOfKeyPoint modelKeyPoints, Image<Bgr, byte> observedImage, VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, MCvScalar mCvScalar1, MCvScalar mCvScalar2, Mat mask)
+        {
+            Mat resultImage = new Mat();
+            Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints,
+               matches, resultImage, new MCvScalar(0, 0, 255), new MCvScalar(255, 255, 255), mask);
+
+            resultImage.Save("results\\matching_" + id + ".jpg");
+            resultImage.Dispose();
         }
 
         private Point FindCoordinateOnModelImage(int id,Image<Bgr,byte> warpImage)
@@ -282,9 +293,5 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             Marshal.Copy(target, 0, mat.DataPointer + (row * mat.Cols + col) * mat.ElementSize, 1);
         }
 
-        public void setListener(PuzzleRecognizerListener listener)
-        {
-            this.listener = listener;
-        }
     }
 }

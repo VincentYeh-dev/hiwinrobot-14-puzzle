@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using ExclusiveProgram.puzzle.visual.framework;
+using RASDK.Vision.Positioning;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,11 +15,11 @@ namespace ExclusiveProgram.puzzle.visual.concrete
     {
         void onLocated(List<LocationResult> results);
         void onRecognized(RecognizeResult result);
-        void onPreprocessDone(Image<Gray, byte> result);
     }
     public interface IPuzzleFactory
     {
-        List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle? ROI = null);
+        List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI);
         void setListener(PuzzleFactoryListener listener);
+        void setVisionPositioning(IVisionPositioning positioning);
     }
 }

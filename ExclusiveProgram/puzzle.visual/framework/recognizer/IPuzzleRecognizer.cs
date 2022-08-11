@@ -13,12 +13,6 @@ namespace ExclusiveProgram.puzzle.visual.framework
         public int id;
     };
 
-    public interface PuzzleRecognizerListener
-    {
-        void OnMatched(int id,Image<Bgr, byte> preprocessModelImage, VectorOfKeyPoint modelKeyPoints, Image<Bgr, byte> observedImage, VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, Mat mask, long matchTime);
-        void OnPerspective(int id,Image<Bgr, byte> warpedPerspectiveImage, string position);
-    }
-
     public interface PuzzleRecognizerImpl
     {
         void DetectFeatures(Mat image, object p, VectorOfKeyPoint keyPoints, Mat descriptors, bool v);
@@ -30,7 +24,6 @@ namespace ExclusiveProgram.puzzle.visual.framework
         bool ModelImagePreprocessIsDone();
         void PreprocessModelImage();
         RecognizeResult Recognize(int id,Image<Bgr,byte> image);
-        void setListener(PuzzleRecognizerListener listener);
     }
 
 }

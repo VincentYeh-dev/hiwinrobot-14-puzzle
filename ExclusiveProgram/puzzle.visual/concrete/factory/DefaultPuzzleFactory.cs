@@ -21,7 +21,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private IVisionPositioning positioning;
         private PuzzleFactoryListener listener;
         private readonly TaskFactory factory;
-        private readonly CancellationTokenSource cts;
 
         public DefaultPuzzleFactory(IPuzzleLocator locator, IPuzzleRecognizer recognizer, IPuzzleResultMerger merger, int threadCount)
         {
@@ -34,24 +33,21 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
             // Create a TaskFactory and pass it our custom scheduler.
             factory = new TaskFactory(lcts);
-            cts = new CancellationTokenSource();
         }
 
-        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle? ROI=null)
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI)
         { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
-            if(ROI== null)
-                dataList = locator.Locate(input);
-            else
-                dataList = locator.Locate(input,ROI.Value);
+            dataList = locator.Locate(input,ROI);
 
             if (listener != null)
                 listener.onLocated(dataList);
 
             List<Puzzle3D> results = new List<Puzzle3D>();
             List<Task> tasks = new List<Task>();
+            var cts = new CancellationTokenSource();
             foreach (LocationResult location in dataList)
             {
                 Task task = factory.StartNew(() =>
@@ -61,20 +57,19 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                         var recognized_result = recognizer.Recognize(location.ID, location.ROI);
                         if (listener != null)
                             listener.onRecognized(recognized_result);
-                        var realWorldCoordinate=positioning!=null?positioning.ImageToWorld(location.Coordinate):new System.Drawing.PointF();
+                        var realWorldCoordinate=positioning!=null?positioning.ImageToWorld(location.Coordinate):new PointF();
                         results.Add(merger.merge(location, location.ROI, recognized_result,realWorldCoordinate));
                     }
                     catch (Exception e)
                     {
-                        throw new PuzzleRecognizingException("辨識錯誤", e);
+                        Console.WriteLine(e);
                     }
 
                 }, cts.Token);
-                task.Wait();
                 tasks.Add(task);
             }
 
-            //Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(tasks.ToArray());
             cts.Dispose();
             return results;
         }

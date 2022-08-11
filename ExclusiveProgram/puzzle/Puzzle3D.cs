@@ -11,7 +11,7 @@ namespace ExclusiveProgram.puzzle
     {
         public int ID;
         public PointF RealWorldCoordinate;
-        public double Angel;
+        public double Angle;
         public string Position;
         public Puzzle2D puzzle2D;
     };

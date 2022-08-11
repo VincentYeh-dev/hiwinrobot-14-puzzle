@@ -13,17 +13,15 @@ namespace ExclusiveProgram.puzzle.visual.framework
 
     public struct LocationResult
     {
-        public Point Coordinate;
+        public PointF Coordinate;
         //public double Angle;
         public Size Size;
         public Image<Bgr,byte> ROI;
-        public Image<Gray,byte> BinaryROI;
         public int ID;
     }
 
     public interface IPuzzleLocator
     {
-        List<LocationResult> Locate(Image<Bgr, byte> rawImage);
         List<LocationResult> Locate(Image<Bgr, byte> rawImage,Rectangle ROI);
     }
 }
