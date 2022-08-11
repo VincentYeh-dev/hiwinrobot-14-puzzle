@@ -83,6 +83,7 @@ namespace ExclusiveProgram.puzzle
             RotateToAngle(puzzle.Angle);
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, PICK_Z_POSITION);
             sucker.Enable();
+            Thread.Sleep(SUCKER_ENABLE_DELAY);
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
             RotateToAngle(0);
         }
