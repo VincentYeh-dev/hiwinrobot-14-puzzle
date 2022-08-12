@@ -129,5 +129,10 @@ namespace ExclusiveProgram.ui.component
             handler.DropPuzzle();
 
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

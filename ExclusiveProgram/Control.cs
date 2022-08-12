@@ -117,7 +117,7 @@ namespace ExclusiveProgram
                 image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(textBox_camera_parameter_filepath.Text));
 
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999),GetVisionPositioning(),10);
+            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999),GetVisionPositioning());
 
             foreach (Puzzle3D result in results)
             {

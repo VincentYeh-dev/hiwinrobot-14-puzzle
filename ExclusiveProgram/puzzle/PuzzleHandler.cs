@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle.visual.concrete;
 using RASDK.Arm;
+using RASDK.Basic;
 using RASDK.Vision.IDS;
 using RASDK.Vision.Positioning;
 using System;
@@ -31,6 +32,7 @@ namespace ExclusiveProgram.puzzle
         private readonly RoboticArm arm;
         private readonly IDSCamera camera;
         private readonly SuckerDevice sucker;
+        private readonly Dictionary<string, PointF> put_positions;
 
 
         public PuzzleHandler(IPuzzleFactory factory,RoboticArm arm,IDSCamera camera,SuckerDevice sucker)
@@ -39,7 +41,20 @@ namespace ExclusiveProgram.puzzle
             this.arm = arm;
             this.camera = camera;
             this.sucker = sucker;
+            put_positions = ReadPutPositionsFromFile("positioning\\put_position.csv");
         }
+
+        private Dictionary<string,PointF> ReadPutPositionsFromFile(string filepath)
+        {
+            var dictionary = new Dictionary<string, PointF>();
+            var datalist=Csv.Read(filepath);
+            foreach(var list in datalist)
+            {
+                dictionary.Add(list[1],new PointF(float.Parse(list[2]), float.Parse(list[3])));
+            }
+            return dictionary;
+        }
+
 
         private static Region GetRegion(int index)
         {
