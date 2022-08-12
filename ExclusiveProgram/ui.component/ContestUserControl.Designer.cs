@@ -206,6 +206,7 @@
             this.button7.TabIndex = 77;
             this.button7.Text = "放置至拼圖板";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // ContestUserControl
             // 

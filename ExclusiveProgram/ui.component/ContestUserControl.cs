@@ -134,5 +134,13 @@ namespace ExclusiveProgram.ui.component
         {
 
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (puzzles == null || puzzles.Count == 0)
+                return;
+            var puzzle= puzzles[listBox_detected_puzzles.SelectedIndex];
+            handler.PutPuzzle(puzzle);
+        }
     }
 }

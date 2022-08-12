@@ -27,7 +27,7 @@ namespace ExclusiveProgram.puzzle
         private static double TARGET_Z_POSITION = 40;
         private static int SUCKER_DISABLE_DELAY=400;
         private static int SUCKER_ENABLE_DELAY=400;
-
+        private static double PUT_Z_POSITION=0.655;
         private readonly IPuzzleFactory factory;
         private readonly RoboticArm arm;
         private readonly IDSCamera camera;
@@ -41,7 +41,7 @@ namespace ExclusiveProgram.puzzle
             this.arm = arm;
             this.camera = camera;
             this.sucker = sucker;
-            put_positions = ReadPutPositionsFromFile("positioning\\put_position.csv");
+            put_positions = ReadPutPositionsFromFile("positioning\\put_positions.csv");
         }
 
         private Dictionary<string,PointF> ReadPutPositionsFromFile(string filepath)
@@ -102,6 +102,18 @@ namespace ExclusiveProgram.puzzle
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
             RotateToAngle(0);
         }
+        public void PutPuzzle(Puzzle3D puzzle)
+        {
+            var success=put_positions.TryGetValue(puzzle.Position,out var coordinate);
+            if (!success)
+                throw new Exception();
+            Move(coordinate.X, coordinate.Y, TARGET_Z_POSITION);
+            Move(coordinate.X, coordinate.Y, PUT_Z_POSITION);
+            sucker.Disable();
+            Thread.Sleep(SUCKER_DISABLE_DELAY);
+            Move(coordinate.X, coordinate.Y, TARGET_Z_POSITION);
+        }
+
         public void DropPuzzle()
         {
             sucker.Disable();
