@@ -1,5 +1,7 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Aruco;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle.visual.concrete;
 using RASDK.Arm;
@@ -136,6 +138,35 @@ namespace ExclusiveProgram.puzzle
             var position = CurrentPosition();
             position[5] = robotAngle;
             arm.MoveAbsolute(position, new AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
+        }
+        private void AAA(Image<Bgr,byte> image)
+        {
+
+            Func<PointF> func2 = () =>
+            {
+                var img = camera.GetImage().ToImage<Bgr,byte>();
+                var cor = new VectorOfVectorOfPoint();
+                var ids = new VectorOfInt();
+                ArucoInvoke.DetectMarkers(img, new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50), cor, ids, DetectorParameters.GetDefault());
+
+                var goalCorner = new Point();
+                for(int i = 0; i < cor.Length; i++)
+                {
+                    var id=ids[i];
+                    if(id == 0)
+                    {
+                        //Top left
+                        goalCorner = cor[i][0];
+                    }
+
+                }
+
+                return goalCorner;
+            };
+
+            var kp = (20.0 / 130.0) * 0.8;
+            var func = VisualServo.BasicArmMoveFunc(arm,kp);
+            VisualServo.Tracking(image.Size, 10, func2, func);
         }
     }
 }
