@@ -37,6 +37,7 @@
             this.capture_preview = new System.Windows.Forms.PictureBox();
             this.capture_binarization_preview = new System.Windows.Forms.PictureBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button10 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.textBox_camera_parameter_filepath = new System.Windows.Forms.TextBox();
@@ -82,7 +83,6 @@
             this.flowLayoutPanel_positioning_root = new System.Windows.Forms.FlowLayoutPanel();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.contestUserControl = new ExclusiveProgram.ui.component.ContestUserControl();
-            this.button10 = new System.Windows.Forms.Button();
             this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -237,6 +237,16 @@
             this.tabPage1.Text = "參數設定";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(190, 488);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(219, 43);
+            this.button10.TabIndex = 71;
+            this.button10.Text = "將設定匯入至比賽程式";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // button9
             // 
             this.button9.Location = new System.Drawing.Point(361, 228);
@@ -386,7 +396,7 @@
             this.text_blue_weight.Name = "text_blue_weight";
             this.text_blue_weight.Size = new System.Drawing.Size(56, 29);
             this.text_blue_weight.TabIndex = 56;
-            this.text_blue_weight.Text = "0.144";
+            this.text_blue_weight.Text = "0";
             // 
             // text_green_weight
             // 
@@ -395,7 +405,7 @@
             this.text_green_weight.Name = "text_green_weight";
             this.text_green_weight.Size = new System.Drawing.Size(56, 29);
             this.text_green_weight.TabIndex = 54;
-            this.text_green_weight.Text = "0.587";
+            this.text_green_weight.Text = "0.85";
             // 
             // modelImage_file_path
             // 
@@ -413,7 +423,7 @@
             this.text_red_weight.Name = "text_red_weight";
             this.text_red_weight.Size = new System.Drawing.Size(56, 29);
             this.text_red_weight.TabIndex = 29;
-            this.text_red_weight.Text = "0.299";
+            this.text_red_weight.Text = "0.9";
             // 
             // source_file_path
             // 
@@ -687,7 +697,7 @@
             this.numericUpDown_threshold.Size = new System.Drawing.Size(78, 29);
             this.numericUpDown_threshold.TabIndex = 5;
             this.numericUpDown_threshold.Value = new decimal(new int[] {
-            150,
+            188,
             0,
             0,
             0});
@@ -736,20 +746,12 @@
             // 
             // contestUserControl
             // 
+            this.contestUserControl.Arm = null;
+            this.contestUserControl.Factory = null;
             this.contestUserControl.Location = new System.Drawing.Point(3, 0);
             this.contestUserControl.Name = "contestUserControl";
             this.contestUserControl.Size = new System.Drawing.Size(1581, 546);
             this.contestUserControl.TabIndex = 0;
-            // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(190, 488);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(219, 43);
-            this.button10.TabIndex = 71;
-            this.button10.Text = "將設定匯入至比賽程式";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // Control
             // 

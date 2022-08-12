@@ -39,6 +39,11 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             var preprocessImage = ROIImage.Clone();
             if (preProcessImpl != null)
                 preProcessImpl.Preprocess(preprocessImage, preprocessImage);
+            var channels =new VectorOfMat();
+            CvInvoke.Split(preprocessImage,channels);
+            channels[0].Save("results\\channel_B.jpg");
+            channels[1].Save("results\\channel_G.jpg");
+            channels[2].Save("results\\channel_R.jpg");
 
             var binaryImage = new Image<Gray, byte>(preprocessImage.Size);
             grayConversionImpl.ConvertToGray(preprocessImage, binaryImage);
@@ -62,25 +67,25 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             //尋遍輪廓組之單一輪廓
             for (int i = 0; i < contours.Size; i++)
             {
-                //多邊形逼近之套件
-                VectorOfPoint approxContour = GetApproxContour(contours[i]);
+                //VectorOfPoint contour = GetApproxContour(contours[i]);
+                VectorOfPoint contour = contours[i];
 
 
                 //框選輪廓最小矩形
-                Rectangle minRectangle = CvInvoke.BoundingRectangle(approxContour);
+                Rectangle minRectangle = CvInvoke.BoundingRectangle(contour);
 
                 //獲得最小旋轉矩形，取得角度用
-                RotatedRect minAreaRotatedRectangle = CvInvoke.MinAreaRect(approxContour);
+                RotatedRect minAreaRotatedRectangle = CvInvoke.MinAreaRect(contour);
                 //var angle = GetAngle(minAreaRotatedRectangle, minRectangle);
                 var corner_points = GetCornerPoints(minAreaRotatedRectangle);
-                Point coordinate = GetCentralCoordinate(approxContour);
+                Point coordinate = GetCentralCoordinate(contour);
 
 
                 LocationResult location_result = new LocationResult();
                 if (CheckDuplicatePuzzlePosition(location_results, coordinate) && CheckSize(minRectangle, coordinate))
                 {
                     //畫在圖片上
-                    CvInvoke.Polylines(preview_image, approxContour, true, new MCvScalar(0, 0, 255), 2);
+                    CvInvoke.Polylines(preview_image, contour, true, new MCvScalar(0, 0, 255), 2);
                     CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
                     CvInvoke.Polylines(preview_image, corner_points, true, new MCvScalar(0, 255, 255), 2);
                     CvInvoke.Circle(preview_image, coordinate, 1, new MCvScalar(0, 0, 255), 2);
