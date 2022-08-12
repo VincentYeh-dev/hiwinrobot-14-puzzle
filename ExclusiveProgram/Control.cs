@@ -76,6 +76,7 @@ namespace ExclusiveProgram
                         control.setImage(result.ROI.ToBitmap());
                         control.setLabel(new string[] { $"({result.Coordinate.X},{result.Coordinate.Y})",$"[{result.Size.Width},{result.Size.Height}]",""});
                         ui.roi_puzzleView.Controls.Add(control);
+                        ui.capture_contours_preview.Image = Bitmap.FromFile("results\\contours.jpg");
                     }
                 }
             }

@@ -67,9 +67,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             //尋遍輪廓組之單一輪廓
             for (int i = 0; i < contours.Size; i++)
             {
-                //VectorOfPoint contour = GetApproxContour(contours[i]);
+                //VectorOfPoint contour = GetHullContour(contours[i]);
                 VectorOfPoint contour = contours[i];
-
 
                 //框選輪廓最小矩形
                 Rectangle minRectangle = CvInvoke.BoundingRectangle(contour);
@@ -78,7 +77,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 RotatedRect minAreaRotatedRectangle = CvInvoke.MinAreaRect(contour);
                 //var angle = GetAngle(minAreaRotatedRectangle, minRectangle);
                 var corner_points = GetCornerPoints(minAreaRotatedRectangle);
-                Point coordinate = GetCentralCoordinate(contour);
+                PointF coordinate = GetCentralCoordinateByMinEncloseingCircle(contour);
 
 
                 LocationResult location_result = new LocationResult();
@@ -88,7 +87,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                     CvInvoke.Polylines(preview_image, contour, true, new MCvScalar(0, 0, 255), 2);
                     CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
                     CvInvoke.Polylines(preview_image, corner_points, true, new MCvScalar(0, 255, 255), 2);
-                    CvInvoke.Circle(preview_image, coordinate, 1, new MCvScalar(0, 0, 255), 2);
+                    CvInvoke.Circle(preview_image, Point.Round(coordinate), 5, new MCvScalar(0, 0, 255),-1);
                     preview_image.Save("results\\contours.jpg");
                     location_result.ID = IDOfStart + valid_id++;
                     //location_result.Angle = angle;
@@ -127,13 +126,23 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return newImage;
         }
 
-        private VectorOfPoint GetApproxContour(VectorOfPoint contour)
-        {
-            VectorOfPoint approxContour = new VectorOfPoint();
-            //將輪廓組用多邊形框選 「0.05」為可更改逼近值
-            CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * approx_paramater, true);
-            return approxContour;
-        }
+        //private VectorOfPoint GetApproxContour(VectorOfPoint contour)
+        //{
+        //    VectorOfPoint approxContour = new VectorOfPoint();
+        //    //將輪廓組用多邊形框選 「0.05」為可更改逼近值
+        //    CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * approx_paramater, true);
+        //    return approxContour;
+        //}
+
+        //private VectorOfPoint GetHullContour(VectorOfPoint contour)
+        //{
+        //    //VectorOfPoint approxContour = new VectorOfPoint();
+        //    ////將輪廓組用多邊形框選 「0.05」為可更改逼近值
+        //    //CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * approx_paramater, true);
+        //    var hull= new VectorOfPoint();
+        //    CvInvoke.ConvexHull(contour,hull);
+        //    return hull;
+        //}
 
         private Point[] GetCornerPoints(RotatedRect boundingBox)
         {
@@ -154,7 +163,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return new_image;
         }
 
-        private bool CheckSize(Rectangle rect, Point Position)
+        private bool CheckSize(Rectangle rect, PointF Position)
         {   
             if (rect.Size.Width < minSize.Width || rect.Size.Height < minSize.Height)
                 return false;
@@ -171,11 +180,18 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             return true;
         }
 
-        private Point GetCentralCoordinate(VectorOfPoint contour)
+        private Point GetCentralCoordinateByMinEncloseingCircle(VectorOfPoint contour)
         {
             //畫出最小外切圓，獲得圓心用
             CircleF Puzzle_circle = CvInvoke.MinEnclosingCircle(contour);
             return new Point((int)Puzzle_circle.Center.X, (int)Puzzle_circle.Center.Y);
+        }
+        private PointF GetCentralCoordinateByMoments(VectorOfPoint contour)
+        {
+            var hu = CvInvoke.Moments(contour, false);
+            double X = hu.M10 / hu.M00; //get center X
+            double Y = hu.M01 / hu.M00; //get center y
+            return new PointF((int)X, (int)Y);
         }
 
         private VectorOfVectorOfPoint FindContours(Image<Gray, byte> image)
@@ -192,7 +208,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         /// </summary>
         /// <param name="currentPuzzlePosition"></param>
         /// <returns></returns>
-        private bool CheckDuplicatePuzzlePosition(List<LocationResult> definedPuzzleDataList, Point currentPuzzlePosition)
+        private bool CheckDuplicatePuzzlePosition(List<LocationResult> definedPuzzleDataList, PointF currentPuzzlePosition)
         {
             bool Answer = true;
             for (int i = 0; i < definedPuzzleDataList.Count; i++)
