@@ -80,7 +80,7 @@ namespace ExclusiveProgram.puzzle
         public void PickPuzzle(Puzzle3D puzzle)
         {
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
-            RotateToAngle(puzzle.Angle+180);
+            RotateToAngle(puzzle.Angle+90);
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, PICK_Z_POSITION);
             sucker.Enable();
             Thread.Sleep(SUCKER_ENABLE_DELAY);

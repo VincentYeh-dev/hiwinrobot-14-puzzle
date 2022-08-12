@@ -32,7 +32,7 @@ namespace ExclusiveProgram.puzzle.visual
             var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
             //recognizer.setListener(new MyRecognizeListener(this));
 
-            var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
+            var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 8);
             factory.setListener(listener);
             return factory;
         }
