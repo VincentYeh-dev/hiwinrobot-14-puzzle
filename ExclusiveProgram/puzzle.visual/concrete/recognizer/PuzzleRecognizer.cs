@@ -26,12 +26,20 @@ namespace ExclusiveProgram.puzzle.visual.concrete
         private readonly IThresholdImpl thresholdImpl;
         private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly Image<Bgr, byte> modelImage;
+        private readonly float width_per_puzzle;
+        private readonly float height_per_puzzle;
+        private readonly float area_per_puzzle;
         private readonly double uniquenessThreshold;
 
 
         public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl,IPreprocessImpl preprocessImpl,IGrayConversionImpl grayConversionImpl,IThresholdImpl thresholdImpl,IBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.modelImage = modelImage;
+
+            width_per_puzzle  = (modelImage.Width / 7.0f);
+            height_per_puzzle = (modelImage.Height / 5.0f);
+            area_per_puzzle = width_per_puzzle*height_per_puzzle;
+
             this.uniquenessThreshold = uniquenessThreshold;
             this.impl = impl;
             this.preprocessImpl = preprocessImpl;
@@ -56,6 +64,7 @@ namespace ExclusiveProgram.puzzle.visual.concrete
 
         public RecognizeResult Recognize(int id,Image<Bgr, byte> image)
         {
+
             Image<Bgr, byte> observedImage = image.Clone();
 
             if (preprocessImpl != null)
@@ -110,8 +119,6 @@ namespace ExclusiveProgram.puzzle.visual.concrete
                 CvInvoke.Polylines(preview_image,points,true,new MCvScalar(0,0,255));
                 CvInvoke.Circle(preview_image,point,3, new MCvScalar(0, 0, 255), 2);
 
-                var width_per_puzzle  = (modelImage.Width / 7.0f);
-                var height_per_puzzle = (modelImage.Height / 5.0f);
                 for (int i = 1; i <= 5; i++)
                 {
                     var point1 = new Point(0,(int)height_per_puzzle*i);
@@ -171,6 +178,8 @@ namespace ExclusiveProgram.puzzle.visual.concrete
             thresholdImpl.Threshold(binaryImage, binaryImage);
             if(binaryPreprocessImpl != null)
                 binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
+            if (CvInvoke.CountNonZero(binaryImage) > 1.5 * area_per_puzzle)
+                throw new Exception("辨識結果大於1.5張拼圖");
 
 
             //取得輪廓組套件

@@ -52,7 +52,7 @@ namespace ExclusiveProgram.ui.component
 
         private void listBox_detected_puzzles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (puzzles == null || puzzles.Count == 0)
+            if (puzzles == null || puzzles.Count == 0||listBox_detected_puzzles.SelectedIndex>=puzzles.Count)
                 return;
             var puzzle = puzzles[listBox_detected_puzzles.SelectedIndex];
             pictureBox_puzzle_image.Image = puzzle.puzzle2D.ROI.ToBitmap();
@@ -140,6 +140,7 @@ namespace ExclusiveProgram.ui.component
             if (puzzles == null || puzzles.Count == 0)
                 return;
             var puzzle= puzzles[listBox_detected_puzzles.SelectedIndex];
+            handler.PickPuzzle(puzzle);
             handler.PutPuzzle(puzzle);
         }
     }
