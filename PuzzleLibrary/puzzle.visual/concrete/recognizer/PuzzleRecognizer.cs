@@ -6,6 +6,7 @@ using Emgu.CV.Util;
 using PuzzleLibrary.puzzle.visual.framework;
 using PuzzleLibrary.puzzle.visual.framework.utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -26,12 +27,19 @@ namespace PuzzleLibrary.puzzle.visual.concrete
         private readonly IThresholdImpl thresholdImpl;
         private readonly IBinaryPreprocessImpl binaryPreprocessImpl;
         private readonly Image<Bgr, byte> modelImage;
+        private readonly float width_per_puzzle;
+        private readonly float height_per_puzzle;
+        private readonly float area_per_puzzle;
         private readonly double uniquenessThreshold;
 
 
         public PuzzleRecognizer(Image<Bgr, byte> modelImage, double uniquenessThreshold, PuzzleRecognizerImpl impl, IPreprocessImpl preprocessImpl, IGrayConversionImpl grayConversionImpl, IThresholdImpl thresholdImpl, IBinaryPreprocessImpl binaryPreprocessImpl)
         {
             this.modelImage = modelImage;
+
+            width_per_puzzle  = (modelImage.Width / 7.0f);
+            height_per_puzzle = (modelImage.Height / 5.0f);
+            area_per_puzzle = width_per_puzzle*height_per_puzzle;
             this.uniquenessThreshold = uniquenessThreshold;
             this.impl = impl;
             this.preprocessImpl = preprocessImpl;
@@ -54,20 +62,21 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return preprocessModelImage != null;
         }
 
-        public RecognizeResult Recognize(int id, Image<Bgr, byte> image)
+        public RecognizeResult Recognize(int id, Image<Bgr, byte> image, List<string> ignoredPosition)
         {
             Image<Bgr, byte> observedImage = image.Clone();
 
             if (preprocessImpl != null)
                 preprocessImpl.Preprocess(observedImage, observedImage);
 
+            var IgnoredModelImage = GetIgnoredModelImage(modelImage,ignoredPosition);
             RecognizeResult result = new RecognizeResult();
 
-            FindFeaturePointsAndMatch(modelImage.Mat, observedImage.Mat, 
+            FindFeaturePointsAndMatch(IgnoredModelImage.Mat, observedImage.Mat, 
                 out var modelKeyPoints, out var observedKeyPoints,
                 out var matches,out var mask);
 
-            DrawMatchesAndSave(id, modelImage, modelKeyPoints, observedImage, observedKeyPoints,
+            DrawMatchesAndSave(id,IgnoredModelImage, modelKeyPoints, observedImage, observedKeyPoints,
                matches,mask);
 
             Mat homography = FindHomography(modelKeyPoints, observedKeyPoints, matches, mask);
@@ -76,7 +85,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
 
             Mat invert_homography = homography.Clone();
             CvInvoke.Invert(invert_homography, invert_homography, DecompMethod.Svd);
-            var warpImage = new Mat(preprocessModelImage.Size, preprocessModelImage.Mat.Depth, 3);
+            var warpImage = new Mat(IgnoredModelImage.Size, IgnoredModelImage.Mat.Depth, 3);
             CvInvoke.WarpPerspective(observedImage, warpImage, invert_homography, preprocessModelImage.Size);
 
             Point point = FindCoordinateOnModelImage(id, warpImage.ToImage<Bgr, byte>());
@@ -105,8 +114,6 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             CvInvoke.Polylines(preview_image, points, true, new MCvScalar(0, 0, 255));
             CvInvoke.Circle(preview_image, point, 3, new MCvScalar(0, 0, 255), 2);
 
-            var width_per_puzzle = (modelImage.Width / 7.0f);
-            var height_per_puzzle = (modelImage.Height / 5.0f);
             for (int i = 1; i <= 5; i++)
             {
                 var point1 = new Point(0, (int)height_per_puzzle * i);
@@ -133,6 +140,28 @@ namespace PuzzleLibrary.puzzle.visual.concrete
 
             DrawPerspectiveAndSave(id, preview_image.ToImage<Bgr, byte>(), result.position);
             return result;
+        }
+
+        private Image<Bgr,byte> GetIgnoredModelImage(Image<Bgr,byte> image,List<string> ignoredPositions)
+        {
+            if(ignoredPositions==null)
+                return image;
+            var newImage = image.Clone();
+            foreach(var position in ignoredPositions)
+            {
+                char[] c = position.ToCharArray();
+                var x_position = int.Parse(""+c[1]);
+                var y_position = int.Parse(""+c[0]);
+                var x = x_position * width_per_puzzle;
+                var y= y_position * height_per_puzzle;
+                CvInvoke.Rectangle(newImage, new Rectangle((int)x,(int)y,(int)width_per_puzzle,(int)height_per_puzzle), new MCvScalar(0, 0, 0), -1);
+            }
+
+            return newImage;
+        }
+        public RecognizeResult Recognize(int id, Image<Bgr, byte> image)
+        {
+            return Recognize(id, image, null);
         }
 
         private void DrawPerspectiveAndSave(int id, Image<Bgr, byte> image, string position)
@@ -165,6 +194,9 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             thresholdImpl.Threshold(binaryImage, binaryImage);
             if (binaryPreprocessImpl != null)
                 binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
+
+            if (CvInvoke.CountNonZero(binaryImage) > 1.5 * area_per_puzzle)
+                throw new Exception("辨識結果大於1.5張拼圖");
 
 
             //取得輪廓組套件
@@ -217,22 +249,22 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             var modelKeyPoints = new VectorOfKeyPoint();
             var observedKeyPoints = new VectorOfKeyPoint();
             var matches = new VectorOfVectorOfDMatch();
+            var good_matches = new VectorOfVectorOfDMatch();
 
             Mat modelDescriptors = new Mat();
             impl.DetectFeatures(modelImage, null, modelKeyPoints, modelDescriptors, false);
 
             Mat observedDescriptors = new Mat();
             impl.DetectFeatures(observedImage, null, observedKeyPoints, observedDescriptors, false);
-
             impl.MatchFeatures(modelDescriptors, observedDescriptors, modelKeyPoints, observedKeyPoints, matches);
-
-            out_modelKeyPoints = modelKeyPoints;
-            out_observedKeyPoints = observedKeyPoints;
-            out_matches = matches;
 
             mask = new Mat(matches.Size, 1, DepthType.Cv8U, 1);
             mask.SetTo(new MCvScalar(255));
             Features2DToolbox.VoteForUniqueness(matches, uniquenessThreshold, mask);
+            out_modelKeyPoints = modelKeyPoints;
+            out_observedKeyPoints = observedKeyPoints;
+            out_matches = matches;
+
         }
 
         private Mat FindHomography(VectorOfKeyPoint modelKeyPoints, VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, Mat mask)
@@ -261,9 +293,5 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return value[0];
         }
 
-        public RecognizeResult Recognize(int id, Image<Bgr, byte> image, string[] ignoredPosition)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

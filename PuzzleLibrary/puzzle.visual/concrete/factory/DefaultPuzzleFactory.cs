@@ -43,6 +43,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                 listener.onLocated(dataList);
 
             List<Puzzle3D> results = new List<Puzzle3D>();
+            var ignored = new List<string>();
             List<Task> tasks = new List<Task>();
             var cts = new CancellationTokenSource();
             foreach (LocationResult location in dataList)
@@ -51,7 +52,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                 {
                     try
                     {
-                        var recognized_result = recognizer.Recognize(location.ID, location.ROI);
+                        var recognized_result = recognizer.Recognize(location.ID, location.ROI,ignored);
                         if (listener != null)
                             listener.onRecognized(recognized_result);
 
@@ -59,8 +60,9 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                         float[] worldCoordinate=new float[] {0f,0f};
                         if(positioner != null)
                             worldCoordinate = positioner.ImageToWorldCoordinate(imageCoordinate);
-
-                        results.Add(merger.merge(location, location.ROI, recognized_result,new PointF(worldCoordinate[0],worldCoordinate[1])));
+                        var puzzle = merger.merge(location, location.ROI, recognized_result, new PointF(worldCoordinate[0], worldCoordinate[1]));
+                        results.Add(puzzle);
+                        ignored.Add(puzzle.Position);
                     }
                     catch (Exception e)
                     {
