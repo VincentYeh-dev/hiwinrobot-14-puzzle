@@ -12,12 +12,12 @@ using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle;
-using ExclusiveProgram.puzzle.visual;
-using ExclusiveProgram.puzzle.visual.concrete;
-using ExclusiveProgram.puzzle.visual.concrete.utils;
-using ExclusiveProgram.puzzle.visual.framework;
-using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.ui.component;
+using PuzzleLibrary.puzzle;
+using PuzzleLibrary.puzzle.visual;
+using PuzzleLibrary.puzzle.visual.concrete;
+using PuzzleLibrary.puzzle.visual.framework;
+using PuzzleLibrary.puzzle.visual.framework.positioning;
 using RASDK.Arm;
 using RASDK.Basic;
 using RASDK.Basic.Message;
@@ -107,16 +107,15 @@ namespace ExclusiveProgram
             var factory=GetFactoryFromUIArguments();
 
             var rawImage= new Image<Bgr,byte>(source_file_path.Text);
-            Image<Bgr,byte> image= null;
-            if (comboBox_method.SelectedItem == null)
-                image = rawImage;
+            Image<Bgr, byte> image = rawImage;
+            if (comboBox_method.SelectedItem == null) ;
             else if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
                 image = rawImage;
             else if (comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
                 image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(textBox_camera_parameter_filepath.Text));
 
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999),GetVisionPositioning(),10);
+            List<Puzzle3D> results = factory.Execute(image,GetVisionPositioner(),10);
 
             foreach (Puzzle3D result in results)
             {
@@ -124,33 +123,16 @@ namespace ExclusiveProgram
             }
 
         }
-        //private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,int dilateErodeSize)
-        //{
-        //    //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
-        //    IPreprocessImpl preprocessImpl=null;
-        //    var grayConversionImpl = new WeightGrayConversionImpl(scalar);
-        //    var thresoldImpl = new NormalThresoldImpl(threshold);
-        //    var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(dilateErodeSize,dilateErodeSize));
-        //    var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
 
-        //    var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
-        //    //recognizer.setListener(new MyRecognizeListener(this));
-
-        //    var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
-        //    factory.setListener(new MyFactoryListener(this));
-        //    factory.setVisionPositioning(GetVisionPositioning());
-        //    return factory;
-        //}
-
-        private IVisionPositioning GetVisionPositioning()
+        private IPositioner GetVisionPositioner()
         {
             if (check_positioning_enable.Checked)
                 if (comboBox_method.SelectedItem==null)
                     return null;
                 else if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
-                    return CCIA.LoadFromCsv(textBox_positioning_filepath.Text);
+                    return new RASDKPositionerAdaptor(CCIA.LoadFromCsv(textBox_positioning_filepath.Text));
                 else if (comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
-                    return HomographyPositioner.LoadFromCsv(textBox_positioning_filepath.Text);
+                    return new RASDKPositionerAdaptor(HomographyPositioner.LoadFromCsv(textBox_positioning_filepath.Text));
             return null;
         }
 

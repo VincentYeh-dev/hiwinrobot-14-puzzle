@@ -2,22 +2,14 @@
 using Emgu.CV.Structure;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle;
-using ExclusiveProgram.puzzle.visual.concrete;
+using PuzzleLibrary.puzzle;
+using PuzzleLibrary.puzzle.visual.concrete;
 using RASDK.Arm;
 using RASDK.Basic;
 using RASDK.Basic.Message;
 using RASDK.Vision.IDS;
-using RASDK.Vision.Positioning;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExclusiveProgram.ui.component

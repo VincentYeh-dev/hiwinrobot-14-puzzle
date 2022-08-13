@@ -1,7 +1,8 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using ExclusiveProgram.device;
-using ExclusiveProgram.puzzle.visual.concrete;
+using PuzzleLibrary.puzzle.visual.concrete;
+using PuzzleLibrary.puzzle;
 using RASDK.Arm;
 using RASDK.Vision.IDS;
 using RASDK.Vision.Positioning;
@@ -69,7 +70,7 @@ namespace ExclusiveProgram.puzzle
             RotateToAngle(0);
 
             var image = CaptureImage();
-            puzzles.AddRange(factory.Execute(image,region.ROI,CCIA.LoadFromCsv(region.positioning_filepath),IDOfStart));
+            puzzles.AddRange(factory.Execute(image,region.ROI,new RASDKPositionerAdaptor(CCIA.LoadFromCsv(region.positioning_filepath)),IDOfStart));
             return puzzles;
         }
         private  Image<Bgr,byte> CaptureImage()
