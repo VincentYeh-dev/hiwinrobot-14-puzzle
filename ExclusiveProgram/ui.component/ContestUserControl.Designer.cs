@@ -40,6 +40,10 @@
             this.label10 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox_positioning_filepath = new System.Windows.Forms.TextBox();
+            this.button7 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_puzzle_image)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,9 +110,9 @@
             // 
             this.button2.Location = new System.Drawing.Point(389, 393);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(311, 33);
+            this.button2.Size = new System.Drawing.Size(68, 33);
             this.button2.TabIndex = 68;
-            this.button2.Text = "移動";
+            this.button2.Text = "目標";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -146,28 +150,72 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(389, 432);
+            this.button3.Location = new System.Drawing.Point(463, 394);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(311, 32);
+            this.button3.Size = new System.Drawing.Size(70, 32);
             this.button3.TabIndex = 72;
-            this.button3.Text = "button3";
+            this.button3.Text = "吸取";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(389, 470);
+            this.button4.Location = new System.Drawing.Point(539, 394);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(311, 32);
+            this.button4.Size = new System.Drawing.Size(70, 32);
             this.button4.TabIndex = 73;
-            this.button4.Text = "button4";
+            this.button4.Text = "放置";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(290, 291);
+            this.button8.Margin = new System.Windows.Forms.Padding(4);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(62, 34);
+            this.button8.TabIndex = 76;
+            this.button8.Text = "瀏覽";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label11.Location = new System.Drawing.Point(20, 296);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(58, 24);
+            this.label11.TabIndex = 75;
+            this.label11.Text = "放置";
+            // 
+            // textBox_positioning_filepath
+            // 
+            this.textBox_positioning_filepath.Location = new System.Drawing.Point(110, 296);
+            this.textBox_positioning_filepath.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox_positioning_filepath.Name = "textBox_positioning_filepath";
+            this.textBox_positioning_filepath.Size = new System.Drawing.Size(172, 29);
+            this.textBox_positioning_filepath.TabIndex = 74;
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(389, 432);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(311, 32);
+            this.button7.TabIndex = 77;
+            this.button7.Text = "放置至拼圖板";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // ContestUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.textBox_positioning_filepath);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button6);
@@ -202,5 +250,9 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBox_positioning_filepath;
+        private System.Windows.Forms.Button button7;
     }
 }

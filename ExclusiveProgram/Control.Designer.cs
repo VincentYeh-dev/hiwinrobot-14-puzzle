@@ -35,7 +35,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.capture_preview = new System.Windows.Forms.PictureBox();
-            this.capture_binarization_preview = new System.Windows.Forms.PictureBox();
+            this.capture_contours_preview = new System.Windows.Forms.PictureBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.button10 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
@@ -88,7 +88,7 @@
             this.tabPage2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.capture_preview)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.capture_binarization_preview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.capture_contours_preview)).BeginInit();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dilateErodeSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.camera_preview)).BeginInit();
@@ -158,7 +158,7 @@
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.capture_preview);
-            this.flowLayoutPanel1.Controls.Add(this.capture_binarization_preview);
+            this.flowLayoutPanel1.Controls.Add(this.capture_contours_preview);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(4, 4);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -175,15 +175,15 @@
             this.capture_preview.TabIndex = 1;
             this.capture_preview.TabStop = false;
             // 
-            // capture_binarization_preview
+            // capture_contours_preview
             // 
-            this.capture_binarization_preview.Location = new System.Drawing.Point(756, 4);
-            this.capture_binarization_preview.Margin = new System.Windows.Forms.Padding(4);
-            this.capture_binarization_preview.Name = "capture_binarization_preview";
-            this.capture_binarization_preview.Size = new System.Drawing.Size(744, 520);
-            this.capture_binarization_preview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.capture_binarization_preview.TabIndex = 0;
-            this.capture_binarization_preview.TabStop = false;
+            this.capture_contours_preview.Location = new System.Drawing.Point(756, 4);
+            this.capture_contours_preview.Margin = new System.Windows.Forms.Padding(4);
+            this.capture_contours_preview.Name = "capture_contours_preview";
+            this.capture_contours_preview.Size = new System.Drawing.Size(744, 520);
+            this.capture_contours_preview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.capture_contours_preview.TabIndex = 0;
+            this.capture_contours_preview.TabStop = false;
             // 
             // tabPage1
             // 
@@ -766,7 +766,7 @@
             this.tabPage2.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.capture_preview)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.capture_binarization_preview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.capture_contours_preview)).EndInit();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dilateErodeSize)).EndInit();
@@ -791,7 +791,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.PictureBox capture_preview;
-        private System.Windows.Forms.PictureBox capture_binarization_preview;
+        private System.Windows.Forms.PictureBox capture_contours_preview;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.CheckBox check_positioning_enable;
         private System.Windows.Forms.Button button13;

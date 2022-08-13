@@ -1,8 +1,11 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Aruco;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle.visual.concrete;
 using RASDK.Arm;
+using RASDK.Basic;
 using RASDK.Vision.IDS;
 using RASDK.Vision.Positioning;
 using System;
@@ -26,11 +29,12 @@ namespace ExclusiveProgram.puzzle
         private static double TARGET_Z_POSITION = 40;
         private static int SUCKER_DISABLE_DELAY=400;
         private static int SUCKER_ENABLE_DELAY=400;
-
+        private static double PUT_Z_POSITION=0.655;
         private readonly IPuzzleFactory factory;
         private readonly RoboticArm arm;
         private readonly IDSCamera camera;
         private readonly SuckerDevice sucker;
+        private readonly Dictionary<string, PointF> put_positions;
 
 
         public PuzzleHandler(IPuzzleFactory factory,RoboticArm arm,IDSCamera camera,SuckerDevice sucker)
@@ -39,7 +43,20 @@ namespace ExclusiveProgram.puzzle
             this.arm = arm;
             this.camera = camera;
             this.sucker = sucker;
+            put_positions = ReadPutPositionsFromFile("positioning\\put_positions.csv");
         }
+
+        private Dictionary<string,PointF> ReadPutPositionsFromFile(string filepath)
+        {
+            var dictionary = new Dictionary<string, PointF>();
+            var datalist=Csv.Read(filepath);
+            foreach(var list in datalist)
+            {
+                dictionary.Add(list[1],new PointF(float.Parse(list[2]), float.Parse(list[3])));
+            }
+            return dictionary;
+        }
+
 
         private static Region GetRegion(int index)
         {
@@ -87,6 +104,18 @@ namespace ExclusiveProgram.puzzle
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
             RotateToAngle(0);
         }
+        public void PutPuzzle(Puzzle3D puzzle)
+        {
+            var success=put_positions.TryGetValue(puzzle.Position,out var coordinate);
+            if (!success)
+                throw new Exception();
+            Move(coordinate.X, coordinate.Y, TARGET_Z_POSITION);
+            Move(coordinate.X, coordinate.Y, PUT_Z_POSITION);
+            sucker.Disable();
+            Thread.Sleep(SUCKER_DISABLE_DELAY);
+            Move(coordinate.X, coordinate.Y, TARGET_Z_POSITION);
+        }
+
         public void DropPuzzle()
         {
             sucker.Disable();
@@ -109,6 +138,35 @@ namespace ExclusiveProgram.puzzle
             var position = CurrentPosition();
             position[5] = robotAngle;
             arm.MoveAbsolute(position, new AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
+        }
+        private void AAA(Image<Bgr,byte> image)
+        {
+
+            Func<PointF> func2 = () =>
+            {
+                var img = camera.GetImage().ToImage<Bgr,byte>();
+                var cor = new VectorOfVectorOfPoint();
+                var ids = new VectorOfInt();
+                ArucoInvoke.DetectMarkers(img, new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50), cor, ids, DetectorParameters.GetDefault());
+
+                var goalCorner = new Point();
+                for(int i = 0; i < cor.Length; i++)
+                {
+                    var id=ids[i];
+                    if(id == 0)
+                    {
+                        //Top left
+                        goalCorner = cor[i][0];
+                    }
+
+                }
+
+                return goalCorner;
+            };
+
+            var kp = (20.0 / 130.0) * 0.8;
+            var func = VisualServo.BasicArmMoveFunc(arm,kp);
+            VisualServo.Tracking(image.Size, 10, func2, func);
         }
     }
 }
