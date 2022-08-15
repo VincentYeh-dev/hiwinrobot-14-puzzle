@@ -140,29 +140,49 @@ namespace ExclusiveProgram.puzzle
             position[5] = robotAngle;
             arm.MoveAbsolute(position, new AdditionalMotionParameters { CoordinateType = RASDK.Arm.Type.CoordinateType.Descartes, NeedWait = true});
         }
-        private void AAA(Image<Bgr,byte> image)
+        public void AAA()
         {
 
+            var image = camera.GetImage().ToImage<Bgr,byte>();
+            image.Save("GGG.jpg");
             Func<PointF> func2 = () =>
             {
                 var img = camera.GetImage().ToImage<Bgr,byte>();
-                var cor = new VectorOfVectorOfPoint();
+                var cor = new VectorOfVectorOfPointF();
                 var ids = new VectorOfInt();
-                ArucoInvoke.DetectMarkers(img, new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50), cor, ids, DetectorParameters.GetDefault());
+                ArucoInvoke.DetectMarkers(img.Mat, new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50),cor, ids, DetectorParameters.GetDefault());
 
-                var goalCorner = new Point();
-                for(int i = 0; i < cor.Length; i++)
+                var id_array = ids.ToArray();
+                for(int i = 0; i < id_array.Length; i++)
                 {
-                    var id=ids[i];
-                    if(id == 0)
+                    var id=id_array[i];
+                    if(id == 3)
                     {
+                        PointF[] points= cor.ToArrayOfArray()[i];
                         //Top left
-                        goalCorner = cor[i][0];
+                        var topleft= points[0];
+                        var topright= points[1];
+                        var bottomright= points[2];
+                        var bottomleft= points[3];
+
+                        var angle = Math.Atan2(topleft.Y-topright.Y,topleft.X-topright.X)*(180/Math.PI);
+                        angle = (-angle)/Math.Abs(angle) * (180-Math.Abs(angle));
+
+                        for(int p = 0; p < points.Length; p++)
+                        {
+                            CvInvoke.PutText(img,p+"",new Point((int)points[p].X,(int)points[p].Y-10),Emgu.CV.CvEnum.FontFace.HersheyPlain,2,new MCvScalar(255,0,0));
+                            CvInvoke.Circle(img, Point.Round(points[p]),6,new MCvScalar(255,0,0),-1);
+                        }
+
+                        CvInvoke.PutText(img,"Angle:"+angle,new Point(100,100),Emgu.CV.CvEnum.FontFace.HersheyPlain,5,new MCvScalar(255,0,0));
+                        CvInvoke.Polylines(img,Array.ConvertAll<PointF,Point>(points,Point.Round),true,new MCvScalar(255,0,0),5);
+                        img.Save("GGG.jpg");
+                        return topleft;
                     }
 
                 }
+                throw new Exception();
 
-                return goalCorner;
             };
 
             var kp = (20.0 / 130.0) * 0.8;

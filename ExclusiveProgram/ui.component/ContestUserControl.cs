@@ -135,5 +135,11 @@ namespace ExclusiveProgram.ui.component
             handler.PickPuzzle(puzzle);
             handler.PutPuzzle(puzzle);
         }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+
+            handler.AAA();
+        }
     }
 }
