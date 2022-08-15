@@ -86,7 +86,7 @@
       <HintPath>..\packages\NFUIRSL.RASDK.0.3.9-alpha.1\lib\net472\RASDK.Gripper.dll</HintPath>
     </Reference>
     <Reference Include="RASDK.Vision, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\NFUIRSL.RASDK.Vision.0.2.0-alpha.11\lib\net472\RASDK.Vision.dll</HintPath>
+      <HintPath>..\packages\NFUIRSL.RASDK.Vision.0.2.0-beta.1\lib\net472\RASDK.Vision.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -135,32 +135,8 @@
     <Compile Include="device\SuckerDevice.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="puzzle.visual\concrete\factory\DefaultPuzzleFactory.cs" />
-    <Compile Include="puzzle.visual\concrete\factory\PuzzleGeneratingException.cs" />
     <Compile Include="puzzle\PuzzleHandler.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\CLANEPreprocessImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\CLANEGrayConversionImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\DilateErodeBinaryPreprocessImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\NormalThresholdImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\WeightGrayConversionImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\NormalPreprocessImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\utils\AdaptiveThresholdImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\recognizer\SiftFlannPuzzleRecognizerImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\recognizer\SiftBfmPuzzleRecognizerImpl.cs" />
-    <Compile Include="puzzle.visual\concrete\corrector\PuzzleCorrector.cs" />
-    <Compile Include="puzzle.visual\concrete\locator\PuzzleLocator.cs" />
-    <Compile Include="puzzle.visual\concrete\recognizer\PuzzleRecognizer.cs" />
-    <Compile Include="puzzle.visual\concrete\merger\PuzzleResultMerger.cs" />
-    <Compile Include="puzzle.visual\framework\factory\IPuzzleFactory.cs" />
-    <Compile Include="puzzle.visual\framework\corrector\IPuzzleCorrector.cs" />
-    <Compile Include="puzzle.visual\framework\locator\IPuzzleLocator.cs" />
-    <Compile Include="puzzle.visual\framework\recognizer\IPuzzleRecognizer.cs" />
-    <Compile Include="puzzle.visual\framework\merger\IPuzzleResultMerger.cs" />
-    <Compile Include="puzzle.visual\framework\utils\IUtils.cs" />
-    <Compile Include="puzzle.visual\VisualFacade.cs" />
-    <Compile Include="puzzle\Puzzle2D.cs" />
-    <Compile Include="puzzle\Puzzle3D.cs" />
-    <Compile Include="threading\LimitedConcurrencyLevelTaskScheduler.cs" />
+    <Compile Include="puzzle\RASDKPositionerAdaptor.cs" />
     <Compile Include="ui.component\ContestUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -179,7 +155,6 @@
     <Compile Include="ui.component\PuzzlePreviewUserControl.Designer.cs">
       <DependentUpon>PuzzlePreviewUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="VisualSystem.cs" />
     <EmbeddedResource Include="Control.resx">
       <DependentUpon>Control.cs</DependentUpon>
     </EmbeddedResource>
@@ -211,7 +186,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="puzzle.visual\concrete\recognizer\KazeFlannPuzzleRecognizerImpl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -220,6 +194,10 @@
     <ProjectReference Include="..\MainForm\MainForm.csproj">
       <Project>{95c2ddf6-1fd1-42ae-bf56-ef1391da6d5d}</Project>
       <Name>MainForm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PuzzleLibrary\PuzzleLibrary.csproj">
+      <Project>{17e27133-2bc8-4e12-91af-4a4c363c7124}</Project>
+      <Name>PuzzleLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
