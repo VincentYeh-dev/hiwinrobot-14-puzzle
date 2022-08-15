@@ -79,13 +79,18 @@ namespace ExclusiveProgram.puzzle
             }
             throw new Exception();
         }
-        public List<Puzzle3D> MoveToRegionAndGetPuzzles(int index,int IDOfStart=0)
+        private Region MoveToRegion(int index)
         {
-            var puzzles=new List<Puzzle3D>();
             var region = GetRegion(index);
             Move(region.capture_position[0], region.capture_position[1], region.capture_position[2]);
             RotateToAngle(0);
+            return region;
+        }
 
+        public List<Puzzle3D> MoveToRegionAndGetPuzzles(int index,int IDOfStart=0)
+        {
+            var puzzles=new List<Puzzle3D>();
+            var region = MoveToRegion(index);
             var image = CaptureImage();
             puzzles.AddRange(factory.Execute(image,region.ROI,new RASDKPositionerAdaptor(CCIA.LoadFromCsv(region.positioning_filepath)),IDOfStart));
             return puzzles;
@@ -133,6 +138,12 @@ namespace ExclusiveProgram.puzzle
             return arm.GetNowPosition();
         }
 
+        public void BBB(Puzzle3D puzzle)
+        {
+            var region=MoveToRegion(1);
+
+        }
+
         public void RotateToAngle(double angle)
         {
             var robotAngle = 90 - angle;
@@ -145,6 +156,7 @@ namespace ExclusiveProgram.puzzle
 
             var image = camera.GetImage().ToImage<Bgr,byte>();
             image.Save("GGG.jpg");
+            double angle = 0;
             Func<PointF> func2 = () =>
             {
                 var img = camera.GetImage().ToImage<Bgr,byte>();
@@ -156,7 +168,7 @@ namespace ExclusiveProgram.puzzle
                 for(int i = 0; i < id_array.Length; i++)
                 {
                     var id=id_array[i];
-                    if(id == 3)
+                    if(id == 0)
                     {
                         PointF[] points= cor.ToArrayOfArray()[i];
                         //Top left
@@ -165,8 +177,7 @@ namespace ExclusiveProgram.puzzle
                         var bottomright= points[2];
                         var bottomleft= points[3];
 
-                        var angle = Math.Atan2(topleft.Y-topright.Y,topleft.X-topright.X)*(180/Math.PI);
-                        angle = (-angle)/Math.Abs(angle) * (180-Math.Abs(angle));
+                        angle = Math.Atan2(topleft.Y-topright.Y,topright.X-topleft.X)*(180/Math.PI);
 
                         for(int p = 0; p < points.Length; p++)
                         {
@@ -181,6 +192,8 @@ namespace ExclusiveProgram.puzzle
                     }
 
                 }
+
+
                 throw new Exception();
 
             };
@@ -188,6 +201,17 @@ namespace ExclusiveProgram.puzzle
             var kp = (20.0 / 130.0) * 0.8;
             var func = VisualServo.BasicArmMoveFunc(arm,kp);
             VisualServo.Tracking(image.Size, 10, func2, func);
+
+            var position=arm.GetNowPosition();
+            var pa = new PointF((float)position[0], (float)position[1] );
+            var pc = new PointF(pa.X, (pa.Y + 111.83f));
+
+            var _points = new PointF[] {pc };
+            var rotateMatrix = new RotationMatrix2D();
+            CvInvoke.GetRotationMatrix2D(pc,angle, 1,rotateMatrix);
+            rotateMatrix.RotatePoints(_points);
+            Move(_points[0].X, _points[0].Y, position[2]);
+            
         }
     }
 }

@@ -141,5 +141,9 @@ namespace ExclusiveProgram.ui.component
 
             handler.AAA();
         }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+        }
     }
 }
