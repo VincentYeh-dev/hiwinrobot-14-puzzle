@@ -35,10 +35,10 @@
             this.pictureBox_puzzle_image = new System.Windows.Forms.PictureBox();
             this.textBox_puzzle_info = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_puzzle_image)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,63 +105,60 @@
             // 
             this.button2.Location = new System.Drawing.Point(389, 393);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(311, 33);
+            this.button2.Size = new System.Drawing.Size(68, 33);
             this.button2.TabIndex = 68;
-            this.button2.Text = "移動";
+            this.button2.Text = "目標";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(236, 10);
-            this.button6.Margin = new System.Windows.Forms.Padding(4);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(112, 34);
-            this.button6.TabIndex = 71;
-            this.button6.Text = "關閉";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(110, 10);
-            this.button5.Margin = new System.Windows.Forms.Padding(4);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(112, 34);
-            this.button5.TabIndex = 70;
-            this.button5.Text = "開啟";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label10.Location = new System.Drawing.Point(20, 13);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 24);
-            this.label10.TabIndex = 69;
-            this.label10.Text = "攝影機";
-            // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(389, 432);
+            this.button3.Location = new System.Drawing.Point(463, 394);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(311, 32);
+            this.button3.Size = new System.Drawing.Size(70, 32);
             this.button3.TabIndex = 72;
-            this.button3.Text = "button3";
+            this.button3.Text = "吸取";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(539, 394);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(70, 32);
+            this.button4.TabIndex = 73;
+            this.button4.Text = "放置";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(389, 432);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(311, 32);
+            this.button7.TabIndex = 77;
+            this.button7.Text = "放置至拼圖板";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(615, 394);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(85, 32);
+            this.button9.TabIndex = 78;
+            this.button9.Text = "button9";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // ContestUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.label10);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox_puzzle_info);
             this.Controls.Add(this.pictureBox_puzzle_image);
@@ -170,7 +167,7 @@
             this.Controls.Add(this.button12);
             this.Controls.Add(this.button1);
             this.Name = "ContestUserControl";
-            this.Size = new System.Drawing.Size(1371, 500);
+            this.Size = new System.Drawing.Size(1371, 521);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_puzzle_image)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -186,9 +183,9 @@
         private System.Windows.Forms.PictureBox pictureBox_puzzle_image;
         private System.Windows.Forms.TextBox textBox_puzzle_info;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button9;
     }
 }

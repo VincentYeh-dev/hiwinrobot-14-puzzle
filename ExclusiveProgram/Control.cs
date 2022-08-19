@@ -12,12 +12,13 @@ using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle;
-using ExclusiveProgram.puzzle.visual;
-using ExclusiveProgram.puzzle.visual.concrete;
-using ExclusiveProgram.puzzle.visual.concrete.utils;
-using ExclusiveProgram.puzzle.visual.framework;
-using ExclusiveProgram.puzzle.visual.framework.utils;
 using ExclusiveProgram.ui.component;
+using PuzzleLibrary.puzzle;
+using PuzzleLibrary.puzzle.visual;
+using PuzzleLibrary.puzzle.visual.concrete;
+using PuzzleLibrary.puzzle.visual.framework;
+using PuzzleLibrary.puzzle.visual.framework.positioning;
+using RASDK.Arm;
 using RASDK.Basic;
 using RASDK.Basic.Message;
 using RASDK.Vision;
@@ -75,6 +76,7 @@ namespace ExclusiveProgram
                         control.setImage(result.ROI.ToBitmap());
                         control.setLabel(new string[] { $"({result.Coordinate.X},{result.Coordinate.Y})",$"[{result.Size.Width},{result.Size.Height}]",""});
                         ui.roi_puzzleView.Controls.Add(control);
+                        //ui.capture_contours_preview.Image = Bitmap.FromFile("results\\contours.jpg");
                     }
                 }
             }
@@ -104,19 +106,17 @@ namespace ExclusiveProgram
         private void DoPuzzleVisual()
         {
             var factory=GetFactoryFromUIArguments();
-            factory.setVisionPositioning(GetVisionPositioning());
 
             var rawImage= new Image<Bgr,byte>(source_file_path.Text);
-            Image<Bgr,byte> image= null;
-            if (comboBox_method.SelectedItem == null)
-                image = rawImage;
+            Image<Bgr, byte> image = rawImage;
+            if (comboBox_method.SelectedItem == null) ;
             else if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
                 image = rawImage;
             else if (comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
                 image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(textBox_camera_parameter_filepath.Text));
 
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle3D> results = factory.Execute(image,Rectangle.FromLTRB(1068,30,2440,1999));
+            List<Puzzle3D> results = factory.Execute(image,GetVisionPositioner(),10);
 
             foreach (Puzzle3D result in results)
             {
@@ -124,49 +124,17 @@ namespace ExclusiveProgram
             }
 
         }
-        //private DefaultPuzzleFactory GenerateFactory(MCvScalar scalar,int threshold,double uniquenessThreshold,Size minSize,Size maxSize,Image<Bgr,byte> modelImage,int dilateErodeSize)
-        //{
-        //    //var preprocessImpl = new CLANEPreprocessImpl(3,new Size(8,8));
-        //    IPreprocessImpl preprocessImpl=null;
-        //    var grayConversionImpl = new WeightGrayConversionImpl(scalar);
-        //    var thresoldImpl = new NormalThresoldImpl(threshold);
-        //    var binaryPreprocessImpl = new DilateErodeBinaryPreprocessImpl(new Size(dilateErodeSize,dilateErodeSize));
-        //    var locator = new PuzzleLocator(minSize, maxSize, null, grayConversionImpl, thresoldImpl, binaryPreprocessImpl, 0.01);
 
-        //    var recognizer = new PuzzleRecognizer(modelImage, uniquenessThreshold, new SiftFlannPuzzleRecognizerImpl(), preprocessImpl, grayConversionImpl, thresoldImpl,binaryPreprocessImpl);
-        //    //recognizer.setListener(new MyRecognizeListener(this));
-
-        //    var factory = new DefaultPuzzleFactory(locator, recognizer, new PuzzleResultMerger(), 5);
-        //    factory.setListener(new MyFactoryListener(this));
-        //    factory.setVisionPositioning(GetVisionPositioning());
-        //    return factory;
-        //}
-
-        private IVisionPositioning GetVisionPositioning()
+        private IPositioner GetVisionPositioner()
         {
             if (check_positioning_enable.Checked)
                 if (comboBox_method.SelectedItem==null)
                     return null;
                 else if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
-                    return CCIA.LoadFromCsv(textBox_positioning_filepath.Text);
+                    return new RASDKPositionerAdaptor(CCIA.LoadFromCsv(textBox_positioning_filepath.Text));
                 else if (comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
-                    return HomographyPositioner.LoadFromCsv(textBox_positioning_filepath.Text);
+                    return new RASDKPositionerAdaptor(HomographyPositioner.LoadFromCsv(textBox_positioning_filepath.Text));
             return null;
-        }
-
-        private string SelectFile(string InitialDirectory,string Filter)
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = InitialDirectory ;
-            openFileDialog1.Filter = Filter;
-            openFileDialog1.FilterIndex = 0;
-            openFileDialog1.RestoreDirectory = true;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                return openFileDialog1.FileName;
-            }
-            return "";
         }
 
         private void ShowResult(Puzzle3D result)
@@ -180,7 +148,7 @@ namespace ExclusiveProgram
             {
                 var control = new PuzzlePreviewUserControl();
                 control.setImage(result.puzzle2D.ROI.ToBitmap());
-                control.setLabel(new string[] { $"Angle:{ Math.Round(result.Angle, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
+                control.setLabel(new string[] { $"#{result.ID} Angle:{ Math.Round(result.Angle, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
 
                 control.SetImageClicked(() => { 
                     var positions = new double[] { result.RealWorldCoordinate.X, result.RealWorldCoordinate.Y, 10.938, 180, 0, 90 };
@@ -206,11 +174,11 @@ namespace ExclusiveProgram
         
         private void button2_Click(object sender, EventArgs e)
         {
-            source_file_path.Text = SelectFile("", "Image files|*.*");
+            source_file_path.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_IMAGE);
         }
         private void button7_Click(object sender, EventArgs e)
         {
-            modelImage_file_path.Text = SelectFile("", "Image files|*.*");
+            modelImage_file_path.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_IMAGE);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -241,8 +209,6 @@ namespace ExclusiveProgram
                 camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()), camera_preview);
                 camera.Connect();
                 camera.LoadParameterFromEEPROM();
-                PositioningUserControl.setCamera(camera);
-                
             }catch(Exception ex)
             {
                 MessageBox.Show("攝影機連線錯誤");
@@ -279,12 +245,12 @@ namespace ExclusiveProgram
 
         private void button8_Click(object sender, EventArgs e)
         {
-            textBox_positioning_filepath.Text = SelectFile("", "CSV files|*.csv");
+            textBox_positioning_filepath.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_CSV);
         }
 
         private void button9_Click_1(object sender, EventArgs e)
         {
-            textBox_camera_parameter_filepath.Text = SelectFile(".", "CSV files|*.csv");
+            textBox_camera_parameter_filepath.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_CSV);
         }
 
         private void comboBox_method_SelectedIndexChanged(object sender, EventArgs e)
@@ -295,8 +261,12 @@ namespace ExclusiveProgram
 
         private void button10_Click(object sender, EventArgs e)
         {
-            contestUserControl.SetFactory(GetFactoryFromUIArguments());
-            contestUserControl.SetArm(Arm);
+            contestUserControl.Factory=GetFactoryFromUIArguments();
+            contestUserControl.Arm=Arm;
+            contestUserControl.Camera=camera;
+            PositioningUserControl.Arm=Arm;
+            PositioningUserControl.Camera=camera;
+            
         }
 
         private void button13_Click(object sender, EventArgs e)
@@ -312,6 +282,7 @@ namespace ExclusiveProgram
             else
                 MessageBox.Show("尚未連接攝影機");
         }
+
     }
 
 }
