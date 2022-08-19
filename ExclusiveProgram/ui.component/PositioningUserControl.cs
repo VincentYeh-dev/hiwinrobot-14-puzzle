@@ -21,14 +21,18 @@ namespace ExclusiveProgram.ui.component
 {
     public partial class PositioningUserControl : UserControl
     {
-        private IDSCamera camera;
+        enum PositioningMethod
+        {
+            CCIA,Homography
+        }
+        public IDSCamera Camera;
+        public RoboticArm Arm;
+
         public PositioningUserControl()
         {
             InitializeComponent();
-        }
-        public void setCamera(IDSCamera camera)
-        {
-            this.camera = camera;
+            comboBox_method.Items.Add(PositioningMethod.CCIA);
+            comboBox_method.Items.Add(PositioningMethod.Homography);
         }
 
         private CCIA GetCCIA(CameraParameter cp) {
@@ -51,32 +55,18 @@ namespace ExclusiveProgram.ui.component
             return new AdvancedHomographyPositioner(pointsOfWorld,cameraCalibration);
         }
 
-        private string SelectFile(string InitialDirectory,string Filter)
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = InitialDirectory ;
-            openFileDialog1.Filter = Filter;
-            openFileDialog1.FilterIndex = 0;
-            openFileDialog1.RestoreDirectory = true;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                return openFileDialog1.FileName;
-            }
-            return "";
-        }
         private void button8_Click(object sender, EventArgs e)
         {
-            board_file_path.Text = SelectFile("", "Image files|*.*");
+            board_file_path.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_IMAGE);
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            if (camera != null&&camera.Connected)
+            if (Camera != null&&Camera.Connected)
             {
                 var timeStamp = DateTime.Now.ToString("yyyy-MM-dd_hhmmss");
                 var filename = $"positioning\\Capture_Board {timeStamp}.bmp";
-                camera.GetImage().Save(filename, ImageFormat.Bmp);
+                Camera.GetImage().Save(filename, ImageFormat.Bmp);
                 board_file_path.Text = filename;
             }
             else
@@ -108,12 +98,12 @@ namespace ExclusiveProgram.ui.component
             var cp = cc.CalCameraParameter(images);
 
 
-            if (method.Equals("CCIA"))
+            if (method.Equals(PositioningMethod.CCIA))
             {
                 var positioning=GetCCIA(cp);
                 positioning.SaveToCsv($"positioning\\CCIA {timeStamp}.csv");
             }
-            else if(method.Equals("Homography"))
+            else if(method.Equals(PositioningMethod.Homography))
             {
                 var positioning=GetHomographyPositioner(cc);
                 cp.SaveToCsv($"positioning\\CameraParamater {timeStamp}.csv");
@@ -122,14 +112,79 @@ namespace ExclusiveProgram.ui.component
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            textBox_adder.Text = SelectFile("", "Image files|*.*");
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
-            listBox_images.Items.Add(textBox_adder.Text);
+            var files=GlobalUtils.SelectFiles(GlobalUtils.FILTER_IMAGE);
+            foreach(var file in files)
+            {
+                listBox_images.Items.Add(file);
+            }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var timeStamp = DateTime.Now.ToString("yyyy-MM-dd_hhmmss");
+            var filename = $"positioning\\Capture_Temp {timeStamp}.bmp";
+            Camera.GetImage().Save(filename,ImageFormat.Bmp);
+            listBox_images.Items.Add(filename);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var position = Arm.GetNowPosition();
+            offset_x1.Text = position[0].ToString();
+            if (comboBox_method.SelectedItem == null)
+                return; 
+            
+            if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
+            {
+                offset_y1.Text=(-position[1]).ToString();
+            }
+            else if(comboBox_method.SelectedItem.Equals(PositioningMethod.Homography))
+            {
+                offset_y1.Text=(position[1]).ToString();
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var position = Arm.GetNowPosition();
+            if (comboBox_method.SelectedItem == null)
+                return; 
+            if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
+            {
+                throw new Exception("");
+            }
+            offset_x2.Text=position[0].ToString();
+            offset_y2.Text=position[1].ToString();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            var position = Arm.GetNowPosition();
+            if (comboBox_method.SelectedItem == null)
+                return; 
+            if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
+            {
+                throw new Exception("");
+            }
+            offset_x3.Text=position[0].ToString();
+            offset_y3.Text=position[1].ToString();
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            var position = Arm.GetNowPosition();
+            if (comboBox_method.SelectedItem == null)
+                return; 
+            if (comboBox_method.SelectedItem.Equals(PositioningMethod.CCIA))
+            {
+                throw new Exception("");
+            }
+            offset_x4.Text=position[0].ToString();
+            offset_y4.Text=position[1].ToString();
+        }
+
     }
 }

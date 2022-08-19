@@ -18,6 +18,8 @@ namespace ExclusiveProgram.ui.component
     {
         public IPuzzleFactory Factory{ get; set; }
         public RoboticArm Arm { get; set; }
+        public IDSCamera Camera{ get; set; }
+
         private readonly List<Puzzle3D> puzzles=new List<Puzzle3D>();
         private PuzzleHandler handler;
         
@@ -79,17 +81,11 @@ namespace ExclusiveProgram.ui.component
         private void button5_Click(object sender, EventArgs e)
         {
             var sucker = new SuckerDevice();
-            var camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()));
             sucker.Connect();
             sucker.Disable();
 
-            camera.Connect();
-            camera.LoadParameterFromEEPROM();
-
-            Arm.Connect();
-
-            if(Factory != null&&Arm!=null&&camera!=null&&sucker!=null)
-                handler = new PuzzleHandler(Factory,Arm,camera,sucker);
+            if(Factory != null&&Arm!=null&&Camera!=null&&sucker!=null)
+                handler = new PuzzleHandler(Factory,Arm,Camera,sucker);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -119,12 +115,6 @@ namespace ExclusiveProgram.ui.component
         {
 
             handler.DropPuzzle();
-
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -140,10 +130,6 @@ namespace ExclusiveProgram.ui.component
         {
 
             handler.AAA();
-        }
-
-        private void button10_Click(object sender, EventArgs e)
-        {
         }
     }
 }

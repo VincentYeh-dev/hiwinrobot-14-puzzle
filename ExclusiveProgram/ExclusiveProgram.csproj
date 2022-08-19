@@ -133,6 +133,7 @@
       <DependentUpon>Control.cs</DependentUpon>
     </Compile>
     <Compile Include="device\SuckerDevice.cs" />
+    <Compile Include="GlobalUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="puzzle\PuzzleHandler.cs" />

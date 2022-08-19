@@ -35,17 +35,10 @@
             this.pictureBox_puzzle_image = new System.Windows.Forms.PictureBox();
             this.textBox_puzzle_info = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
-            this.textBox_positioning_filepath = new System.Windows.Forms.TextBox();
             this.button7 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_puzzle_image)).BeginInit();
             this.SuspendLayout();
             // 
@@ -118,38 +111,6 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(236, 10);
-            this.button6.Margin = new System.Windows.Forms.Padding(4);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(112, 34);
-            this.button6.TabIndex = 71;
-            this.button6.Text = "關閉";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(110, 10);
-            this.button5.Margin = new System.Windows.Forms.Padding(4);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(112, 34);
-            this.button5.TabIndex = 70;
-            this.button5.Text = "開啟";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label10.Location = new System.Drawing.Point(20, 13);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 24);
-            this.label10.TabIndex = 69;
-            this.label10.Text = "攝影機";
-            // 
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(463, 394);
@@ -169,36 +130,6 @@
             this.button4.Text = "放置";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(290, 291);
-            this.button8.Margin = new System.Windows.Forms.Padding(4);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(62, 34);
-            this.button8.TabIndex = 76;
-            this.button8.Text = "瀏覽";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label11.Location = new System.Drawing.Point(20, 296);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(58, 24);
-            this.label11.TabIndex = 75;
-            this.label11.Text = "放置";
-            // 
-            // textBox_positioning_filepath
-            // 
-            this.textBox_positioning_filepath.Location = new System.Drawing.Point(110, 296);
-            this.textBox_positioning_filepath.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox_positioning_filepath.Name = "textBox_positioning_filepath";
-            this.textBox_positioning_filepath.Size = new System.Drawing.Size(172, 29);
-            this.textBox_positioning_filepath.TabIndex = 74;
             // 
             // button7
             // 
@@ -220,31 +151,14 @@
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(24, 343);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(75, 23);
-            this.button10.TabIndex = 79;
-            this.button10.Text = "button10";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
             // ContestUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button7);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.textBox_positioning_filepath);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.label10);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox_puzzle_info);
             this.Controls.Add(this.pictureBox_puzzle_image);
@@ -269,16 +183,9 @@
         private System.Windows.Forms.PictureBox pictureBox_puzzle_image;
         private System.Windows.Forms.TextBox textBox_puzzle_info;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox_positioning_filepath;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button10;
     }
 }

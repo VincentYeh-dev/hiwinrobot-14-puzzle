@@ -243,7 +243,7 @@
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(219, 43);
             this.button10.TabIndex = 71;
-            this.button10.Text = "將設定匯入至比賽程式";
+            this.button10.Text = "初始化";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 

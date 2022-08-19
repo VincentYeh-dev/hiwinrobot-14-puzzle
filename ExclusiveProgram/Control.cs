@@ -137,21 +137,6 @@ namespace ExclusiveProgram
             return null;
         }
 
-        private string SelectFile(string InitialDirectory,string Filter)
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = InitialDirectory ;
-            openFileDialog1.Filter = Filter;
-            openFileDialog1.FilterIndex = 0;
-            openFileDialog1.RestoreDirectory = true;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                return openFileDialog1.FileName;
-            }
-            return "";
-        }
-
         private void ShowResult(Puzzle3D result)
         {
             if (this.InvokeRequired)
@@ -189,11 +174,11 @@ namespace ExclusiveProgram
         
         private void button2_Click(object sender, EventArgs e)
         {
-            source_file_path.Text = SelectFile("", "Image files|*.*");
+            source_file_path.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_IMAGE);
         }
         private void button7_Click(object sender, EventArgs e)
         {
-            modelImage_file_path.Text = SelectFile("", "Image files|*.*");
+            modelImage_file_path.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_IMAGE);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -224,8 +209,6 @@ namespace ExclusiveProgram
                 camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()), camera_preview);
                 camera.Connect();
                 camera.LoadParameterFromEEPROM();
-                PositioningUserControl.setCamera(camera);
-                
             }catch(Exception ex)
             {
                 MessageBox.Show("攝影機連線錯誤");
@@ -262,12 +245,12 @@ namespace ExclusiveProgram
 
         private void button8_Click(object sender, EventArgs e)
         {
-            textBox_positioning_filepath.Text = SelectFile("", "CSV files|*.csv");
+            textBox_positioning_filepath.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_CSV);
         }
 
         private void button9_Click_1(object sender, EventArgs e)
         {
-            textBox_camera_parameter_filepath.Text = SelectFile(".", "CSV files|*.csv");
+            textBox_camera_parameter_filepath.Text = GlobalUtils.SelectFile(GlobalUtils.FILTER_CSV);
         }
 
         private void comboBox_method_SelectedIndexChanged(object sender, EventArgs e)
@@ -280,6 +263,10 @@ namespace ExclusiveProgram
         {
             contestUserControl.Factory=GetFactoryFromUIArguments();
             contestUserControl.Arm=Arm;
+            contestUserControl.Camera=camera;
+            PositioningUserControl.Arm=Arm;
+            PositioningUserControl.Camera=camera;
+            
         }
 
         private void button13_Click(object sender, EventArgs e)
