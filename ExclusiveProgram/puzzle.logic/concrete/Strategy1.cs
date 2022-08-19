@@ -48,24 +48,24 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         }
         public void Next()
         {
-            if (missing_positions == null)
-                throw new NullReferenceException("missing_positions == null");
+            //if (missing_positions == null)
+            //    throw new NullReferenceException("missing_positions == null");
 
-            if (missing_positions.Length != 0)
-            {
-                action = StrategyAction.rescan_missing_puzzle;
-                return;
-            }
+            //if (missing_positions.Length != 0)
+            //{
+            //    action = StrategyAction.rescan_missing_puzzle;
+            //    return;
+            //}
 
-            foreach (string key in position_index_map.Keys)
-            {
-                position_index_map.TryGetValue(key, out List<int> list);
-                if (list.Count > 1)
-                {
-                    action = StrategyAction.rescan_duplicate_puzzle;
-                    return;
-                }
-            }
+            //foreach (string key in position_index_map.Keys)
+            //{
+            //    position_index_map.TryGetValue(key, out List<int> list);
+            //    if (list.Count > 1)
+            //    {
+            //        action = StrategyAction.rescan_duplicate_puzzle;
+            //        return;
+            //    }
+            //}
 
             var position = NextTargetPosition();
             if (position!=null)
@@ -139,26 +139,26 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         }
         private string NextTargetPosition()
         {
-            if (!(recombinedPuzzles.Contains("00")))
+            if (CanDoRecombine("00"))
                 return "00";
-            if (!(recombinedPuzzles.Contains("06"))) 
+            if (CanDoRecombine("06")) 
                 return "06";
-            if (!(recombinedPuzzles.Contains("40"))) 
+            if (CanDoRecombine("40")) 
                 return "40";
-            if (!(recombinedPuzzles.Contains("46"))) 
+            if (CanDoRecombine("46")) 
                 return "46";
 
             for(int up_down=0;up_down<=4;up_down+=4)
                 for(int col=1; col<=6; col++)
                 {
-                    if (!(recombinedPuzzles.Contains(up_down+""+col))) 
+                    if (CanDoRecombine(up_down+""+col)) 
                         return up_down+""+col;
                 }
 
             for(int left_right=0;left_right<=6;left_right+=6)
                 for(int row=1; row<=4; row++)
                 {
-                    if (!(recombinedPuzzles.Contains(row+""+left_right))) 
+                    if (CanDoRecombine(row+""+left_right)) 
                         return row+""+left_right;
                 }
 
@@ -166,7 +166,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             for(int row=1;row<=3;row++)
                 for(int col=1; col<=5; col++)
                 {
-                    if (!(recombinedPuzzles.Contains(row+""+col))) 
+                    if (CanDoRecombine(row+""+col)) 
                         return row+""+col;
                 }
 
@@ -196,6 +196,13 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         public framework.StrategyAction GetStrategyAction()
         {
             return action;
+        }
+
+        private bool CanDoRecombine(string position)
+        {
+            return !recombinedPuzzles.Contains(position)&&
+                position_index_map.ContainsKey(position);
+                
         }
     }
 }
