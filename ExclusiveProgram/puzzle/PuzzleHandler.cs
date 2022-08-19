@@ -199,18 +199,17 @@ namespace ExclusiveProgram.puzzle
             };
 
             var kp = (20.0 / 130.0) * 0.8;
-            var func = VisualServo.BasicArmMoveFunc(arm,kp);
-            VisualServo.Tracking(image.Size, 10, func2, func);
+            //var func = VisualServo.BasicArmMoveFunc(arm,kp);
+            //VisualServo.Tracking(image.Size, 10, func2, func); 
+            //var position=arm.GetNowPosition();
+            //var pa = new PointF((float)position[0], (float)position[1] );
+            //var pc = new PointF(pa.X, (pa.Y + 111.83f));
 
-            var position=arm.GetNowPosition();
-            var pa = new PointF((float)position[0], (float)position[1] );
-            var pc = new PointF(pa.X, (pa.Y + 111.83f));
-
-            var _points = new PointF[] {pc };
-            var rotateMatrix = new RotationMatrix2D();
-            CvInvoke.GetRotationMatrix2D(pc,angle, 1,rotateMatrix);
-            rotateMatrix.RotatePoints(_points);
-            Move(_points[0].X, _points[0].Y, position[2]);
+            //var _points = new PointF[] {pc };
+            //var rotateMatrix = new RotationMatrix2D();
+            //CvInvoke.GetRotationMatrix2D(pc,angle, 1,rotateMatrix);
+            //rotateMatrix.RotatePoints(_points);
+            //Move(_points[0].X, _points[0].Y, position[2]);
             
         }
     }

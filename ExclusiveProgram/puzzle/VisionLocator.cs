@@ -42,8 +42,9 @@ namespace ExclusiveProgram.puzzle
                 return result.Value.Coordinate;
             };
             var kp = (20.0 / 130.0) * 0.8;
-            var func = VisualServo.BasicArmMoveFunc(arm,kp);
-            VisualServo.Tracking(rawImage.Size, 10, func2, func);
+            VisualServo.MakeBasicArmMoveFunc(arm, kp);
+            //var func = VisualServo.BasicArmMoveFunc(arm,kp);
+            //VisualServo.Tracking(rawImage.Size, 10, func2, func);
 
             return results;
         }
