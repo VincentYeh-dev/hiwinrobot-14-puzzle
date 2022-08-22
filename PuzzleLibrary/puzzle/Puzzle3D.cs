@@ -12,7 +12,7 @@ namespace PuzzleLibrary.puzzle
         public int ID;
         public PointF RealWorldCoordinate;
         public double Angle;
-        public string Position;
+        public Point Position;
         public Puzzle2D puzzle2D;
     };
 }

@@ -62,7 +62,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return preprocessModelImage != null;
         }
 
-        public RecognizeResult Recognize(int id, Image<Bgr, byte> image, List<string> ignoredPosition)
+        public RecognizeResult Recognize(int id, Image<Bgr, byte> image, List<Point> ignoredPosition)
         {
             Image<Bgr, byte> observedImage = image.Clone();
 
@@ -135,25 +135,22 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                 x = 6;
             if (y >= 5)
             { y = 4; }
+            
+            result.Position = new Point(x, y);
 
-            result.position = y + "" + x.ToString();
-
-            DrawPerspectiveAndSave(id, preview_image.ToImage<Bgr, byte>(), result.position);
+            DrawPerspectiveAndSave(id, preview_image.ToImage<Bgr, byte>(), result.Position.ToString());
             return result;
         }
 
-        private Image<Bgr,byte> GetIgnoredModelImage(Image<Bgr,byte> image,List<string> ignoredPositions)
+        private Image<Bgr,byte> GetIgnoredModelImage(Image<Bgr,byte> image,List<Point> ignoredPositions)
         {
             if(ignoredPositions==null)
                 return image;
             var newImage = image.Clone();
             foreach(var position in ignoredPositions)
             {
-                char[] c = position.ToCharArray();
-                var x_position = int.Parse(""+c[1]);
-                var y_position = int.Parse(""+c[0]);
-                var x = x_position * width_per_puzzle;
-                var y= y_position * height_per_puzzle;
+                var x = position.X* width_per_puzzle;
+                var y=  position.Y* height_per_puzzle;
                 CvInvoke.Rectangle(newImage, new Rectangle((int)x,(int)y,(int)width_per_puzzle,(int)height_per_puzzle), new MCvScalar(0, 0, 0), -1);
             }
 

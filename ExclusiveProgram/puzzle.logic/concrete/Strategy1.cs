@@ -2,15 +2,16 @@
 using PuzzleLibrary.puzzle;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace ExclusiveProgram.puzzle.logic.concrete
 {
     public class Strategy1 : IPuzzleStrategy
     {
 
-        private HashSet<string> recombinedPuzzles = new HashSet<string>();
+        private HashSet<Point> recombinedPuzzles = new HashSet<Point>();
         private List<Puzzle3D> puzzles = new List<Puzzle3D>();
-        private Dictionary<string,List<int>> position_index_map=new Dictionary<string, List<int>>();
+        private Dictionary<Point,List<int>> position_index_map=new Dictionary<Point, List<int>>();
 
         private string[] missing_positions=new string[0];
         private StrategyAction action;
@@ -21,7 +22,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             if (puzzles == null)
                 throw new ArgumentNullException("puzzles == null");
             Reset();
-            HashSet<string> recorded_positions = new HashSet<string>();
+            HashSet<Point> recorded_positions = new HashSet<Point>();
             for (int i = 0; i < puzzles.Count; i++)
             {
                 this.puzzles.Add(puzzles[i]);
@@ -42,7 +43,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                 recorded_positions.Add(position);
             }
 
-            missing_positions = GetMissingPosition(recorded_positions);
+            //missing_positions = GetMissingPosition(recorded_positions);
 
             Next();
         }
@@ -123,54 +124,65 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             target_puzzle = null;
         }
 
-        private string[] GetMissingPosition(HashSet<string> records)
+        //private string[] GetMissingPosition(HashSet<string> records)
+        //{
+        //    List<string> missingList = new List<string>();
+
+        //    for (int row = 0; row <= 4; row++)
+        //        for (int col = 0; col <= 6; col++)
+        //        {
+        //            var position = String.Format("{0}{1}", row, col);
+        //            if (!records.Contains(position))
+        //                missingList.Add(position);
+        //        }
+
+        //    return missingList.ToArray();
+        //}
+
+        private Point CreatePoint(int x,int y)
         {
-            List<string> missingList = new List<string>();
-
-            for (int row = 0; row <= 4; row++)
-                for (int col = 0; col <= 6; col++)
-                {
-                    var position = String.Format("{0}{1}", row, col);
-                    if (!records.Contains(position))
-                        missingList.Add(position);
-                }
-
-            return missingList.ToArray();
+            return new Point(x,y);
         }
-        private string NextTargetPosition()
+        private Point NextTargetPosition()
         {
-            if (CanDoRecombine("00"))
-                return "00";
-            if (CanDoRecombine("06")) 
-                return "06";
-            if (CanDoRecombine("40")) 
-                return "40";
-            if (CanDoRecombine("46")) 
-                return "46";
+            var corner_points = new Point[] {
+                CreatePoint(0,0),
+                CreatePoint(6,0),
+                CreatePoint(0,4),
+                CreatePoint(6,4)
+            };
+            foreach(var corner in corner_points)
+            {
+                if (CanDoRecombine(corner))
+                    return corner;
+            }
 
             for(int up_down=0;up_down<=4;up_down+=4)
                 for(int col=1; col<=6; col++)
                 {
-                    if (CanDoRecombine(up_down+""+col)) 
-                        return up_down+""+col;
+                    var p = CreatePoint(col, up_down);
+                    if (CanDoRecombine(p)) 
+                        return p;
                 }
 
             for(int left_right=0;left_right<=6;left_right+=6)
                 for(int row=1; row<=4; row++)
                 {
-                    if (CanDoRecombine(row+""+left_right)) 
-                        return row+""+left_right;
+                    var p = CreatePoint(left_right, row);
+                    if (CanDoRecombine(p)) 
+                        return p;
                 }
 
 
             for(int row=1;row<=3;row++)
                 for(int col=1; col<=5; col++)
                 {
-                    if (CanDoRecombine(row+""+col)) 
-                        return row+""+col;
+                    var p = CreatePoint(col, row);
+                    if (CanDoRecombine(p)) 
+                        return p;
                 }
 
-            return null;
+            return new Point(-1,-1);
         }
 
         public bool HasThingToDo()
@@ -186,19 +198,19 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             return target_puzzle.Value;
         }
 
-        public String[] GetMissingPosition()
-        {
-            if (action!=framework.StrategyAction.rescan_missing_puzzle)
-                throw new InvalidOperationException("action!=rescan_target");
+        //public String[] GetMissingPosition()
+        //{
+        //    if (action!=framework.StrategyAction.rescan_missing_puzzle)
+        //        throw new InvalidOperationException("action!=rescan_target");
 
-            return missing_positions;
-        }
+        //    return missing_positions;
+        //}
         public framework.StrategyAction GetStrategyAction()
         {
             return action;
         }
 
-        private bool CanDoRecombine(string position)
+        private bool CanDoRecombine(Point position)
         {
             return !recombinedPuzzles.Contains(position)&&
                 position_index_map.ContainsKey(position);

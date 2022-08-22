@@ -9,7 +9,7 @@ namespace PuzzleLibrary.puzzle.visual.framework
     public struct RecognizeResult
     {
         public double Angle;
-        public string position;
+        public Point Position;
         public int id;
     };
 
@@ -24,7 +24,7 @@ namespace PuzzleLibrary.puzzle.visual.framework
         bool ModelImagePreprocessIsDone();
         void PreprocessModelImage();
         RecognizeResult Recognize(int id,Image<Bgr,byte> image);
-        RecognizeResult Recognize(int id,Image<Bgr,byte> image,List<string> ignoredPosition);
+        RecognizeResult Recognize(int id,Image<Bgr,byte> image,List<Point> ignoredPosition);
     }
 
 }

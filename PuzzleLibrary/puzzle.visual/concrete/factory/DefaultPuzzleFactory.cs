@@ -43,7 +43,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                 listener.onLocated(dataList);
 
             List<Puzzle3D> results = new List<Puzzle3D>();
-            var ignored = new List<string>();
+            var ignored = new List<Point>();
             List<Task> tasks = new List<Task>();
             var cts = new CancellationTokenSource();
             foreach (LocationResult location in dataList)

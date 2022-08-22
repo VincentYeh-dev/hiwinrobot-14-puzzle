@@ -35,7 +35,7 @@ namespace ExclusiveProgram.puzzle
         private readonly RoboticArm arm;
         private readonly IDSCamera camera;
         private readonly SuckerDevice sucker;
-        private readonly Dictionary<string, PointF> put_positions;
+        private readonly Dictionary<Point, PointF> put_positions;
 
 
         public PuzzleHandler(IPuzzleFactory factory,RoboticArm arm,IDSCamera camera,SuckerDevice sucker)
@@ -47,13 +47,15 @@ namespace ExclusiveProgram.puzzle
             put_positions = ReadPutPositionsFromFile("positioning\\put_positions.csv");
         }
 
-        private Dictionary<string,PointF> ReadPutPositionsFromFile(string filepath)
+        private Dictionary<Point,PointF> ReadPutPositionsFromFile(string filepath)
         {
-            var dictionary = new Dictionary<string, PointF>();
+            var dictionary = new Dictionary<Point, PointF>();
             var datalist=Csv.Read(filepath);
             foreach(var list in datalist)
             {
-                dictionary.Add(list[1],new PointF(float.Parse(list[2]), float.Parse(list[3])));
+                var array = list[1].ToCharArray();
+                var position = new Point(int.Parse(array[1]+""),int.Parse(array[0]+""));
+                dictionary.Add(position,new PointF(float.Parse(list[2]), float.Parse(list[3])));
             }
             return dictionary;
         }
