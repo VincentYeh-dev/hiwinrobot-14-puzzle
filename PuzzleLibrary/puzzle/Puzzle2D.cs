@@ -7,6 +7,8 @@ namespace PuzzleLibrary.puzzle
     public struct Puzzle2D
     {
         public PointF Coordinate;
-        public Image<Bgr,byte> ROI;
+        public Rectangle ROI;
+        public RotatedRect RotatedRect;
+        public Image<Bgr,byte> Image;
     };
 }

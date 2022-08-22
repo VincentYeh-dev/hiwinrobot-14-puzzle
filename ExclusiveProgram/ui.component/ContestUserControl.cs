@@ -49,7 +49,7 @@ namespace ExclusiveProgram.ui.component
             if (puzzles == null || puzzles.Count == 0||listBox_detected_puzzles.SelectedIndex>=puzzles.Count)
                 return;
             var puzzle = puzzles[listBox_detected_puzzles.SelectedIndex];
-            pictureBox_puzzle_image.Image = puzzle.puzzle2D.ROI.ToBitmap();
+            pictureBox_puzzle_image.Image = puzzle.puzzle2D.Image.ToBitmap();
             textBox_puzzle_info.Text = $"ID{puzzle.ID}\nAngle:{puzzle.Angle}\n" +
                 $"Coordinate:({Math.Round(puzzle.RealWorldCoordinate.X,2)},{Math.Round(puzzle.RealWorldCoordinate.Y,2)})";
 

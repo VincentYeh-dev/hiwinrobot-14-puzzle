@@ -15,7 +15,11 @@ namespace PuzzleLibrary.puzzle.visual.concrete
         {
             Puzzle2D puzzle2D = new Puzzle2D();
             puzzle2D.Coordinate = locationResult.Coordinate;
-            puzzle2D.ROI = ROI;
+            var size = ROI.Size;
+            var point = new Point((int)locationResult.Coordinate.X-size.Width/2,(int)locationResult.Coordinate.Y-size.Height/2);
+            puzzle2D.ROI= new Rectangle(point,size);
+            puzzle2D.Image = ROI;
+            puzzle2D.RotatedRect= locationResult.RotatedRect;
 
             Puzzle3D puzzle3D = new Puzzle3D(); 
             puzzle3D.ID= locationResult.ID;

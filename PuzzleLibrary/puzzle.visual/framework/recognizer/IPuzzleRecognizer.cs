@@ -24,7 +24,7 @@ namespace PuzzleLibrary.puzzle.visual.framework
         bool ModelImagePreprocessIsDone();
         void PreprocessModelImage();
         RecognizeResult Recognize(int id,Image<Bgr,byte> image);
-        RecognizeResult Recognize(int id,Image<Bgr,byte> image,List<Point> ignoredPosition);
+        RecognizeResult Recognize(int id,Image<Bgr,byte> image,List<Puzzle3D> ignoredPuzzles);
     }
 
 }

@@ -31,9 +31,10 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             this.binaryPreprocessImpl = binaryPreprocessImpl;
         }
 
-        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI,int IDOfStart)
+        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI,List<Puzzle3D> ignoredPuzzles,int IDOfStart)
         {
-            var ROIImage = Mask(rawImage,ROI);
+            var ROIImage = GetROIImage(rawImage,ROI);
+            ROIImage = GetMaskedImage(ROIImage,ignoredPuzzles);
             ROIImage.Save("results\\roi.jpg");
 
             var preprocessImage = ROIImage.Clone();
@@ -93,7 +94,9 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                     //location_result.Angle = angle;
                     location_result.Coordinate = coordinate;
                     location_result.Size = new Size(minRectangle.Width, minRectangle.Height);
-                    location_result.ROI = getROI(location_result.Coordinate, location_result.Size, rawImage);
+                    location_result.ROI= minRectangle;
+                    location_result.RotatedRect = minAreaRotatedRectangle;
+                    location_result.Image= getROIImage(location_result.Coordinate, location_result.Size, rawImage);
 
                     location_results.Add(location_result);
                 }
@@ -105,7 +108,24 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return location_results;
         }
 
-        private Image<Bgr,byte> Mask(Image<Bgr, byte> rawImage, Rectangle ROI)
+        private Image<Bgr, byte> GetMaskedImage(Image<Bgr, byte> image, List<Puzzle3D> ignoredPuzzles)
+        {
+            if (ignoredPuzzles == null)
+                return image;
+            var masked= image.Clone();
+            foreach(var puzzle in ignoredPuzzles)
+            {
+                var _2D = puzzle.puzzle2D;
+                var points = new VectorOfPoint();
+                points.Push(GetCornerPoints(_2D.RotatedRect));
+                CvInvoke.FillPoly(masked,points, new MCvScalar(0, 0, 0));
+                //CvInvoke.Polylines(masked, GetCornerPoints(), true, new MCvScalar(0, 0, 0), -1);
+                //CvInvoke.Rectangle(masked, new Rectangle(Point.Round(_2D.Coordinate), _2D.Image.Size),new MCvScalar(0,0,0),-1);
+            }
+            return masked;
+        }
+
+        private Image<Bgr,byte> GetROIImage(Image<Bgr, byte> rawImage, Rectangle ROI)
         {
             if (ROI == Rectangle.Empty)
                 return rawImage;
@@ -152,7 +172,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return Array.ConvertAll<PointF, Point>(boundingBox.GetVertices(), Point.Round);
         }
 
-        private Image<Bgr, byte> getROI(PointF Coordinate, Size Size, Image<Bgr, byte> input)
+        private Image<Bgr, byte> getROIImage(PointF Coordinate, Size Size, Image<Bgr, byte> input)
         {
             Rectangle rect = new Rectangle((int)(Coordinate.X - Size.Width / 2.0f), (int)(Coordinate.Y - Size.Height / 2.0f), Size.Width, Size.Height);
             //設定ROI
@@ -256,5 +276,9 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return Angel;
         }
 
+        public List<LocationResult> Locate(Image<Bgr, byte> rawImage, Rectangle ROI, int IDOfStart = 0)
+        {
+            return Locate(rawImage, ROI,null, IDOfStart);
+        }
     }
 }

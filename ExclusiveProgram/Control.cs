@@ -73,7 +73,7 @@ namespace ExclusiveProgram
                     foreach (var result in results)
                     {
                         var control = new PuzzlePreviewUserControl();
-                        control.setImage(result.ROI.ToBitmap());
+                        control.setImage(result.Image.ToBitmap());
                         control.setLabel(new string[] { $"({result.Coordinate.X},{result.Coordinate.Y})",$"[{result.Size.Width},{result.Size.Height}]",""});
                         ui.roi_puzzleView.Controls.Add(control);
                         //ui.capture_contours_preview.Image = Bitmap.FromFile("results\\contours.jpg");
@@ -116,8 +116,11 @@ namespace ExclusiveProgram
                 image = CameraCalibration.UndistortImage(rawImage, CameraParameter.LoadFromCsv(textBox_camera_parameter_filepath.Text));
 
             capture_preview.Image = image.ToBitmap();
-            List<Puzzle3D> results = factory.Execute(image,GetVisionPositioner(),10);
-
+            CvInvoke.NamedWindow("SelectROI", WindowFlags.Normal);
+            var ROI=CvInvoke.SelectROI("SelectROI",image);
+            CvInvoke.DestroyAllWindows();
+            List<Puzzle3D> results = factory.Execute(image,ROI,GetVisionPositioner());
+            results.AddRange(factory.Execute(image,results,ROI,GetVisionPositioner(),results.Count));
             foreach (Puzzle3D result in results)
             {
                 ShowResult(result);
@@ -147,7 +150,7 @@ namespace ExclusiveProgram
             else
             {
                 var control = new PuzzlePreviewUserControl();
-                control.setImage(result.puzzle2D.ROI.ToBitmap());
+                control.setImage(result.puzzle2D.Image.ToBitmap());
                 control.setLabel(new string[] { $"#{result.ID} Angle:{ Math.Round(result.Angle, 2)}",$"R:({result.RealWorldCoordinate.X},{result.RealWorldCoordinate.Y})",$"I:({result.puzzle2D.Coordinate.X},{result.puzzle2D.Coordinate.Y})" });
 
                 control.SetImageClicked(() => { 

@@ -62,14 +62,14 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return preprocessModelImage != null;
         }
 
-        public RecognizeResult Recognize(int id, Image<Bgr, byte> image, List<Point> ignoredPosition)
+        public RecognizeResult Recognize(int id, Image<Bgr, byte> image, List<Puzzle3D> ignoredPuzzles)
         {
             Image<Bgr, byte> observedImage = image.Clone();
 
             if (preprocessImpl != null)
                 preprocessImpl.Preprocess(observedImage, observedImage);
 
-            var IgnoredModelImage = GetIgnoredModelImage(modelImage,ignoredPosition);
+            var IgnoredModelImage = GetIgnoredModelImage(modelImage,ignoredPuzzles);
             RecognizeResult result = new RecognizeResult();
 
             FindFeaturePointsAndMatch(IgnoredModelImage.Mat, observedImage.Mat, 
@@ -142,15 +142,15 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return result;
         }
 
-        private Image<Bgr,byte> GetIgnoredModelImage(Image<Bgr,byte> image,List<Point> ignoredPositions)
+        private Image<Bgr,byte> GetIgnoredModelImage(Image<Bgr,byte> image,List<Puzzle3D> ignoredPuzzles)
         {
-            if(ignoredPositions==null)
+            if(ignoredPuzzles==null)
                 return image;
             var newImage = image.Clone();
-            foreach(var position in ignoredPositions)
+            foreach(var puzzle in ignoredPuzzles)
             {
-                var x = position.X* width_per_puzzle;
-                var y=  position.Y* height_per_puzzle;
+                var x = puzzle.Position.X* width_per_puzzle;
+                var y=  puzzle.Position.Y* height_per_puzzle;
                 CvInvoke.Rectangle(newImage, new Rectangle((int)x,(int)y,(int)width_per_puzzle,(int)height_per_puzzle), new MCvScalar(0, 0, 0), -1);
             }
 
@@ -192,7 +192,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             if (binaryPreprocessImpl != null)
                 binaryPreprocessImpl.BinaryPreprocess(binaryImage, binaryImage);
 
-            if (CvInvoke.CountNonZero(binaryImage) > 1.5 * area_per_puzzle)
+            if (CvInvoke.CountNonZero(binaryImage) > 1.2 * area_per_puzzle)
                 throw new Exception("辨識結果大於1.5張拼圖");
 
 

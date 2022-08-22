@@ -32,18 +32,17 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             factory = new TaskFactory(lcts);
         }
 
-        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI,IPositioner positioner,int IDOfStart)
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,List<Puzzle3D> ignoredPuzzles,Rectangle ROI,IPositioner positioner,int IDOfStart)
         { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
             List<LocationResult> dataList;
-            dataList = locator.Locate(input,ROI,IDOfStart);
+            dataList = locator.Locate(input,ROI,ignoredPuzzles,IDOfStart);
 
             if (listener != null)
                 listener.onLocated(dataList);
 
             List<Puzzle3D> results = new List<Puzzle3D>();
-            var ignored = new List<Point>();
             List<Task> tasks = new List<Task>();
             var cts = new CancellationTokenSource();
             foreach (LocationResult location in dataList)
@@ -52,7 +51,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                 {
                     try
                     {
-                        var recognized_result = recognizer.Recognize(location.ID, location.ROI,ignored);
+                        var recognized_result = recognizer.Recognize(location.ID, location.Image,ignoredPuzzles);
                         if (listener != null)
                             listener.onRecognized(recognized_result);
 
@@ -60,9 +59,8 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                         float[] worldCoordinate=new float[] {0f,0f};
                         if(positioner != null)
                             worldCoordinate = positioner.ImageToWorldCoordinate(imageCoordinate);
-                        var puzzle = merger.merge(location, location.ROI, recognized_result, new PointF(worldCoordinate[0], worldCoordinate[1]));
+                        var puzzle = merger.merge(location, location.Image, recognized_result, new PointF(worldCoordinate[0], worldCoordinate[1]));
                         results.Add(puzzle);
-                        ignored.Add(puzzle.Position);
                     }
                     catch (Exception e)
                     {
@@ -78,6 +76,11 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             return results;
         }
 
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI, IPositioner positioner, int IDOfStart = 0)
+        {
+
+            return Execute(input,null,ROI ,positioner, IDOfStart);
+        }
         public List<Puzzle3D> Execute(Image<Bgr, byte> input, IPositioner positioner, int IDOfStart = 0)
         {
             return Execute(input, Rectangle.Empty ,positioner, IDOfStart);
@@ -87,6 +90,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
         {
             this.listener = listener;
         }
+
     }
 
 }
