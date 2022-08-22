@@ -85,7 +85,7 @@ namespace ExclusiveProgram.ui.component
         private void button1_Click(object sender, EventArgs e)
         {
             var timeStamp = DateTime.Now.ToString("yyyy-MM-dd_hhmmss");
-            var method = comboBox_method.SelectedItem.ToString();
+            var method = comboBox_method.SelectedItem;
 
             var cc = new CameraCalibration(new Size(12,9),15);
             var images = new List<Image<Bgr, byte>>();

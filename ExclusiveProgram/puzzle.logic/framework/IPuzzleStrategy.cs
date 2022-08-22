@@ -1,4 +1,4 @@
-﻿using ExclusiveProgram.puzzle.visual.framework;
+﻿using PuzzleLibrary.puzzle;
 using System;
 using System.Collections.Generic;
 using System.Linq;

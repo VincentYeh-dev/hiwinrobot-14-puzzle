@@ -21,4 +21,10 @@
     <ProjectReference Include="..\ExclusiveProgram\ExclusiveProgram.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="PuzzleLibrary">
+      <HintPath>..\PuzzleLibrary\bin\Debug\net4.7.2\PuzzleLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,5 @@
 ﻿using ExclusiveProgram.puzzle.logic.framework;
-using ExclusiveProgram.puzzle.visual.framework;
+using PuzzleLibrary.puzzle;
 using System;
 using System.Collections.Generic;
 

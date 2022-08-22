@@ -1,7 +1,7 @@
-using ExclusiveProgram.puzzle;
 using ExclusiveProgram.puzzle.logic.concrete;
 using ExclusiveProgram.puzzle.logic.framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PuzzleLibrary.puzzle;
 using System;
 using System.Collections.Generic;
 
