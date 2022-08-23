@@ -28,6 +28,5 @@ namespace ExclusiveProgram.puzzle.logic.framework
         //string[] GetMissingPosition();
         StrategyAction GetStrategyAction();
 
-        void Fix(List<Puzzle3D> new_puzzles);
     }
 }

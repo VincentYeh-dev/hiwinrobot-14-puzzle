@@ -46,6 +46,7 @@ namespace ExclusiveProgram
             flowLayoutPanel_positioning_root.Controls.Add(PositioningUserControl);
             comboBox_method.Items.Add(PositioningMethod.CCIA);
             comboBox_method.Items.Add(PositioningMethod.Homography);
+            camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()), camera_preview);
         }
 
 
@@ -209,7 +210,6 @@ namespace ExclusiveProgram
         {
             try
             {
-                camera = new IDSCamera(new GeneralMessageHandler(new EmptyLogHandler()), camera_preview);
                 camera.Connect();
                 camera.LoadParameterFromEEPROM();
             }catch(Exception ex)

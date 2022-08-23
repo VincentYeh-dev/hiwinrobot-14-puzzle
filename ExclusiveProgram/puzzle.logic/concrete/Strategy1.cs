@@ -13,7 +13,6 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         private List<Puzzle3D> puzzles = new List<Puzzle3D>();
         private Dictionary<Point,List<int>> position_index_map=new Dictionary<Point, List<int>>();
 
-        private string[] missing_positions=new string[0];
         private StrategyAction action;
         private Puzzle3D? target_puzzle;
 
@@ -83,62 +82,14 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             action = StrategyAction.do_nothing;
         }
 
-        public void Fix(List<Puzzle3D> new_puzzles)
-        {
-            List<Puzzle3D> output_puzles= new List<Puzzle3D>();
-            for (int i=0;i<new_puzzles.Count;i++)
-            {
-                Puzzle3D puzzle= new_puzzles[i];
-
-                bool found=position_index_map.TryGetValue(puzzle.Position,out List<int> indexes);
-                if (!found)
-                {
-                    output_puzles.Add(puzzle);
-                }
-                else if (indexes.Count > 1)
-                {
-                    Puzzle3D[] duplicate_puzzles=new Puzzle3D[indexes.Count];
-                    for (int j = 0; j < indexes.Count; j++)
-                    {
-                        duplicate_puzzles[j] = puzzles[indexes[j]];
-                    }
-                    foreach(var duplicate_puzzle in duplicate_puzzles)
-                    {
-                        puzzles.Remove(duplicate_puzzle);
-                    }
-
-                    output_puzles.Add(puzzle);
-                }
-            }
-            output_puzles.AddRange(puzzles);
-            Feed(output_puzles);
-        }
-
         public void Reset()
         {
             recombinedPuzzles.Clear();
             puzzles.Clear();
             position_index_map.Clear();
-            missing_positions=new string[0];
             action = framework.StrategyAction.do_nothing;
             target_puzzle = null;
         }
-
-        //private string[] GetMissingPosition(HashSet<string> records)
-        //{
-        //    List<string> missingList = new List<string>();
-
-        //    for (int row = 0; row <= 4; row++)
-        //        for (int col = 0; col <= 6; col++)
-        //        {
-        //            var position = String.Format("{0}{1}", row, col);
-        //            if (!records.Contains(position))
-        //                missingList.Add(position);
-        //        }
-
-        //    return missingList.ToArray();
-        //}
-
         private Point CreatePoint(int x,int y)
         {
             return new Point(x,y);

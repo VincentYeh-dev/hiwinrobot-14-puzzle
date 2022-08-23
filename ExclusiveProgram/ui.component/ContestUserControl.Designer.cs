@@ -151,25 +151,24 @@
             this.button9.TabIndex = 78;
             this.button9.Text = "button9";
             this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // button5
             // 
             this.button5.Location = new System.Drawing.Point(24, 287);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(86, 34);
+            this.button5.Size = new System.Drawing.Size(328, 34);
             this.button5.TabIndex = 79;
-            this.button5.Text = "button5";
+            this.button5.Text = "開始";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click_1);
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(24, 31);
+            this.button6.Location = new System.Drawing.Point(24, 13);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(86, 36);
             this.button6.TabIndex = 80;
-            this.button6.Text = "button6";
+            this.button6.Text = "開啟";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 

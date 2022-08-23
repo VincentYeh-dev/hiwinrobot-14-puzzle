@@ -584,7 +584,7 @@
             this.max_size_numeric.Size = new System.Drawing.Size(86, 29);
             this.max_size_numeric.TabIndex = 17;
             this.max_size_numeric.Value = new decimal(new int[] {
-            1000,
+            370,
             0,
             0,
             0});

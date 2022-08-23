@@ -79,11 +79,6 @@ namespace ExclusiveProgram.ui.component
             UpdatePuzzleList();
         }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             puzzles.Clear();
@@ -122,12 +117,6 @@ namespace ExclusiveProgram.ui.component
             handler.PutPuzzle(puzzle);
         }
 
-        private void button9_Click(object sender, EventArgs e)
-        {
-
-            handler.AAA();
-        }
-
         private void button5_Click_1(object sender, EventArgs e)
         {
             handler.Run();
@@ -136,11 +125,16 @@ namespace ExclusiveProgram.ui.component
         private void button6_Click(object sender, EventArgs e)
         {
             var sucker = new SuckerDevice();
-            sucker.Connect();
-            sucker.Disable();
 
-            if(Factory != null&&Arm!=null&&Camera!=null&&sucker!=null)
+            if (Factory != null && Arm != null && Camera != null && sucker != null) { 
+            
+
+                sucker.Connect();
+                sucker.Disable();
+                Arm.Connect();
+                Camera.Connect();
                 handler = new PuzzleHandler(Factory,Arm,Camera,sucker,new Strategy1());
+            }
 
         }
     }

@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ExclusiveProgram.puzzle.logic.framework;
+using System.Windows.Forms;
 
 namespace ExclusiveProgram.puzzle
 {
@@ -27,13 +28,15 @@ namespace ExclusiveProgram.puzzle
     }
     public class PuzzleHandler
     {
-        private static double puzzle_width_in_mm = 37;
-        private static double puzzle_height_in_mm =37;
+        private static double puzzle_width_in_mm = 34;
+        private static double puzzle_height_in_mm =36.2;
         private static double PICK_Z_POSITION = 3;
         private static double TARGET_Z_POSITION = 40;
         private static int SUCKER_DISABLE_DELAY=400;
-        private static int SUCKER_ENABLE_DELAY=400;
+        private static int SUCKER_ENABLE_DELAY=600;
         private static double PUT_Z_POSITION=0.655;
+        private static double MOVE_SPEED =40;
+        private static double PICK_SPEED=20;
         private readonly IPuzzleFactory factory;
         private readonly RoboticArm arm;
         private readonly IDSCamera camera;
@@ -46,7 +49,7 @@ namespace ExclusiveProgram.puzzle
         {
             this.factory = factory;
             this.arm = arm;
-            arm.Speed = 40;
+            arm.Speed = MOVE_SPEED;
             this.camera = camera;
             this.sucker = sucker;
             this.strategy = strategy;
@@ -56,12 +59,20 @@ namespace ExclusiveProgram.puzzle
         public void Run()
         {
             var puzzles = MoveToRegionAndGetPuzzles(1, null);
+            puzzles.AddRange(MoveToRegionAndGetPuzzles(2, null));
             strategy.Feed(puzzles);
-            foreach(var puzzle in puzzles)
+            while (strategy.HasThingToDo())
             {
-                PickPuzzle(puzzle);
-                PutPuzzle(puzzle);
+                if(strategy.GetStrategyAction()==StrategyAction.recombine_puzzle)
+                {
+                    var puzzle = strategy.GetTargetPuzzle();
+                    PickPuzzle(puzzle);
+                    PutPuzzle(puzzle);
+                }
+                strategy.Next();
             }
+            MessageBox.Show("Done");
+            strategy.Reset();
         }
 
         private Dictionary<Point,PointF> ReadPutPositionsFromFile(string filepath)
@@ -129,6 +140,7 @@ namespace ExclusiveProgram.puzzle
 
         public void PickPuzzle(Puzzle3D puzzle)
         {
+            arm.Speed = PICK_SPEED;
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
             RotateToAngle(puzzle.Angle+90);
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, PICK_Z_POSITION);
@@ -136,6 +148,7 @@ namespace ExclusiveProgram.puzzle
             Thread.Sleep(SUCKER_ENABLE_DELAY);
             Move(puzzle.RealWorldCoordinate.X, puzzle.RealWorldCoordinate.Y, TARGET_Z_POSITION);
             RotateToAngle(0);
+            arm.Speed = MOVE_SPEED;
         }
         public void PutPuzzle(Puzzle3D puzzle)
         {
