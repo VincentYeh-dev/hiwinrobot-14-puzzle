@@ -68,17 +68,48 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Emgu.CV.Bitmap, Version=4.5.5.4823, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.Bitmap.4.5.5.4823\lib\netstandard2.0\Emgu.CV.Bitmap.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Platform.NetStandard, Version=4.5.5.4823, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.5.5.4823\lib\netstandard2.0\Emgu.CV.Platform.NetStandard.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="RASDK.Arm, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\NFUIRSL.RASDK.0.3.2\lib\net472\RASDK.Arm.dll</HintPath>
+      <HintPath>..\packages\NFUIRSL.RASDK.0.3.9\lib\net472\RASDK.Arm.dll</HintPath>
     </Reference>
     <Reference Include="RASDK.Basic, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\NFUIRSL.RASDK.0.3.2\lib\net472\RASDK.Basic.dll</HintPath>
+      <HintPath>..\packages\NFUIRSL.RASDK.0.3.9\lib\net472\RASDK.Basic.dll</HintPath>
     </Reference>
     <Reference Include="RASDK.Gripper, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\NFUIRSL.RASDK.0.3.2\lib\net472\RASDK.Gripper.dll</HintPath>
+      <HintPath>..\packages\NFUIRSL.RASDK.0.3.9\lib\net472\RASDK.Gripper.dll</HintPath>
+    </Reference>
+    <Reference Include="RASDK.Vision, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\NFUIRSL.RASDK.Vision.0.2.0\lib\net472\RASDK.Vision.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing.Common, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.7.0.0-preview.6.22324.4\lib\net462\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,6 +119,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="uEyeDotNet">
+      <HintPath>..\..\..\..\lib\uEyeDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
@@ -97,8 +132,32 @@
     <Compile Include="Control.Designer.cs">
       <DependentUpon>Control.cs</DependentUpon>
     </Compile>
+    <Compile Include="device\SuckerDevice.cs" />
+    <Compile Include="GlobalUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="puzzle.logic\concrete\Strategy1.cs" />
+    <Compile Include="puzzle.logic\framework\IPuzzleStrategy.cs" />
+    <Compile Include="puzzle\PuzzleHandler.cs" />
+    <Compile Include="puzzle\RASDKPositionerAdaptor.cs" />
+    <Compile Include="ui.component\ContestUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui.component\ContestUserControl.Designer.cs">
+      <DependentUpon>ContestUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui.component\PositioningUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui.component\PositioningUserControl.Designer.cs">
+      <DependentUpon>PositioningUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui.component\PuzzlePreviewUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui.component\PuzzlePreviewUserControl.Designer.cs">
+      <DependentUpon>PuzzlePreviewUserControl.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Control.resx">
       <DependentUpon>Control.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +170,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ui.component\ContestUserControl.resx">
+      <DependentUpon>ContestUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui.component\PositioningUserControl.resx">
+      <DependentUpon>PositioningUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui.component\PuzzlePreviewUserControl.resx">
+      <DependentUpon>PuzzlePreviewUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -130,6 +198,10 @@
       <Project>{95c2ddf6-1fd1-42ae-bf56-ef1391da6d5d}</Project>
       <Name>MainForm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PuzzleLibrary\PuzzleLibrary.csproj">
+      <Project>{17e27133-2bc8-4e12-91af-4a4c363c7124}</Project>
+      <Name>PuzzleLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -143,5 +215,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
