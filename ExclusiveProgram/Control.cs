@@ -120,7 +120,7 @@ namespace ExclusiveProgram
             var ROI=CvInvoke.SelectROI("SelectROI",image);
             CvInvoke.DestroyAllWindows();
             List<Puzzle3D> results = factory.Execute(image,ROI,GetVisionPositioner());
-            results.AddRange(factory.Execute(image,results,ROI,GetVisionPositioner(),results.Count));
+            results.AddRange(factory.Execute(image,ROI,null,GetVisionPositioner(),results.Count));
             foreach (Puzzle3D result in results)
             {
                 ShowResult(result);

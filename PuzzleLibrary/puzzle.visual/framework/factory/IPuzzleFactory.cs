@@ -16,7 +16,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
     {
         List<Puzzle3D> Execute(Image<Bgr, byte> input,IPositioner positioner,int IDOfStart=0);
         List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI,IPositioner positioner,int IDOfStart=0);
-        List<Puzzle3D> Execute(Image<Bgr, byte> input, List<Puzzle3D> ignoredPuzzles, Rectangle ROI, IPositioner positioner, int IDOfStart);
+        List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI, List<Puzzle3D> ignoredPuzzles,IPositioner positioner, int IDOfStart);
         void setListener(PuzzleFactoryListener listener);
     }
 }

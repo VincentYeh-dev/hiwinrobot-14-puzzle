@@ -697,7 +697,7 @@
             this.numericUpDown_threshold.Size = new System.Drawing.Size(78, 29);
             this.numericUpDown_threshold.TabIndex = 5;
             this.numericUpDown_threshold.Value = new decimal(new int[] {
-            188,
+            240,
             0,
             0,
             0});
@@ -747,6 +747,7 @@
             // contestUserControl
             // 
             this.contestUserControl.Arm = null;
+            this.contestUserControl.Camera = null;
             this.contestUserControl.Factory = null;
             this.contestUserControl.Location = new System.Drawing.Point(3, 0);
             this.contestUserControl.Name = "contestUserControl";

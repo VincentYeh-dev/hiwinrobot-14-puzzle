@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using ExclusiveProgram.device;
 using ExclusiveProgram.puzzle;
+using ExclusiveProgram.puzzle.logic.concrete;
 using PuzzleLibrary.puzzle;
 using PuzzleLibrary.puzzle.visual.concrete;
 using RASDK.Arm;
@@ -40,7 +41,7 @@ namespace ExclusiveProgram.ui.component
         private void button12_Click(object sender, EventArgs e)
         {
             puzzles.Clear();
-            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(1));
+            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(2, null,0));
             UpdatePuzzleList();
         }
 
@@ -74,25 +75,20 @@ namespace ExclusiveProgram.ui.component
         private void button13_Click(object sender, EventArgs e)
         {
             puzzles.Clear();
-            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(2));
+            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(2, null,0));
             UpdatePuzzleList();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            var sucker = new SuckerDevice();
-            sucker.Connect();
-            sucker.Disable();
 
-            if(Factory != null&&Arm!=null&&Camera!=null&&sucker!=null)
-                handler = new PuzzleHandler(Factory,Arm,Camera,sucker);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             puzzles.Clear();
-            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(1));
-            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(2,puzzles.Count));
+            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(1,null));
+            puzzles.AddRange(handler.MoveToRegionAndGetPuzzles(2,null,puzzles.Count));
             UpdatePuzzleList();
         }
 
@@ -130,6 +126,22 @@ namespace ExclusiveProgram.ui.component
         {
 
             handler.AAA();
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            handler.Run();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            var sucker = new SuckerDevice();
+            sucker.Connect();
+            sucker.Disable();
+
+            if(Factory != null&&Arm!=null&&Camera!=null&&sucker!=null)
+                handler = new PuzzleHandler(Factory,Arm,Camera,sucker,new Strategy1());
+
         }
     }
 }

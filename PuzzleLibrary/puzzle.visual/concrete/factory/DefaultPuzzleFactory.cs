@@ -32,7 +32,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
             factory = new TaskFactory(lcts);
         }
 
-        public List<Puzzle3D> Execute(Image<Bgr, byte> input,List<Puzzle3D> ignoredPuzzles,Rectangle ROI,IPositioner positioner,int IDOfStart)
+        public List<Puzzle3D> Execute(Image<Bgr, byte> input,Rectangle ROI,List<Puzzle3D> ignoredPuzzles,IPositioner positioner,int IDOfStart)
         { 
             if (!recognizer.ModelImagePreprocessIsDone())
                 recognizer.PreprocessModelImage();
@@ -79,7 +79,7 @@ namespace PuzzleLibrary.puzzle.visual.concrete
         public List<Puzzle3D> Execute(Image<Bgr, byte> input, Rectangle ROI, IPositioner positioner, int IDOfStart = 0)
         {
 
-            return Execute(input,null,ROI ,positioner, IDOfStart);
+            return Execute(input,ROI,null,positioner, IDOfStart);
         }
         public List<Puzzle3D> Execute(Image<Bgr, byte> input, IPositioner positioner, int IDOfStart = 0)
         {

@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ExclusiveProgram.puzzle.logic.framework;
 
 namespace ExclusiveProgram.puzzle
 {
@@ -26,6 +27,8 @@ namespace ExclusiveProgram.puzzle
     }
     public class PuzzleHandler
     {
+        private static double puzzle_width_in_mm = 37;
+        private static double puzzle_height_in_mm =37;
         private static double PICK_Z_POSITION = 3;
         private static double TARGET_Z_POSITION = 40;
         private static int SUCKER_DISABLE_DELAY=400;
@@ -35,28 +38,51 @@ namespace ExclusiveProgram.puzzle
         private readonly RoboticArm arm;
         private readonly IDSCamera camera;
         private readonly SuckerDevice sucker;
+        private readonly IPuzzleStrategy strategy;
         private readonly Dictionary<Point, PointF> put_positions;
 
 
-        public PuzzleHandler(IPuzzleFactory factory,RoboticArm arm,IDSCamera camera,SuckerDevice sucker)
+        public PuzzleHandler(IPuzzleFactory factory,RoboticArm arm,IDSCamera camera,SuckerDevice sucker,IPuzzleStrategy strategy)
         {
             this.factory = factory;
             this.arm = arm;
+            arm.Speed = 40;
             this.camera = camera;
             this.sucker = sucker;
+            this.strategy = strategy;
             put_positions = ReadPutPositionsFromFile("positioning\\put_positions.csv");
+        }
+        
+        public void Run()
+        {
+            var puzzles = MoveToRegionAndGetPuzzles(1, null);
+            strategy.Feed(puzzles);
+            foreach(var puzzle in puzzles)
+            {
+                PickPuzzle(puzzle);
+                PutPuzzle(puzzle);
+            }
         }
 
         private Dictionary<Point,PointF> ReadPutPositionsFromFile(string filepath)
         {
             var dictionary = new Dictionary<Point, PointF>();
             var datalist=Csv.Read(filepath);
-            foreach(var list in datalist)
+            var zeroPoint=new PointF(float.Parse(datalist[0][2]), float.Parse(datalist[0][3]));
+
+            //dictionary.Add(new Point(0,0),zeroPoint);
+            for(int row = 0; row < 5; row++)
             {
-                var array = list[1].ToCharArray();
-                var position = new Point(int.Parse(array[1]+""),int.Parse(array[0]+""));
-                dictionary.Add(position,new PointF(float.Parse(list[2]), float.Parse(list[3])));
+                for(int column=0; column < 7; column++)
+                {
+                    var point = new PointF(
+                        zeroPoint.X + (float)puzzle_width_in_mm * row+ (float)puzzle_width_in_mm/2,
+                        zeroPoint.Y + (float)puzzle_height_in_mm * column+ (float)puzzle_height_in_mm/2
+                        );
+                    dictionary.Add(new Point(column, row), point);
+                }
             }
+
             return dictionary;
         }
 
@@ -89,13 +115,12 @@ namespace ExclusiveProgram.puzzle
             return region;
         }
 
-        public List<Puzzle3D> MoveToRegionAndGetPuzzles(int index,int IDOfStart=0)
+        public List<Puzzle3D> MoveToRegionAndGetPuzzles(int index,List<Puzzle3D> ignoredPuzzles,int IDOfStart=0)
         {
-            var puzzles=new List<Puzzle3D>();
             var region = MoveToRegion(index);
+            Thread.Sleep(700);
             var image = CaptureImage();
-            puzzles.AddRange(factory.Execute(image,region.ROI,new RASDKPositionerAdaptor(CCIA.LoadFromCsv(region.positioning_filepath)),IDOfStart));
-            return puzzles;
+            return factory.Execute(image,region.ROI,new RASDKPositionerAdaptor(CCIA.LoadFromCsv(region.positioning_filepath)),IDOfStart);
         }
         private  Image<Bgr,byte> CaptureImage()
         {

@@ -69,12 +69,12 @@ namespace ExclusiveProgram.puzzle.logic.concrete
             //}
 
             var position = NextTargetPosition();
-            if (position!=null)
+            if (position.HasValue)
             {
-                bool success=position_index_map.TryGetValue(position,out List<int> target_indexes);
+                bool success=position_index_map.TryGetValue(position.Value,out List<int> target_indexes);
                 if (!success)
                     throw new Exception();
-                recombinedPuzzles.Add(position);
+                recombinedPuzzles.Add(position.Value);
 
                 target_puzzle = puzzles[target_indexes[0]];
                 action = StrategyAction.recombine_puzzle;
@@ -143,7 +143,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
         {
             return new Point(x,y);
         }
-        private Point NextTargetPosition()
+        private Point? NextTargetPosition()
         {
             var corner_points = new Point[] {
                 CreatePoint(0,0),
@@ -182,7 +182,7 @@ namespace ExclusiveProgram.puzzle.logic.concrete
                         return p;
                 }
 
-            return new Point(-1,-1);
+            return null;
         }
 
         public bool HasThingToDo()

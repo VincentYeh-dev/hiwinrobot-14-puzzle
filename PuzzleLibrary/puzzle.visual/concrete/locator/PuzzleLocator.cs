@@ -81,9 +81,9 @@ namespace PuzzleLibrary.puzzle.visual.concrete
                 PointF coordinate = GetCentralCoordinateByMinEncloseingCircle(contour);
 
 
-                LocationResult location_result = new LocationResult();
                 if (CheckDuplicatePuzzlePosition(location_results, coordinate) && CheckSize(minRectangle, coordinate))
                 {
+                    LocationResult location_result = new LocationResult();
                     //畫在圖片上
                     CvInvoke.Polylines(preview_image, contour, true, new MCvScalar(0, 0, 255), 2);
                     CvInvoke.Rectangle(preview_image, minRectangle, new MCvScalar(255, 0, 0), 2);
